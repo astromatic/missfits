@@ -1,0 +1,33 @@
+MissFITS is a program that performs basic maintenance and packaging tasks on
+FITS files:
+- add/edit FITS header keywords
+- split/join Multi-Extension-FITS (MEF) files
+- unpack/pack FITS data-cubes
+- create/check/update FITS checksums, using R. Seaman's protocol
+	( see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+- compress/decompress FITS data (*not yet available*)
+
+This file describes shortly the SYNTAX of MissFITS.
+See INSTALL for instructions about install.
+For more information, please refer to the documentation
+(see http://terapix.iap.fr/soft/missfits/)
+
+The general SYNTAX is similar to that of SExtractor or SWarp:
+
+% missfits [<fits_file1>, <fits_file2>,...] [-c <Configuration_file>]
+        [-<keyword> <value>] ...
+
+- Keyword parameters given in the command line override those from the
+  configuration file.
+- If the list-file is given as unique argument, MissFITS looks for a
+  default configuration file called ``default.missfits''. If no configuration
+  file is available, MissFITS uses internal defaults.
+
+% missfits -d
+
+prints a default configuration file on the standard output
+
+Please report any bug or strange behaviour on the MissFITS Forum <http://terapix.iap.fr/forum/forumdisplay.php?fid=38>.
+
+						Emmanuel Bertin <bertin@iap.fr>
+                                                Chiara Marmo <marmo@iap.fr>

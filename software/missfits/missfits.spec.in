@@ -1,0 +1,52 @@
+%define name @PACKAGE_NAME@
+%define version @PACKAGE_VERSION@
+%define release 1
+
+Summary: missfits
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Source0: ftp://ftp.iap.fr/pub/from_users/marmo/%{name}/%{name}-%{version}.tar.gz
+URL: http://terapix.iap.fr/soft/%{name}
+License: LGPL
+Group: Sciences/Astronomy
+BuildRoot: %{_tmppath}/%{name}-buildroot
+Prefix: %{_prefix}
+
+%description
+MissFITS is a program that performs basic maintenance and packaging tasks on
+FITS files.
+
+%prep
+%setup -q
+
+%build
+if test "$GCCFLAGS"; then
+./configure --enable-static --prefix=$RPM_BUILD_ROOT/usr/local/ --mandir=$RPM_BUILD_ROOT/usr/local/man/
+make CFLAGS="$GCCFLAGS"
+else
+./configure --prefix=$RPM_BUILD_ROOT/usr/local/ --mandir=$RPM_BUILD_ROOT/usr/local/man/
+make
+fi
+
+%install
+make install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+/usr/local/bin/missfits
+/usr/local/man/man1/missfits.1
+/usr/local/man/manx/missfits.x
+%doc AUTHORS ChangeLog COPYING HISTORY INSTALL README THANKS doc/missfits.pdf
+
+%changelog
+* @DATE2@ @PACKAGER@ <@PACKAGE_BUGREPORT@>
+- Automatic RPM rebuild
+
+* Thu Nov 9 2006 Chiara Marmo <marmo@iap.fr>
+- First RPM build
+
+# end of file

@@ -1,0 +1,28 @@
+/*
+                                changes.log
+
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*
+*       Part of:        MissFITS
+*
+*       Author:         E. BERTIN (IAP) C. MARMO (IAP)
+*
+*       Contents:       log of changes made to the MissFITS source
+*
+*       Last modify:    30/11/2006
+*
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+
+Who     When            Where(mostly)   What
+
+CM         11/2006      makeit()        Added pile datacubes
+                        file.c()
+
+CM         10/2006      makeit()        Added unpile datacubes
+                        file.c()
+
+EB      26/11/2002      makeit()        Added support for removal of FITS
+                                        keywords.
+                        preflist.h      Updated dump format.
+	

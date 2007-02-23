@@ -1,0 +1,65 @@
+.TH MISSFITS "1" "@DATE3@" "MissFITS @PACKAGE_VERSION@" "User Commands"
+.SH NAME
+missfits \- edit/check/maintain FITS files
+.SH SYNOPSIS
+.B missfits
+\fIinput\_file1\fR [\fIinput\_file2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits
+\fIinput\_dir1\fR [\fIinput\_dir2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits
+\fIinput\_prefix1\fR [\fIinput\_prefix2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits \fI-d\fR
+.SH DESCRIPTION
+MissFITS is a program that performs basic maintenance and packaging tasks on
+FITS files:
+.RE
+- add/edit/remove FITS header keywords
+.RE
+- split/join Multi-Extension-FITS (MEF) files
+.RE
+- unpack/pack FITS data-cubes
+.RE
+- create/check/update FITS checksums, using R. Seaman's protocol
+        ( see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+.RE
+- compress/decompress FITS data (*not yet available*)
+.RE
+See http://terapix.iap.fr/soft/missfits for more details.
+.SS "Operation modes:"
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+print this help, then exit
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+print version number, then exit
+.TP
+\fB\-d\fR, \fB\-\-dump\fR
+dump a default configuration file
+.SH AUTHOR
+Written by Emmanuel Bertin (Institut d'Astrophysique de Paris and Observatoire de Paris) and Chiara Marmo (Institut d'Astrophysique de Paris).
+.PP
+Copyright 2000-2006 Chiara Marmo Emmanuel Bertin
+.RE
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH "REPORTING BUGS"
+Report bugs to <http://terapix.iap.fr/forum/forumdisplay.php?fid=38>.
+.SH "SEE ALSO"
+.BR sex (1), scamp (2) swarp (3)
+.PP
+The full documentation for
+.B MissFITS
+is maintained as a Postscript manual available at
+.B http://terapix.iap.fr/soft/missfits
