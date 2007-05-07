@@ -9,7 +9,7 @@
 *
 *	Contents:	Include for prefs.c.
 *
-*	Last modify:	23/10/2006
+*	Last modify:	07/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -24,35 +24,46 @@ typedef  enum {FILE_SAME,FILE_MULTI,FILE_SPLIT,FILE_SLICE,FILE_CUBE,FILE_DIR}
 /*------------------------------- preferences -------------------------------*/
 typedef struct
   {
-  char		*(file_name[MAXFILE]);	/* Filename(s) of input images */
-  int		nfile;			/* Number of input images */
+  char		**command_line;	            /* Command line */
+  int		ncommand_line;	            /* nb of params */
+  char		prefs_name[MAXCHAR];   	    /* prefs filename*/
+  char		*(file_name[MAXFILE]);	    /* Filename(s) of input images */
+  int		nfile;			    /* Number of input images */
   enum {CHECKSUM_NONE,CHECKSUM_COMPUTE,CHECKSUM_VERIFY,CHECKSUM_UPDATE}
-		checksum_type;		/* Checksum option */
-  char		*(display_key[MAXKEYWORD]);/* Keyword display */
-  int		ndisplay_key;		/* nb of params */
-  char		new_suffix[MAXCHAR];	/* Generic suffix for new files */
-  int		next_min;		/* Minimum number of FITS extensions */
+		checksum_type;		    /* Checksum option */
+  char		*(display_key[MAXKEYWORD]); /* Keyword display */
+  int		ndisplay_key;		    /* nb of params */
+  char		new_suffix[MAXCHAR];	    /* Generic suffix for new files */
+  int		next_min;		    /* Minimum number of FITS extens. */
   enum {PROCESS_NONE,PROCESS_COMPRESS,PROCESS_UNCOMPRESS}
-		process_type;		/* Data processing option */
-  char		*(remove_key[MAXKEYWORD]);/* Keyword removal */
-  int		nremove_key;		/* nb of params */
-  char		*(replace_key[MAXKEYWORD]);/* Keyword translations */
-  int		nreplace_key;		/* nb of params */
-  char		old_key[MAXKEYWORD][8];	/* Keywords to be replaced */
-  filenum	outfile_type;		/* Grouping/splitting options */
-  char		new_key[MAXKEYWORD][8];	/* Replacing keywords */
+		process_type;		    /* Data processing option */
+  char		*(remove_key[MAXKEYWORD]);  /* Keyword removal */
+  int		nremove_key;		    /* nb of params */
+  char		*(replace_key[MAXKEYWORD]); /* Keyword translations */
+  int		nreplace_key;		    /* nb of params */
+  char		old_key[MAXKEYWORD][8];	    /* Keywords to be replaced */
+  filenum	outfile_type;		    /* Grouping/splitting options */
+  char		new_key[MAXKEYWORD][8];	    /* Replacing keywords */
   char		*(slice_key[MAXKEYWORD]);   /* Keyword translations */
   int		nslice_key;                 /* nb of params */
   char		oldslice_key[MAXKEYWORD][8];/* Keywords to be sliced */
   char		newslice_key[MAXKEYWORD][8];/* Sliced keyword */
-  char		slicekey_format[MAXCHAR];   /* Suffix format for splitted keywords */
+  char		slicekey_format[MAXCHAR];   /* Suffix format for splitted key */
   enum {SAVE_NONE,SAVE_NEW,SAVE_BACKUP,SAVE_REPLACE}
-		save_type;		/* Save option */
-  enum {QUIET, NORM, WARN, FULL}	verbose_type;	/* display type */
-  char		split_format[MAXCHAR];	/* Suffix format for splitted files */
+		save_type;		    /* Save option */
+  enum {QUIET, NORM, WARN, FULL} verbose_type;	/* display type */
+  char		split_format[MAXCHAR];	    /* Suffix format for splitted files */
   char		slice_format[MAXCHAR];	    /* Suffix format for splitted files */
-  int		fixwfi_flag;		/* Fix WFI headers? */
-  char		head_suffix[MAXCHAR];	/* Generic suffix for FITS headers */
+  int		fixwfi_flag;		    /* Fix WFI headers? */
+  char		head_suffix[MAXCHAR];	    /* Generic suffix for FITS headers */
+/* Multithreading */
+  int		nthreads;		    /* Number of active threads */
+/* Misc */
+  char		sdate_start[12];            /* missfits start date */
+  char		stime_start[12];            /* missfits start time */
+  char		sdate_end[12];		    /* missfits end date */
+  char		stime_end[12];		    /* missfits end time */
+  double	time_diff;		    /* Execution time */
   }	prefstruct;
 
 prefstruct	prefs;

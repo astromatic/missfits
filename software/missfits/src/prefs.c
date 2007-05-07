@@ -23,6 +23,13 @@
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
+#if defined(USE_THREADS) \
+&& (defined(__APPLE__) || defined(FREEBSD) || defined(NETBSD))	/* BSD, Apple */
+ #include	<sys/types.h>
+ #include	<sys/sysctl.h>
+#elif defined(USE_THREADS) && defined(HAVE_MPCTL)		/* HP/UX */
+ #include	<sys/mpctl.h>
+#endif
 
 #include	"define.h"
 #include	"globals.h"
@@ -62,7 +69,7 @@ void    readprefs(char *filename, char **argkey, char **argval, int narg)
    int           i, ival, nkey, warn, argi, flagc, flagd, flage, flagz;
    float         dval;
 #ifndef	NO_ENVVAR
-   static char	value2[MAXCHAR],envname[MAXCHAR];
+   char 	value2[MAXCHAR],envname[MAXCHAR];
    char		*dolpos;
 #endif
 

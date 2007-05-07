@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    01/12/2006
+*       Last modify:    07/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -23,6 +23,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
  
 #include "define.h"
 #include "globals.h"
@@ -33,13 +34,15 @@
 
 void	print_tabinfo(tabstruct *tab, int no);
 
+time_t		thetime, thetime2;
+
 /********************************** makeit ***********************************/
 void	makeit(void)
   {
    catstruct		**incat,
 			*outcat;
    tabstruct		*tab, *intab;
-   static char	        im[MAXCHAR];
+   char	                im[MAXCHAR];
    filenum		filetype;
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
                         ntabin, ntabout, flagmulti, flagcube;
@@ -48,14 +51,35 @@ void	makeit(void)
    KINGSIZE_T           size;
    h_type               htype;
    t_type               ttype;
+   struct tm		*tm;
 
   check = flagmulti = flagcube = 0;
 
   install_cleanup(NULL);
+
+/* Processing start date and time */
+  thetime = time(NULL);
+  tm = localtime(&thetime);
+  sprintf(prefs.sdate_start,"%04d-%02d-%02d",
+        tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
+  sprintf(prefs.stime_start,"%02d:%02d:%02d",
+        tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+  NFPRINTF(OUTPUT, "");
+  QPRINTF(OUTPUT,
+        "----- %s %s started on %s at %s with %d thread%s\n\n",
+                BANNER,
+                MYVERSION,
+                prefs.sdate_start,
+                prefs.stime_start,
+                prefs.nthreads,
+                prefs.nthreads>1? "s":"");
+
 /* Load input images */
   narg = prefs.nfile;
 /* Go argument by argument */
   NFPRINTF(OUTPUT, "Examining input data...")
+
   for (a=0; a<narg; a++)
     {
     incat = load_fitsfiles(prefs.file_name[a], &nfile, &nout, &filetype);
@@ -223,6 +247,15 @@ void	makeit(void)
     free_cat(incat, nfile);
     }
   cleanup_files();
+
+/* Processing end date and time */
+  thetime2 = time(NULL);
+  tm = localtime(&thetime2);
+  sprintf(prefs.sdate_end,"%04d-%02d-%02d",
+        tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
+  sprintf(prefs.stime_end,"%02d:%02d:%02d",
+        tm->tm_hour, tm->tm_min, tm->tm_sec);
+  prefs.time_diff = difftime(thetime2, thetime);
 
   return;
   }

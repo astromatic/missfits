@@ -55,7 +55,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
    struct stat		statbuf;
    catstruct		**incat, *cat;
    tabstruct		*tab;
-   static char		str[MAXCHAR];
+   char 		str[MAXCHAR];
    char			hname[MAXCHAR],
 			*pstr, *prefix;
    int			i, j, nfile, nout, nout1;
@@ -173,6 +173,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
           if (nfile>=16 && !(nfile%16))
             QREALLOC(incat, catstruct *, nfile+16);
           incat[nfile++] = cat;
+
 /*-------- Search and read external ASCII header */
            strcpy(hname, gstr);
           if (!(pstr = strrchr(hname, '.')))
@@ -271,7 +272,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
   {
    catstruct	*cat;
    struct stat	dirstat;
-   static char	dirname[MAXCHAR], tailname[MAXCHAR], tmpname[MAXCHAR],
+   char	        dirname[MAXCHAR], tailname[MAXCHAR], tmpname[MAXCHAR],
 		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR];
    char		*pstr;
    tabstruct	*tab;
@@ -448,8 +449,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
       else
         {
         if (filetype==FILE_MULTI || filetype==FILE_CUBE)
-          strcat(name, FITS_SUFFIX);
-        rename(tmpname, name);
+          sprintf(str2,"%s%s",name, FITS_SUFFIX);
+        rename(tmpname, str2);
         }
       break;
     case SAVE_BACKUP:
@@ -492,15 +493,15 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
       else
         {
         if (filetype==FILE_MULTI || filetype==FILE_CUBE)
-          strcat(name, FITS_SUFFIX);
-        if (!stat(name, &dirstat))
+          sprintf(str2,"%s%s",name, FITS_SUFFIX);
+        if (!stat(str2, &dirstat))
 	  {
-          sprintf(str, "%s.back", name);
-          rename(name, str);
+          sprintf(str, "%s.back", str2);
+          rename(str2, str);
           sprintf(str, "%s/%s%s", dirname, tailname, FITS_SUFFIX);
           rename(tmpname, str);
           }
-        rename(tmpname, name);
+        rename(tmpname, str2);
         }
       break;
     case SAVE_NEW:
@@ -566,7 +567,7 @@ VERSION	18/11/2004
  ***/
 int	read_aschead(char *filename, int frameno, tabstruct *tab)
   {
-   static char	keyword[MAXCHAR],data[MAXCHAR],comment[MAXCHAR];
+   char	        keyword[MAXCHAR],data[MAXCHAR],comment[MAXCHAR];
    FILE		*file;
    h_type	htype;
    t_type	ttype;

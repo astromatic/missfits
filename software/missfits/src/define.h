@@ -5,26 +5,26 @@
 *
 *	Part of:	MissFITS
 *
-*	Author:		E.BERTIN (IAP)
+*	Author:		E.BERTIN (IAP) C. MARMO (IAP)
 *
 *	Contents:	global definitions.
 *
-*	Last modify:	29/06/2002
+*	Last modify:	07/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
 /* Check if we are using a configure script here */
 #ifndef HAVE_CONFIG_H
-#define		VERSION		"1.x"
-#define		DATE		"2002-x-x"
+#define		VERSION		"2.x"
+#define		DATE		"2007-x-x"
 #endif
 
 /*------------------------ what, who, when and where ------------------------*/
 
 #define         BANNER          "MissFITS"
 #define		MYVERSION	VERSION
-#define         COPYRIGHT       "Chiara MARMO (marmo@iap.fr) Emmanuel BERTIN (bertin@iap.fr)"
+#define         COPYRIGHT       "Chiara MARMO <marmo@iap.fr> Emmanuel BERTIN <bertin@iap.fr>"
 #define         INSTITUTE       "TERAPIX team at IAP  http://terapix.iap.fr"
 
 /*----------------------------- Physical constants --------------------------*/
@@ -36,7 +36,7 @@
 /*----------------------------- Internal constants --------------------------*/
 
 #define		BIG		1e+30		/* a huge number */
-#define		OUTPUT		stderr		/* where all msgs are sent */
+#define		OUTPUT		stdout		/* where all msgs are sent */
 #define		MAXCHAR		512		/* max. number of characters */
 #define		MAXFILE		8192		/* max. number of files */
 #define		MAXTAB		1024		/* max. number of tabs/file */

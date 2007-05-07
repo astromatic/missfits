@@ -9,7 +9,7 @@
 *
 *	Contents:	Keywords for the configuration file.
 *
-*	Last modify:	23/10/2006
+*	Last modify:	07/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -18,6 +18,11 @@
 
 #ifndef _PREFS_H_
 #include "prefs.h"
+#endif
+#ifdef  USE_THREADS
+#define	THREADS_PREFMAX	THREADS_NMAX
+#else
+#define	THREADS_PREFMAX	65535
 #endif
 
 int idummy;
@@ -49,6 +54,7 @@ pkeystruct key[] =
   {"SPLIT_SUFFIX", P_STRING, prefs.split_format},
   {"VERBOSE_TYPE", P_KEY, &prefs.verbose_type, 0,0, 0.0,0.0,
    {"QUIET","NORMAL","FULL",""}},
+  {"NTHREADS", P_INT, &prefs.nthreads, 0, THREADS_PREFMAX},
   {""}
  };
 
@@ -105,6 +111,14 @@ char *default_prefs[] =
 "#------------------------------ Miscellaneous ---------------------------------",
 " ",
 "VERBOSE_TYPE           NORMAL          # \"QUIET\",\"NORMAL\" or \"FULL\"",
+#ifdef USE_THREADS
+"NTHREADS        0               # Number of simultaneous threads for",
+"                                # the SMP version of " BANNER,
+"                                # 0 = automatic",
+#else
+"NTHREADS        1               # 1 single thread",
+#endif
+" ",
 ""
 };
 

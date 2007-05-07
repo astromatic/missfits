@@ -38,7 +38,7 @@ extern const char	notokstr[];
 int	main(int argc, char *argv[])
 
   {
-   static char	prefsname[MAXCHAR];
+   char 	prefsname[MAXCHAR];
    char		**argkey, **argval, *str;
    int		a, narg, nim, opt, opt2;
 
@@ -52,9 +52,12 @@ int	main(int argc, char *argv[])
   QMALLOC(argval, char *, argc);
 
 /*default parameters */
+/* Default parameters */
+  prefs.command_line = argv;
+  prefs.ncommand_line = argc;
+  strcpy(prefs.prefs_name, "default.missfits");
   prefs.nfile = 1;
   prefs.file_name[0] = "image";
-   strcpy(prefsname, "default.missfits");
   narg = nim = 0;
 
   for (a=1; a<argc; a++)
@@ -102,14 +105,14 @@ int	main(int argc, char *argv[])
         for (str=NULL;(str=strtok(str?NULL:argv[a], notokstr)); nim++)
           if (nim<MAXFILE)
             prefs.file_name[nim] = str;
-          else
+         else
             error(EXIT_FAILURE, "*Error*: Too many input images: ", str);
       prefs.nfile = nim;
       a--;
       }
     }
 
-  readprefs(prefsname, argkey, argval, narg);
+  readprefs(prefs.prefs_name, argkey, argval, narg);
   useprefs();
 
   free(argkey);
@@ -117,8 +120,8 @@ int	main(int argc, char *argv[])
 
   makeit();
 
-  NFPRINTF(OUTPUT, "All done");
-  NPRINTF(OUTPUT, "\n");
+  NFPRINTF(OUTPUT, "");
+  NPRINTF(OUTPUT, "> All done (in %.0f s)\n", prefs.time_diff);
 
   exit(EXIT_SUCCESS);
   }
