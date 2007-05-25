@@ -29,36 +29,41 @@
 #include	"prefs.h"
 
 #define		SYNTAX \
-"missfits image1 [image2 ...] [-c <configuration_file>] [-<keyword> <value>]" \
-" or, to dump a default configuration file:\n" \
-"missfits -d \n"
+"missfits image1 [image2 ...][@image_list1 [@image_list2 ...]]\n" \
+"\t\t[-c <configuration_file>][-<keyword> <value>]\n" \
+"> to dump a default configuration file: missfits -d \n" \
+"> to dump a default extended configuration file: missfits -dd \n"
+
 extern const char	notokstr[];
 
 /********************************** main ************************************/
 int	main(int argc, char *argv[])
 
   {
-   char 	prefsname[MAXCHAR];
-   char		**argkey, **argval, *str;
-   int		a, narg, nim, opt, opt2;
+   FILE         *fp;
+   char 	liststr[MAXCHAR];
+   char		**argkey, **argval, *str, *listname, *listbuf;
+   int		a, bufpos, bufsize, l, narg, nim, opt, opt2;
 
   if (argc<2)
     {
     fprintf(OUTPUT, "\n		%s  Version %s (%s)\n", BANNER, VERSION, DATE);
-    fprintf(OUTPUT, "\nFor information, please contact: %s\n", COPYRIGHT);
+    fprintf(OUTPUT, "\nFor information, please contact:\n %s\n", COPYRIGHT);
     error(EXIT_SUCCESS, "SYNTAX: ", SYNTAX);
     }
   QMALLOC(argkey, char *, argc);
   QMALLOC(argval, char *, argc);
 
 /*default parameters */
-/* Default parameters */
   prefs.command_line = argv;
   prefs.ncommand_line = argc;
   strcpy(prefs.prefs_name, "default.missfits");
   prefs.nfile = 1;
   prefs.file_name[0] = "image";
   narg = nim = 0;
+  listbuf = (char *)NULL;
+  bufpos = 0;
+  bufsize = MAXCHAR*1000;
 
   for (a=1; a<argc; a++)
     {
@@ -77,7 +82,7 @@ int	main(int argc, char *argv[])
           {
           case 'c':
             if (a<(argc-1))
-              strcpy(prefsname, argv[++a]);
+              strcpy(prefs.prefs_name, argv[++a]);
             break;
           case 'd':
             dumpprefs(opt2=='d' ? 1 : 0);
@@ -98,6 +103,40 @@ int	main(int argc, char *argv[])
         argval[narg++] = argv[++a];
         }       
       }
+    else if (*(argv[a]) == '@')
+      {
+/*---- The input image list filename */
+      listname = argv[a]+1;
+      if ((fp=fopen(listname,"r")))
+        {
+        if (!listbuf)
+          {
+          QMALLOC(listbuf, char, bufsize);
+          }
+        while (fgets(liststr,MAXCHAR,fp))
+          if (nim<MAXFILE)
+            {
+            str = strtok(liststr, "\n\r\t ");
+            if (!str)
+              continue;
+            l = strlen(str)+1;
+            if (bufpos+l > bufsize)
+              {
+              bufsize += MAXCHAR*1000;
+              QREALLOC(listbuf, char, bufsize);
+              }
+            prefs.file_name[nim] = strcpy(listbuf + bufpos, str);
+            bufpos += l;
+            nim++;
+            }
+          else
+            error(EXIT_FAILURE, "*Error*: Too many input images in ",
+			liststr);
+        fclose(fp);
+        }
+      else
+        error(EXIT_FAILURE, "*Error*: Cannot open image list ", listname);
+      }
     else
       {
 /*---- The input image filename(s) */
@@ -107,11 +146,11 @@ int	main(int argc, char *argv[])
             prefs.file_name[nim] = str;
          else
             error(EXIT_FAILURE, "*Error*: Too many input images: ", str);
-      prefs.nfile = nim;
       a--;
       }
     }
 
+  prefs.nfile = nim;
   readprefs(prefs.prefs_name, argkey, argval, narg);
   useprefs();
 
