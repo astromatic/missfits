@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -35,9 +36,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/missfits-mp.spec.in $(srcdir)/missfits.spec.in \
+DIST_COMMON = README $(am__configure_deps) $(dist_pkgdata_DATA) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/config.h.in $(srcdir)/missfits.spec.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL \
 	THANKS TODO autoconf/config.guess autoconf/config.sub \
 	autoconf/depcomp autoconf/install-sh autoconf/ltmain.sh \
@@ -52,7 +53,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/autoconf/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = missfits.spec missfits-mp.spec
+CONFIG_CLEAN_FILES = missfits.spec
 depcomp =
 am__depfiles_maybe =
 SOURCES =
@@ -63,6 +64,15 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-recursive installcheck-recursive installdirs-recursive \
 	pdf-recursive ps-recursive uninstall-info-recursive \
 	uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+am__installdirs = "$(DESTDIR)$(pkgdatadir)"
+dist_pkgdataDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(dist_pkgdata_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
@@ -181,6 +191,7 @@ target_alias = @target_alias@
 # Copyright (C) 2006 Emmanuel Bertin, Chiara Marmo.
 AUTOMAKE_OPTIONS = foreign no-dependencies
 SUBDIRS = man src 
+dist_pkgdata_DATA = xsl/missfits.xsl
 EXTRA_DIST = AUTHORS COPYING HISTORY INSTALL README THANKS TODO \
 			  ChangeLog acx_prog_cc_optim.m4 doc
 
@@ -242,8 +253,6 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 missfits.spec: $(top_builddir)/config.status $(srcdir)/missfits.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-missfits-mp.spec: $(top_builddir)/config.status $(srcdir)/missfits-mp.spec.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -254,6 +263,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-dist_pkgdataDATA: $(dist_pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(pkgdatadir)" || $(mkdir_p) "$(DESTDIR)$(pkgdatadir)"
+	@list='$(dist_pkgdata_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(dist_pkgdataDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(pkgdatadir)/$$f'"; \
+	  $(dist_pkgdataDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	done
+
+uninstall-dist_pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_pkgdata_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(pkgdatadir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -378,7 +404,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/autoconf $(distdir)/man
+	$(mkdir_p) $(distdir)/. $(distdir)/autoconf $(distdir)/man $(distdir)/xsl
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -519,9 +545,12 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile config.h
+all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(pkgdatadir)"; do \
+	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -566,7 +595,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am:
+install-data-am: install-dist_pkgdataDATA
 
 install-exec-am:
 
@@ -594,7 +623,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-dist_pkgdataDATA uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -605,13 +634,15 @@ uninstall-info: uninstall-info-recursive
 	distclean-generic distclean-hdr distclean-libtool \
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
+	install install-am install-data install-data-am \
+	install-dist_pkgdataDATA install-exec install-exec-am \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-generic \
 	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am uninstall-info-am
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-dist_pkgdataDATA uninstall-info-am
 
 rpm:	dist
 	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
@@ -619,18 +650,28 @@ rpm:	dist
 
 rpm-opteron:	dist
 	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	GCCFLAGS="-O -g -funroll-loops -fomit-frame-pointer -Wall \
-		-march=opteron" rpmbuild -ba --target=x86_64 \
-		--clean $(PACKAGE_NAME).spec                                                             
+	TPXCC="gcc" TPXFLAGS="-O3 -funroll-loops -fomit-frame-pointer -Wall \
+		-march=opteron" rpmbuild -ba --target=x86_64 --clean \
+		$(PACKAGE_NAME).spec
 
 rpm-athlon:	dist
 	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	GCCFLAGS="-O -g -funroll-loops -fomit-frame-pointer -Wall -m32 \
-		-march=i686 -msse -mfpmath=sse -mtune=athlon" rpmbuild \
+	TPXCC="gcc" TPXFLAGS="-O3 -funroll-loops -fomit-frame-pointer -Wall \
+		-m32 -march=i686 -msse -mfpmath=sse -mtune=athlon" rpmbuild \
 		-ba --target=i686 --clean $(PACKAGE_NAME).spec
 
-debug:
-	$(MAKE) CFLAGS="-O3 -funroll-loops -fomit-frame-pointer -Wall -m32 -g"
+rpm-opteron-icc:	dist
+	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
+	TPXCC="icc" TPXFLAGS="-O3 -g -axWP -ip -unroll" rpmbuild -ba \
+		--target=x86_64 --clean $(PACKAGE_NAME).spec
+
+rpm-athlon-icc:	dist
+	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
+	TPXCC="icc32" TPXFLAGS="-O3 -g -axKWNPB -ip -unroll" rpmbuild \
+		-ba --target=i686 --clean $(PACKAGE_NAME).spec
+
+icc:
+	$(MAKE) CC="icc" CFLAGS="-O3 -g -axWP -ip -unroll" LIBS="-lm"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

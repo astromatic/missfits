@@ -6,7 +6,7 @@ define([AC_CACHE_LOAD],)
 define([AC_CACHE_SAVE],)
 
 # This is your standard Bertin Marmo source code...
-AC_INIT(missfits, 2.2.1, [marmo@iap.fr bertin@iap.fr])
+AC_INIT(missfits, 2.2.2, [marmo@iap.fr bertin@iap.fr])
 AC_CONFIG_SRCDIR(src/makeit.c)
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_HEADERS(config.h)
@@ -173,7 +173,6 @@ AC_MSG_RESULT([I will link using:     $CC $LDFLAGS $LIBS])
 AC_CONFIG_FILES([
 Makefile
 missfits.spec
-missfits-mp.spec
 man/Makefile
 man/missfits.1
 src/Makefile

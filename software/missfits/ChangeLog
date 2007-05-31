@@ -16,6 +16,8 @@
 
 Who     When            Where(mostly)   What
 
+CM         05/2007      xml.c()         Added xml output
+
 CM         11/2006      makeit()        Added pile datacubes
                         file.c()
 
