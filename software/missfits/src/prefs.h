@@ -9,7 +9,7 @@
 *
 *	Contents:	Include for prefs.c.
 *
-*	Last modify:	07/05/2007
+*	Last modify:	31/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -59,6 +59,9 @@ typedef struct
 /* Multithreading */
   int		nthreads;		    /* Number of active threads */
 /* Misc */
+  int		xml_flag;	            /* Write XML file? */
+  char		xml_name[MAXCHAR];          /* XML file name */
+  char		xsl_name[MAXCHAR];          /* XSL file name (or URL) */
   char		sdate_start[12];            /* missfits start date */
   char		stime_start[12];            /* missfits start time */
   char		sdate_end[12];		    /* missfits end date */
@@ -77,8 +80,8 @@ extern int	cistrcmp(char *cs, char *ct, int mode);
 
 extern void	dumpprefs(int state),
 		readprefs(char *filename,char **argkey,char **argval,int narg),
-		useprefs(void);
-
+		useprefs(void),
+                endprefs(void);
 
 #endif
 

@@ -109,6 +109,16 @@ else
   datadir2="${datadir}"
 fi
 
+# Provide a special option for the default XSLT URL
+AC_ARG_WITH(xsl_url,
+        [AC_HELP_STRING([--with-xsl_url=<default URL for XSLT filter>],
+        [Provide an alternative default URL of the XSLT filter])],
+    [xsl_url=$withval],
+    [xsl_url="file://$datadir2/$PACKAGE_NAME/missfits.xsl"]
+    )
+
+AC_DEFINE_UNQUOTED([XSL_URL], "$xsl_url",[Default URL of the XSLT filter])
+
 # Provide special option for gprof profiling
 AC_MSG_CHECKING([for gprof profiler mode])
 AC_ARG_ENABLE(gprof,

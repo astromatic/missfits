@@ -30,6 +30,7 @@
 #include "fits/fitscat.h"
 #include "file.h"
 #include "prefs.h"
+#include "xml.h"
 
 /****** load_fitsfiles *******************************************************
 PROTO	catstruct **load_fitsfiles(char *name, int *ncat, int * outcat,
@@ -273,17 +274,20 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
    catstruct	*cat;
    struct stat	dirstat;
    char	        dirname[MAXCHAR], tailname[MAXCHAR], tmpname[MAXCHAR],
-		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR];
+		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR],
+                finalname[MAXCHAR];
    char		*pstr;
    tabstruct	*tab;
-   int		i, flagmulti, flagcube, ntab;
+   int		i, flagmulti, flagcube, ntab, nxml;
 
   i = flagmulti = flagcube = 0;
 
 /* Leave now if SAVE_TYPE is set to NONE */
   if (prefs.save_type == SAVE_NONE)
+    {
+    nxml = prefs.nfile;
     return;
-
+    }
 /* Get the output directory and directory-independent names */
   strcpy(dirname, name);
   if (!(pstr = strrchr(dirname, '/')))
@@ -410,7 +414,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           if (tab->cat)
             {
             close_cat(tab->cat);
-            remove(tab->cat->filename); /* A file can be erased several times:*/
+            remove(tab->cat->filename); /*A file can be erased several times:*/
                                     /* that's alright, we ignore error msgs */
             }
           tab = tab->nexttab;
@@ -548,7 +552,6 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
     default:
       error(EXIT_FAILURE, "*Internal Error*:  unknown file save type", "");
     }
-
 
   return;
   }

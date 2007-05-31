@@ -383,10 +383,57 @@ void	useprefs(void)
    unsigned short	ashort=1;
    char			*pstr, *tstr;
    int			i;
-
+#ifdef USE_THREADS
+   int			nproc;
+#endif
 
 /* Test if byteswapping will be needed */
   bswapflag = *((char *)&ashort);
+
+/* Multithreading */
+#ifdef USE_THREADS
+  if (!prefs.nthreads)
+    {
+/*-- Get the number of processors for parallel builds */
+/*-- See, e.g. http://ndevilla.free.fr/threads */
+    nproc = -1;
+#if defined(_SC_NPROCESSORS_ONLN)		/* AIX, Solaris, Linux */
+    nproc = (int)sysconf(_SC_NPROCESSORS_ONLN);
+#elif defined(_SC_NPROCESSORS_CONF)
+    nproc = (int)sysconf(_SC_NPROCESSORS_CONF);
+#elif defined(__APPLE__) || defined(FREEBSD) || defined(NETBSD)	/* BSD, Apple */
+    {
+     int	mib[2];
+     size_t	len;
+
+     mib[0] = CTL_HW;
+     mib[1] = HW_NCPU;
+     len = sizeof(nproc);
+     sysctl(mib, 2, &nproc, &len, NULL, 0);
+     }
+#elif defined (_SC_NPROC_ONLN)			/* SGI IRIX */
+    nproc = sysconf(_SC_NPROC_ONLN);
+#elif defined(HAVE_MPCTL)			/* HP/UX */
+    nproc =  mpctl(MPC_GETNUMSPUS_SYS, 0, 0);
+#endif
+
+    if (nproc>0)
+      prefs.nthreads = nproc;
+    else
+      {
+      prefs.nthreads = 2;
+      warning("Cannot find the number of CPUs on this system:",
+                "NTHREADS defaulted to 2");
+      }
+    }
+#else
+  if (prefs.nthreads != 1)
+    {
+    prefs.nthreads = 1;
+    warning("NTHREADS != 1 ignored: ",
+        "this build of " BANNER " is single-threaded");
+    }
+#endif
 
 /* Handle FITS keyword translation */
   for (i=0; i<prefs.nreplace_key; i++)
@@ -417,3 +464,23 @@ void	useprefs(void)
   return;
   }
 
+/********************************* endprefs *********************************/
+/*
+Mostly free memory allocate for static arrays.
+*/
+void	endprefs(void)
+
+  {
+    int	i;
+
+  for (i=0; i<prefs.ndisplay_key; i++)
+    free(prefs.display_key[i]);
+  for (i=0; i<prefs.nremove_key; i++)
+    free(prefs.remove_key[i]);
+  for (i=0; i<prefs.nreplace_key; i++)
+    free(prefs.replace_key[i]);
+  for (i=0; i<prefs.nslice_key; i++)
+    free(prefs.slice_key[i]);
+
+  return;
+  }

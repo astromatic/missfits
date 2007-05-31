@@ -31,6 +31,7 @@
 #include "fits/fitscat.h"
 #include "file.h"
 #include "prefs.h"
+#include "xml.h"
 
 void	print_tabinfo(tabstruct *tab, int no);
 
@@ -45,7 +46,7 @@ void	makeit(void)
    char	                im[MAXCHAR];
    filenum		filetype;
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
-                        ntabin, ntabout, flagmulti, flagcube;
+                        ntabin, ntabout, flagmulti, flagcube, nxml;
    char                 *pix;
    char			keyword[10], str[100], str2[100];
    KINGSIZE_T           size;
@@ -77,6 +78,12 @@ void	makeit(void)
 
 /* Load input images */
   narg = prefs.nfile;
+
+  if (prefs.xml_flag)
+    {
+    nxml = (narg) ; 
+    init_xml(nxml);
+    }
 /* Go argument by argument */
   NFPRINTF(OUTPUT, "Examining input data...")
 
@@ -257,6 +264,15 @@ void	makeit(void)
         tm->tm_hour, tm->tm_min, tm->tm_sec);
   prefs.time_diff = difftime(thetime2, thetime);
 
+/* Write XML */
+
+  if (prefs.xml_flag)
+    {
+    NFPRINTF(OUTPUT, "Writing XML file...");
+    write_xml();
+    end_xml();
+    }
+
   return;
   }
 
@@ -339,3 +355,26 @@ void	print_tabinfo(tabstruct *tab, int no)
   return;
   }
 
+/****** write_error ********************************************************
+PROTO	void    write_error(char *msg1, char *msg2)
+PURPOSE	Manage files in case of a catched error
+INPUT	a character string,
+        another character string
+OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
+NOTES	-.
+AUTHOR	E. Bertin (IAP)
+VERSION	23/02/2007
+ ***/
+/*
+void	write_error(char *msg1, char *msg2)
+  {
+   char	error[MAXCHAR];
+
+  sprintf(error, "%s%s", msg1,msg2);
+  if (prefs.xml_flag)
+    write_xmlerror(prefs.xml_name, error);
+  end_xml();
+
+  return;
+  }
+*/

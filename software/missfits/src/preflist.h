@@ -9,7 +9,7 @@
 *
 *	Contents:	Keywords for the configuration file.
 *
-*	Last modify:	07/05/2007
+*	Last modify:	31/05/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -54,6 +54,9 @@ pkeystruct key[] =
   {"SPLIT_SUFFIX", P_STRING, prefs.split_format},
   {"VERBOSE_TYPE", P_KEY, &prefs.verbose_type, 0,0, 0.0,0.0,
    {"QUIET","NORMAL","FULL",""}},
+  {"XML_NAME", P_STRING, prefs.xml_name},
+  {"XSL_URL", P_STRING, prefs.xsl_name},
+  {"WRITE_XML", P_BOOL, &prefs.xml_flag},
   {"NTHREADS", P_INT, &prefs.nthreads, 0, THREADS_PREFMAX},
   {""}
  };
@@ -111,12 +114,16 @@ char *default_prefs[] =
 "#------------------------------ Miscellaneous ---------------------------------",
 " ",
 "VERBOSE_TYPE           NORMAL          # \"QUIET\",\"NORMAL\" or \"FULL\"",
+"WRITE_XML              Y               # Write XML file (Y/N)?",
+"XML_NAME               missfits.xml    # Filename for XML output",
+"*XSL_URL                " XSL_URL,
+"*                                       # Filename for XSL style-sheet",
 #ifdef USE_THREADS
-"NTHREADS        0               # Number of simultaneous threads for",
-"                                # the SMP version of " BANNER,
-"                                # 0 = automatic",
+"NTHREADS               0               # Number of simultaneous threads for",
+"                                       # the SMP version of " BANNER,
+"                                       # 0 = automatic",
 #else
-"NTHREADS        1               # 1 single thread",
+"NTHREADS               1               # 1 single thread",
 #endif
 " ",
 ""

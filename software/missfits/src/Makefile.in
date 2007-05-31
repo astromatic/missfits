@@ -54,7 +54,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_missfits_OBJECTS = custom.$(OBJEXT) file.$(OBJEXT) \
 	fitswcs.$(OBJEXT) main.$(OBJEXT) makeit.$(OBJEXT) \
-	prefs.$(OBJEXT)
+	prefs.$(OBJEXT) xml.$(OBJEXT)
 missfits_OBJECTS = $(am_missfits_OBJECTS)
 missfits_DEPENDENCIES = $(top_builddir)/src/fits/libfits.a \
 	$(top_builddir)/src/wcs/libwcs_c.a
@@ -186,7 +186,7 @@ target_alias = @target_alias@
 SUBDIRS = fits wcs
 missfits_SOURCES = custom.c file.c fitswcs.c main.c makeit.c prefs.c \
 			  custom.h define.h file.h fitswcs.h globals.h key.h \
-			  preflist.h prefs.h types.h wcscelsys.h
+			  preflist.h prefs.h types.h wcscelsys.h xml.h xml.c
 
 missfits_LDADD = $(top_builddir)/src/fits/libfits.a \
 			$(top_builddir)/src/wcs/libwcs_c.a
@@ -205,9 +205,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/Makefile
+	  $(AUTOMAKE) --foreign  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -269,6 +269,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/makeit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
