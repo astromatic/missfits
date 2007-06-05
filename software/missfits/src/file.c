@@ -274,8 +274,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
    catstruct	*cat;
    struct stat	dirstat;
    char	        dirname[MAXCHAR], tailname[MAXCHAR], tmpname[MAXCHAR],
-		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR],
-                finalname[MAXCHAR];
+		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR];
    char		*pstr;
    tabstruct	*tab;
    int		i, flagmulti, flagcube, ntab, nxml;
