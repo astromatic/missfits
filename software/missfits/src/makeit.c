@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    07/05/2007
+*       Last modify:    11/06/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -159,7 +159,7 @@ void	makeit(void)
           if (tab->naxis>2)
             {
             tab->naxis = 2;
-            fitsremove(tab->headbuf, "NAXIS3");
+            removekeywordfrom_head(tab, "NAXIS3");
             tab->tabsize = tab->naxisn[0] * tab->naxisn[1] *
                               tab->bytepix ;
             tab->bodypos+= s * tab->tabsize; 
@@ -227,7 +227,7 @@ void	makeit(void)
           }
 /*---- Remove keywords */
         for (k=0; k<prefs.nremove_key; k++)
-          fitsremove(tab->headbuf, prefs.remove_key[k]);
+          removekeywordfrom_head(tab, prefs.remove_key[k]);
 /*---- Fix WFI Astrometric keywords (custom option) */
         if (prefs.fixwfi_flag)
           fix_wfi(tab);
