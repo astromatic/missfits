@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    11/06/2007
+*       Last modify:    12/06/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -48,13 +48,13 @@ void	makeit(void)
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
                         ntabin, ntabout, flagmulti, flagcube, nxml;
    char                 *pix;
-   char			keyword[10], str[100], str2[100];
+   char			str[100], str2[100];
    KINGSIZE_T           size;
    h_type               htype;
    t_type               ttype;
    struct tm		*tm;
 
-  check = flagmulti = flagcube = 0;
+  check = flagmulti = flagcube = n = 0;
 
   install_cleanup(NULL);
 
@@ -174,7 +174,7 @@ void	makeit(void)
             tab->naxisn[2] = nfile;
             size = tab->naxisn[0] * tab->naxisn[1] * tab->bytepix;
             tab->tabsize = size * nfile;
-            fitswrite(tab->headbuf, "NAXIS3  ",&nfile, H_INT, T_LONG);
+            addkeywordto_head(tab, "NAXIS3  ", "length of data axis 3");
             tab->bodybuf = malloc(size*nfile);
             pix = tab->bodybuf ;
             for (c=0; c<nfile; c++, pix += size)
@@ -204,7 +204,8 @@ void	makeit(void)
             sprintf(im,prefs.slicekey_format,s+1);
             sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
             if ((n=fitsfind(tab->headbuf, prefs.oldslice_key[k])))
-              strncpy(tab->headbuf+n*80, prefs.newslice_key[k],8);
+              strncpy(tab->headbuf+n*80, prefs.newslice_key[k],
+                        strlen(prefs.newslice_key[k]));
             }
           else if (prefs.outfile_type == FILE_CUBE)
             {
@@ -214,14 +215,21 @@ void	makeit(void)
               for (p=t ; --p ; intab = intab->nexttab);
               sprintf(im,prefs.slicekey_format,c+1);
               sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
-              if ((n=fitsfind(intab->headbuf, prefs.newslice_key[k])))
+              if (fitsfind(intab->headbuf, prefs.newslice_key[k])
+                          !=RETURN_ERROR  && tab->naxis>0)
                 {
-                fitspick(intab->headbuf+n*80, keyword, str2, &htype,
-                         &ttype, str);
-                fitsadd(tab->headbuf, prefs.oldslice_key[k], str);
-                fitswrite(tab->headbuf, prefs.oldslice_key[k],
-                          str2, htype, ttype);          
+                if (fitsfind(tab->headbuf, prefs.oldslice_key[k])
+                             ==RETURN_ERROR)
+                  {
+                  fitspick(intab->headbuf+n*80, prefs.newslice_key[k],
+                         str2, &htype, &ttype, str);
+                  addkeywordto_head(tab, prefs.oldslice_key[k], str);
+                  fitswrite(tab->headbuf, prefs.oldslice_key[k],
+                          str2, htype, ttype);
+                  }
                 }
+              else
+                error(EXIT_FAILURE, "Cannot find keyword in input image!!!", "");
               }
             }
           }

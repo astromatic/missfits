@@ -440,6 +440,7 @@ void	useprefs(void)
     {
     if (!(strpbrk(prefs.replace_key[i],":")))
       error(EXIT_FAILURE,"Wrong syntax in REPLACE_KEYWORD: ", prefs.replace_key[i]);
+
     memset(prefs.old_key[i], ' ', 8);
     memset(prefs.new_key[i], ' ', 8);
     strncpy(prefs.old_key[i], strtok(prefs.replace_key[i], ":"), 8);
@@ -451,9 +452,8 @@ void	useprefs(void)
   for (i=0; i<prefs.nslice_key; i++)
     {
     memset(prefs.oldslice_key[i], ' ', 8);
-    memset(prefs.newslice_key[i], ' ', 8);
-    strncpy(prefs.newslice_key[i], prefs.slice_key[i],
-            strlen(prefs.slice_key[i]));
+    memset(prefs.newslice_key[i], ' ', 8); 
+    strncpy(prefs.newslice_key[i], prefs.slice_key[i],8);
     }
 
 /* Remove possible trailing "/" in filenames */
