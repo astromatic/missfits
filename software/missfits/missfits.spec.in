@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/bin/missfits
 /usr/local/man/man1/missfits.1
 /usr/local/man/manx/missfits.x
+/usr/local/share/@PACKAGE_NAME@
 %doc AUTHORS ChangeLog COPYING HISTORY INSTALL README THANKS doc/missfits.pdf
 
 %changelog

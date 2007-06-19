@@ -6,3 +6,7 @@ Stefan Kimeswenger <Stefan.Kimeswenger@uibk.ac.at>
 
 Erik Deul <deul@strw.leidenuniv.nl>
 	Help in discovering bugs or bringing suggestions
+
+Akim Demaille <akim@lrde.epita.fr>
+        for solving the $datarootdir issue and providing the URBI_RESOLVE_DIR()
+        function.
