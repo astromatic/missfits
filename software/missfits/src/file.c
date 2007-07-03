@@ -548,7 +548,6 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           {
           sprintf(str, "%s/%s%s", dirname, tailname, prefs.new_suffix);
           strcat(str, FITS_SUFFIX);
- printf("rename(%s, %s)\n",tmpname,str);
           rename(tmpname, str);
           }
         }
