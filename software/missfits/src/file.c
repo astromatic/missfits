@@ -453,6 +453,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         {
         if (filetype==FILE_MULTI || filetype==FILE_CUBE)
           sprintf(str2,"%s%s",name, FITS_SUFFIX);
+        else
+          sprintf(str2,"%s",name);
         rename(tmpname, str2);
         }
       break;
@@ -497,6 +499,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         {
         if (filetype==FILE_MULTI || filetype==FILE_CUBE)
           sprintf(str2,"%s%s",name, FITS_SUFFIX);
+        else
+          sprintf(str2,"%s",name);
         if (!stat(str2, &dirstat))
 	  {
           sprintf(str, "%s.back", str2);
@@ -544,6 +548,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           {
           sprintf(str, "%s/%s%s", dirname, tailname, prefs.new_suffix);
           strcat(str, FITS_SUFFIX);
+ printf("rename(%s, %s)\n",tmpname,str);
           rename(tmpname, str);
           }
         }
