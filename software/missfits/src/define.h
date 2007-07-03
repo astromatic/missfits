@@ -24,8 +24,7 @@
 
 #define         BANNER          "MissFITS"
 #define		MYVERSION	VERSION
-#define         COPYRIGHT       "Chiara MARMO <marmo@iap.fr> & \
-                                 Emmanuel BERTIN <bertin@iap.fr>"
+#define         COPYRIGHT       "Chiara MARMO <marmo@iap.fr> & Emmanuel BERTIN <bertin@iap.fr>"
 #define         INSTITUTE       "TERAPIX team at IAP  http://terapix.iap.fr"
 #define         WEBSITE         "http://terapix.iap.fr/soft/missfits"
 

@@ -48,10 +48,7 @@ void	makeit(void)
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
                         ntabin, ntabout, flagmulti, flagcube, nxml;
    char                 *pix;
-   char			str[100], str2[100];
    KINGSIZE_T           size;
-   h_type               htype;
-   t_type               ttype;
    struct tm		*tm;
 
   check = flagmulti = flagcube = n = 0;
@@ -204,32 +201,22 @@ void	makeit(void)
             sprintf(im,prefs.slicekey_format,s+1);
             sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
             if ((n=fitsfind(tab->headbuf, prefs.oldslice_key[k])))
-              strncpy(tab->headbuf+n*80, prefs.newslice_key[k],
-                        strlen(prefs.newslice_key[k]));
+              strncpy(tab->headbuf+n*80, prefs.newslice_key[k],8);
             }
           else if (prefs.outfile_type == FILE_CUBE)
             {
             for (c=0; c<nfile; c++)
               {
-              intab = incat[c]->tab->nexttab;
-              for (p=t ; --p ; intab = intab->nexttab);
               sprintf(im,prefs.slicekey_format,c+1);
               sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
-              if (fitsfind(intab->headbuf, prefs.newslice_key[k])
-                          !=RETURN_ERROR  && tab->naxis>0)
+              if (tab->naxis>0)
                 {
-                if (fitsfind(tab->headbuf, prefs.oldslice_key[k])
-                             ==RETURN_ERROR)
-                  {
-                  fitspick(intab->headbuf+n*80, prefs.newslice_key[k],
-                         str2, &htype, &ttype, str);
-                  addkeywordto_head(tab, prefs.oldslice_key[k], str);
-                  fitswrite(tab->headbuf, prefs.oldslice_key[k],
-                          str2, htype, ttype);
-                  }
+                if (((n=fitsfind(tab->headbuf, prefs.slice_key[k]))
+                            !=RETURN_ERROR) &&
+		       fitsfind(tab->headbuf, prefs.oldslice_key[k])
+                               ==RETURN_ERROR)
+                  strncpy(tab->headbuf+n*80, prefs.oldslice_key[k],8);
                 }
-              else
-                error(EXIT_FAILURE, "Cannot find keyword in input image!!!", "");
               }
             }
           }

@@ -453,7 +453,7 @@ void	useprefs(void)
     {
     memset(prefs.oldslice_key[i], ' ', 8);
     memset(prefs.newslice_key[i], ' ', 8); 
-    strncpy(prefs.newslice_key[i], prefs.slice_key[i],8);
+    strncpy(prefs.newslice_key[i], prefs.slice_key[i],strlen(prefs.slice_key[i]));
     }
 
 /* Remove possible trailing "/" in filenames */
