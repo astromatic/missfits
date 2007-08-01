@@ -277,16 +277,14 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
 		filename[MAXCHAR], str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR];
    char		*pstr;
    tabstruct	*tab;
-   int		i, flagmulti, flagcube, ntab, nxml;
+   int		i, flagmulti, flagcube, ntab;
 
   i = flagmulti = flagcube = 0;
 
 /* Leave now if SAVE_TYPE is set to NONE */
   if (prefs.save_type == SAVE_NONE)
-    {
-    nxml = prefs.nfile;
     return;
-    }
+
 /* Get the output directory and directory-independent names */
   strcpy(dirname, name);
   if (!(pstr = strrchr(dirname, '/')))

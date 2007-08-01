@@ -51,20 +51,12 @@ VERSION	27/04/2007
  ***/
 int	init_xml(int nxml)
   {
-    int i, ndisplay;
+    int ndisplay;
 
   QCALLOC(miss_xml, xmlstruct, nxml);
-/*
-  if (prefs.ndisplay_key>0)
-    {
-    for (i=0; i<nxml; i++)
-      {
-      ndisplay = prefs.ndisplay_key;
-      QCALLOC(miss_xml[i].display_key, *(char *), ndisplay);
-      QCALLOC(miss_xml[i].display_value, *(char *), ndisplay);
-      }
-    }
-*/
+
+  ndisplay = prefs.ndisplay_key;
+
   nxmlmax = nxml;
   nxml = 0;
 
@@ -90,7 +82,8 @@ int	end_xml(void)
 
 
 /****** update_xml ***********************************************************
-PROTO	int update_xml(char *filename, filenum filetype, int ntab)
+PROTO	int update_xml(char *name, int t, int nfile, catstruct *cat,
+                                     catstruct *incat, filenum filetype)
 PURPOSE	Update a set of meta-data kept in memory before being written to the
         XML file
 INPUT	
@@ -99,20 +92,113 @@ NOTES	Global preferences are used.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP) 
 VERSION	27/04/2007
  ***/
-int	update_xml(char *filename, filenum filetype, int ntab)
+int	update_xml(char *name, int t, int nfile,
+                   catstruct *cat, catstruct *incat, filenum filetype)
   {
-
+    filenum   infiletype;
     xmlstruct *x = NULL;
+    char      str[MAXCHAR];
 
   if (nxml < nxmlmax)
     x = &miss_xml[nxml];
-/*
-  strcpy(x->fieldname,field->filename);
-  strcpy(x->fieldtype, str);
-  x->ext = next+1;
-  if (prefs.getarea)
-    x->effarea = field->effarea;
-*/
+
+  switch(filetype)
+    {
+    case FILE_SAME:
+      infiletype = FILE_SAME;
+      sprintf(x->infiletype,"SAME");
+      sprintf(x->outfiletype,"SAME");
+      sprintf(x->filename,name);
+      update_dimxml(cat, incat, x);
+      break;
+
+    case FILE_SLICE:
+      infiletype = FILE_CUBE;
+      sprintf(x->infiletype,"CUBE");
+      sprintf(x->outfiletype,"SLICE");
+      sprintf(str, prefs.slice_format, t+1);
+      strtok(name,".fits");
+      sprintf(x->filename,"%s%s",name,str);
+      update_dimxml(cat, incat, x);
+      break;
+
+    case FILE_SPLIT:
+      infiletype = FILE_MULTI;
+      sprintf(x->infiletype,"MULTI");
+      sprintf(x->outfiletype,"SPLIT");
+      update_dimxml(cat, incat, x);
+      break;
+
+    case FILE_CUBE:
+      infiletype = FILE_SLICE;
+      sprintf(x->infiletype,"SLICE");
+      sprintf(x->outfiletype,"CUBE");
+      sprintf(x->filename,"%s.fits",name);
+      update_dimxml(cat, incat, x);
+      break;
+
+    case FILE_MULTI:
+      infiletype = FILE_SPLIT;
+      sprintf(x->infiletype,"SPLIT");
+      sprintf(x->outfiletype,"MULTI");
+      sprintf(x->filename,"%s.fits",name);
+      update_dimxml(cat, incat, x);
+      break;
+
+    case FILE_DIR:
+      if (!strcmp(prefs.slice_format,"NONE"))
+        {
+        infiletype = FILE_MULTI;
+        sprintf(x->infiletype,"MULTI");
+        sprintf(x->outfiletype,"SPLIT");
+        }
+      else if (!strcmp(prefs.split_format,"NONE"))
+        {
+        infiletype = FILE_CUBE;
+        sprintf(x->infiletype,"CUBE");
+        sprintf(x->outfiletype,"SLICE");
+        }
+      sprintf(x->filename,"%s.fits",name);
+      update_dimxml(cat, incat, x);
+      break;
+    }
+
+  return EXIT_SUCCESS;
+  }
+
+
+/******* update_dimxml *******************************************************/
+int update_dimxml(catstruct *cat, catstruct *incat, xmlstruct *x)
+  {
+    tabstruct *tab=NULL;
+    int       next;
+
+  next = cat->ntab;
+  if (next>1)
+    next--;
+  x->out_next = next;
+
+  next = incat->ntab;
+  if (next>1)
+    next--;
+  x->in_next = next;
+
+  tab = cat->tab;
+  if (!(tab->naxis>0))
+    tab = tab->nexttab;
+  if (tab->naxis>2)
+    x->out_nslice = tab->naxisn[2];
+  else
+    x->out_nslice = 1;
+
+  tab = incat->tab;
+  if (!(tab->naxis>0))
+    tab = tab->nexttab;
+  if (tab->naxis>2)
+    x->in_nslice = tab->naxisn[2];
+  else
+    x->in_nslice = 1;
+
   nxml++;
 
   return EXIT_SUCCESS;
@@ -193,7 +279,7 @@ int	write_xml_meta(FILE *file, char *error)
    xmlstruct		*x;
    struct tm		*tm;
    char			*pspath,*psuser, *pshost, *str;
-   int			n;
+   int			n, i;
 
 /* Processing date and time if msg error present */
   if (error)
@@ -275,14 +361,14 @@ int	write_xml_meta(FILE *file, char *error)
     }
 
 /* Meta-data for the missfits processing */
-/*
-  fprintf(file, "  <TABLE ID=\"InFields\" name=\"InFields\">\n");
+
+  fprintf(file, "  <TABLE ID=\"OutFields\" name=\"OutFields\">\n");
   fprintf(file, "   <DESCRIPTION>Metadata about the %s</DESCRIPTION> "
-        " input images\n", BANNER);
+        " output images\n", BANNER);
   fprintf(file, "   <PARAM name=\"NImages\" datatype=\"int\""
         " ucd=\"meta.number;meta.dataset\" value=\"%d\"/>\n", nxml);
 
-  fprintf(file, "   <FIELD name=\"Input_Image_Name\" datatype=\"char\""
+  fprintf(file, "   <FIELD name=\"Output_Image_Name\" datatype=\"char\""
         " ucd=\"meta.id;meta.file;meta.fits\"/>\n");
   fprintf(file, "   <FIELD name=\"Input_Image_Type\" datatype=\"char\""
         " ucd=\"meta;meta.code.class\"/>\n");
@@ -296,22 +382,33 @@ int	write_xml_meta(FILE *file, char *error)
         " ucd=\"meta.number;meta.dataset\"/>\n");
   fprintf(file, "   <FIELD name=\"Output_Naxis3\" datatype=\"int\""
         " ucd=\"meta.number;meta.dataset\"/>\n");
+  fprintf(file, "   <FIELD name=\"HeadFlag\" datatype=\"boolean\""
+        " ucd=\"meta.code;obs.param\"/>\n");
+  for (i=0; i<prefs.ndisplay_key; i++)
+    fprintf(file, "   <FIELD name=\"%s\" datatype=\"char\""
+        " ucd=\"meta;meta.note\"/>\n",prefs.display_key[i]);
 
   fprintf(file, "   <DATA><TABLEDATA>\n");
+
   for (n=0; n<nxml; n++)
     {
     x = &miss_xml[n];
     fprintf(file, "    <TR>\n"
-        "     <TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%.6g</TD>\n",
-        x->fieldname,
-        x->fieldtype,
-        x->ext,
-        prefs.getarea? x->effarea : 9999);
+        "     <TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%d</TD>\n"
+        "     <TD>%s</TD><TD>%d</TD><TD>%d</TD><TD>%s</TD>\n",
+        x->filename,
+        x->infiletype,
+        x->in_next,
+        x->in_nslice,
+        x->outfiletype,
+        x->out_next,
+        x->out_nslice,
+        x->extheadflag? "T" : "F");
     fprintf(file, "    </TR>\n");
     }
   fprintf(file, "   </TABLEDATA></DATA>\n");
   fprintf(file, "  </TABLE>\n");
-*/
+
 /* Warnings */
   fprintf(file, "  <TABLE ID=\"Warnings\" name=\"Warnings\">\n");
   fprintf(file,

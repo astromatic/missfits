@@ -28,20 +28,21 @@
 typedef struct
   {
   char         filename[80];                /* name of the file */
-  filenum      infiletype;                  /* input file type */
-  filenum      outfiletype;                 /* output file type */
+  char         infiletype[8];               /* input file type */
+  char         outfiletype[8];              /* output file type */
   int          in_next;                     /* input extensions */
   int          out_next;                    /* output extensions */
   int          in_nslice;                   /* input slices */
   int          out_nslice;                  /* output slices */
-  int          exthead;                     /* external header? */
-  char	       *(display_key[MAXKEYWORD]);  /* Keyword display */
+  int          extheadflag;                 /* external header? */
   char	       *(display_value[MAXKEYWORD]);/* Keyword display */
   }	xmlstruct;
 /*------------------------------- functions ---------------------------------*/
 
 extern int	init_xml(int nfile),
-                update_xml(char *filename, filenum filetype, int ntab),
+                update_xml(char *name, int t, int nfile, catstruct *cat,
+                                          catstruct *incat, filenum filetype),
+                update_dimxml(catstruct *cat, catstruct *incat, xmlstruct *x),
                 write_xml(),
                 write_xml_header(FILE *file),
                 write_xml_meta(FILE *file, char *error),

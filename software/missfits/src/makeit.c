@@ -75,12 +75,8 @@ void	makeit(void)
 
 /* Load input images */
   narg = prefs.nfile;
+  nxml = narg;
 
-  if (prefs.xml_flag)
-    {
-    nxml = (narg) ; 
-    init_xml(nxml);
-    }
 /* Go argument by argument */
   NFPRINTF(OUTPUT, "Examining input data...")
 
@@ -93,6 +89,7 @@ void	makeit(void)
       continue;
       }
     ntabin = incat[0]->ntab;
+
 /*-- Create new FITS */
     for (s=0; s<nout; s++)
       {
@@ -113,6 +110,7 @@ void	makeit(void)
           flagmulti = 1;
           outcat = new_cat(1);
           copy_tabs_blind(incat[0], outcat);
+          nxml *= nfile;
           break;
         case FILE_CUBE:
           outcat = new_cat(1);
@@ -122,18 +120,28 @@ void	makeit(void)
           flagcube = 1;
           outcat = new_cat(1);
           copy_tabs_blind(incat[0], outcat);
+          nxml *= nout;
           break;            
         case FILE_DIR:
           if (!strcmp(prefs.slice_format,"NONE"))
+            {
             flagmulti = 1;
+            nxml *= nfile;            
+            }
           else if (!strcmp(prefs.split_format,"NONE"))
+            {
             flagcube = 1;
+            nxml *= nout;
+            }
           outcat = new_cat(1);
           copy_tabs_blind(incat[0], outcat);
           break;            
         default:
           error(EXIT_FAILURE, "*Internal Error*:  unknown output file type", "");
         }
+
+      if (prefs.xml_flag && !a && !s)
+        init_xml(nxml);
 
       NFPRINTF(OUTPUT, "Reading input data...");
       ntabout = outcat->ntab;
@@ -241,6 +249,10 @@ void	makeit(void)
 	  || prefs.checksum_type==CHECKSUM_UPDATE)
           write_checksum(tab);
         }
+/*-- Update the xml file */
+      if (prefs.xml_flag)
+        update_xml (prefs.file_name[a], s, nout, outcat, incat[0],
+                     prefs.outfile_type? prefs.outfile_type: filetype);
 /*-- Save the new file */
       save_fitsfiles(prefs.file_name[a], s, nout, outcat,
                      prefs.outfile_type? prefs.outfile_type: filetype);
@@ -360,7 +372,7 @@ NOTES	-.
 AUTHOR	E. Bertin (IAP)
 VERSION	23/02/2007
  ***/
-/*
+
 void	write_error(char *msg1, char *msg2)
   {
    char	error[MAXCHAR];
@@ -372,4 +384,3 @@ void	write_error(char *msg1, char *msg2)
 
   return;
   }
-*/

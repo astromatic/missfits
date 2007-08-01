@@ -121,11 +121,9 @@
  <xsl:template name="missfits">
   <xsl:for-each select="RESOURCE[@ID='MetaData']">
    <xsl:call-template name="RunInfo"/>
-<!--
    <xsl:for-each select="TABLE[@ID='OutFields']">
     <xsl:call-template name="outfields"/>
    </xsl:for-each>
--->
    <xsl:for-each select="RESOURCE[@ID='Config']">
     <xsl:call-template name="Config"/>
    </xsl:for-each>
@@ -196,22 +194,29 @@
  </xsl:template>
 
 <!-- ********************* XSL template for OutFields ******************** -->
-<!--
   <xsl:template name="outfields">
    <xsl:variable name="imname" select="count(FIELD[@name='Output_Image_Name']/preceding-sibling::FIELD)+1"/>
-   <xsl:variable name="imtype" select="count(FIELD[@name='Output_Image_Type']/preceding-sibling::FIELD)+1"/>
-   <xsl:variable name="ext" select="count(FIELD[@name='Extension']/preceding-sibling::FIELD)+1"/>
-   <xsl:variable name="effarea" select="count(FIELD[@name='Effective_Area']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="inimtype" select="count(FIELD[@name='Input_Image_Type']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="inext" select="count(FIELD[@name='Input_Extensions']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="innaxis3" select="count(FIELD[@name='Input_Naxis3']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="outimtype" select="count(FIELD[@name='Output_Image_Type']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="outext" select="count(FIELD[@name='Output_Extensions']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="outnaxis3" select="count(FIELD[@name='Output_Naxis3']/preceding-sibling::FIELD)+1"/>
+   <xsl:variable name="hflag" select="count(FIELD[@name='HeadFlag']/preceding-sibling::FIELD)+1"/>
    <p>
-    <BUTTON type="button" style="background:#CCEECC; font-family: sans-serif; font-weight: bold;" onclick="showhideTable('wwout')">
+    <BUTTON type="button" style="background:#CCEECC; font-family: sans-serif; font-weight: bold;" onclick="showhideTable('missout')">
      Summary Table on Output Files
     </BUTTON>
-    <TABLE class="sortable" id="wwout" BORDER="2" style="display: none">
+    <TABLE class="sortable" id="missout" BORDER="2" style="display: none">
      <TR>
       <TH BGCOLOR="#FFEECC">Output Image Name</TH>
+      <TH BGCOLOR="#FFEECC">Input Image Type</TH>
       <TH BGCOLOR="#FFEECC">Output Image Type</TH>
-      <TH BGCOLOR="#FFEECC">Extension</TH>
-      <TH BGCOLOR="#FFEECC">Effective Area</TH>
+      <TH BGCOLOR="#FFEECC">Input Extensions</TH>
+      <TH BGCOLOR="#FFEECC">Output Extensions</TH>
+      <TH BGCOLOR="#FFEECC">Input Naxis3</TH>
+      <TH BGCOLOR="#FFEECC">Output Naxis3</TH>
+      <TH BGCOLOR="#FFEECC">External Header</TH>
      </TR>
      <xsl:for-each select="DATA/TABLEDATA">
       <xsl:for-each select="TR">
@@ -220,13 +225,32 @@
          <el><xsl:value-of select="TD[$imname]"/></el>
         </td>
         <td align="center" BGCOLOR="#EEEEEE">
-         <el><xsl:value-of select="TD[$imtype]"/></el>
+         <elen><xsl:value-of select="TD[$inimtype]"/></elen>
         </td>
         <td align="center" BGCOLOR="#EEEEEE">
-         <el><xsl:value-of select="TD[$ext]"/></el>
+         <elen><xsl:value-of select="TD[$outimtype]"/></elen>
         </td>
-        <td align="right" BGCOLOR="#EEEEEE">
-         <el><xsl:value-of select="format-number(TD[$effarea],'##0.0000')"/></el>
+        <td align="center" BGCOLOR="#EEEEEE">
+         <el><xsl:value-of select="TD[$inext]"/></el>
+        </td>
+        <td align="center" BGCOLOR="#EEEEEE">
+         <el><xsl:value-of select="TD[$outext]"/></el>
+        </td>
+        <td align="center" BGCOLOR="#EEEEEE">
+         <el><xsl:value-of select="TD[$innaxis3]"/></el>
+        </td>
+        <td align="center" BGCOLOR="#EEEEEE">
+         <el><xsl:value-of select="TD[$outnaxis3]"/></el>
+        </td>
+        <td align="center" BGCOLOR="#EEEEEE">
+         <xsl:choose>
+         <xsl:when test="TD[$hflag] = 'T'">
+           <elen>Y</elen>
+          </xsl:when>
+          <xsl:otherwise>
+           <elen>N</elen>
+          </xsl:otherwise>
+         </xsl:choose>
         </td>
        </tr>
       </xsl:for-each>
@@ -234,7 +258,6 @@
     </TABLE>
    </p>
  </xsl:template>
--->
 
 <!-- ********************** XSL template for Config File ********************** -->
   <xsl:template name="Config">

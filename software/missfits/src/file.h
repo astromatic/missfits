@@ -29,5 +29,5 @@ extern catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
 extern int		read_aschead(char *filename, int frameno,
 				tabstruct *tab);
 
-extern void		save_fitsfiles(char *name, int t, int nfile, catstruct *cat,
-				filenum filetype);
+extern void		save_fitsfiles(char *name, int t, int nfile,
+                                catstruct *cat, filenum filetype);
