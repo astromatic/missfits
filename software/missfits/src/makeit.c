@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
  
 #include "define.h"
 #include "globals.h"
@@ -34,6 +35,7 @@
 #include "xml.h"
 
 void	print_tabinfo(tabstruct *tab, int no);
+void    *reduce_bitpix(tabstruct *tab);
 
 time_t		thetime, thetime2;
 
@@ -50,8 +52,10 @@ void	makeit(void)
    char                 *pix;
    KINGSIZE_T           size;
    struct tm		*tm;
+   double               minval, maxval;
 
   check = flagmulti = flagcube = n = 0;
+  minval = maxval = 0.0;
 
   install_cleanup(NULL);
 
@@ -158,6 +162,10 @@ void	makeit(void)
 /*-- Go extension by extension */
       for (t=0; t<ntabout; t++, tab = tab->nexttab)
         {
+/*---- Check Checksum */
+        if (prefs.checksum_type==CHECKSUM_VERIFY
+	  || prefs.checksum_type==CHECKSUM_UPDATE)
+          check = verify_checksum(tab);
 /*---- Slicing cubes */
         if (flagcube)
           {
@@ -193,10 +201,10 @@ void	makeit(void)
               }
             }
           }
-/*---- Check Checksum */
-        if (prefs.checksum_type==CHECKSUM_VERIFY
-	  || prefs.checksum_type==CHECKSUM_UPDATE)
-          check = verify_checksum(tab);
+/*---- Bitpix conversion */
+        if (prefs.process_type==PROCESS_TOBITPIX16)
+          if (tab->naxis>0)
+            reduce_bitpix(tab);
 /*---- Replace keywords */
         for (k=0; k<prefs.nreplace_key; k++)
           if ((n=fitsfind(tab->headbuf, prefs.old_key[k])))
@@ -283,6 +291,77 @@ void	makeit(void)
   return;
   }
 
+/******** reduce_bitpix ***************************************************
+*/
+void    *reduce_bitpix(tabstruct *tab)
+
+  {
+   catstruct        *cat;
+   int              bk, bufsize, ndim, i;
+   long int         bnpix = 1, *dim;
+   unsigned short   ashort=1;
+   double           min, max, bscale, bzero;
+   float            *pix;
+   char             *intpix, *pixt;
+
+  bswapflag = *((char *)&ashort);
+
+  min = BIG;
+  max = -BIG;
+  cat = tab->cat;
+  QCALLOC(dim, long int, tab->naxis);
+  fseek(cat->file, tab->bodypos, SEEK_SET);
+  ndim = tab->naxis;
+  for (i=0; i<ndim; i++)
+    {
+    dim[i] = tab->naxisn[i];
+    bnpix *= dim[i];
+    }
+
+  bufsize = bnpix / dim[ndim-1];
+  QMALLOC(pix, float, bufsize);
+
+  for (bk = 0; bk < dim[ndim-1] ; bk++)
+    {
+    read_body(tab, pix, bufsize);
+    for (i=0; i<bufsize ; i++)
+      {
+      if (pix[i] > max)
+        max = pix[i];
+      if (pix[i] < min)
+        min = pix[i];
+      }
+    }
+
+  free(pix);
+ 
+  tab->bitpix = BP_SHORT;
+  tab->bytepix = tab->bitpix / 8;
+  bscale = (max - min) / 65535;
+  bzero = max - (bscale*32767);
+  tab->bscale = bscale;
+  tab->bzero = bzero;
+  tab->tabsize = bnpix * tab->bytepix;
+  tab->bodybuf = malloc(tab->tabsize);
+  intpix = tab->bodybuf;
+
+  bufsize *= tab->bytepix;
+
+  QMALLOC(pixt, char, bufsize);
+  
+  for (bk=0; bk<dim[ndim-1]*tab->bytepix ; bk++)
+    {
+    QFSEEK(cat->file, tab->bodypos+bk*bufsize, SEEK_SET, cat->filename);
+    QFREAD(pixt, bufsize, cat->file, cat->filename); 
+    swapbytes(pixt, tab->bytepix, bufsize);
+    /* for (i=0; i<bufsize ; i++, intpix++) */
+      *intpix = (int)(((double)pixt[i]-bzero) / bscale);
+    }
+  free(pixt);
+  free(dim);
+  
+  return(0);
+  }
 
 /****** print_tabinfo ********************************************************
 PROTO	void print_fileinfo(tabstruct *tab, int no)

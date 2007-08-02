@@ -35,7 +35,7 @@ typedef struct
   int		ndisplay_key;		    /* nb of params */
   char		new_suffix[MAXCHAR];	    /* Generic suffix for new files */
   int		next_min;		    /* Minimum number of FITS extens. */
-  enum {PROCESS_NONE,PROCESS_COMPRESS,PROCESS_UNCOMPRESS}
+  enum {PROCESS_NONE,PROCESS_TOBITPIX16,PROCESS_COMPRESS,PROCESS_UNCOMPRESS}
 		process_type;		    /* Data processing option */
   char		*(remove_key[MAXKEYWORD]);  /* Keyword removal */
   int		nremove_key;		    /* nb of params */
