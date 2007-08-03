@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	31/05/2007
+*	Last modify:	03/07/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -35,13 +35,20 @@ typedef struct
   int          in_nslice;                   /* input slices */
   int          out_nslice;                  /* output slices */
   int          extheadflag;                 /* external header? */
-  char	       *(display_value[MAXKEYWORD]);/* Keyword display */
+  char	       **display_value;             /* Keyword display */
   }	xmlstruct;
+
+typedef struct
+  {
+  char	       display_key[MAXCHAR];  /* Keyword to display */
+  char	       display_value[MAXCHAR];/* Value of displayed keyword */
+  }	xmlkeystruct;
 /*------------------------------- functions ---------------------------------*/
 
 extern int	init_xml(int nfile),
                 update_xml(char *name, int t, int nfile, catstruct *cat,
-                                          catstruct *incat, filenum filetype),
+                                          catstruct *incat, filenum filetype,
+                                          xmlkeystruct *xmlkey),
                 update_dimxml(catstruct *cat, catstruct *incat, xmlstruct *x),
                 write_xml(),
                 write_xml_header(FILE *file),

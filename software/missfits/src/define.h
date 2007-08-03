@@ -9,7 +9,7 @@
 *
 *	Contents:	global definitions.
 *
-*	Last modify:	07/05/2007
+*	Last modify:	03/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -36,6 +36,10 @@
 
 /*----------------------------- Internal constants --------------------------*/
 
+#define		KBYTE		1024		/* 1 kbyte! */
+#define		MBYTE		(1024*KBYTE)	/* 1 Mbyte! */
+#define		GBYTE		(1024*MBYTE)	/* 1 Gbyte! */
+#define		DATA_BUFSIZE	(32*MBYTE)	/* data buffer size for I/O's */
 #define		BIG		1e+30		/* a huge number */
 #define		OUTPUT		stdout		/* where all msgs are sent */
 #define		MAXCHAR		512		/* max. number of characters */

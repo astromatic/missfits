@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    12/06/2007
+*       Last modify:    03/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -32,10 +32,10 @@
 #include "fits/fitscat.h"
 #include "file.h"
 #include "prefs.h"
+#include "process.h"
 #include "xml.h"
 
-void	print_tabinfo(tabstruct *tab, int no);
-void    *reduce_bitpix(tabstruct *tab);
+void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no);
 
 time_t		thetime, thetime2;
 
@@ -53,6 +53,7 @@ void	makeit(void)
    KINGSIZE_T           size;
    struct tm		*tm;
    double               minval, maxval;
+   xmlkeystruct         *xmlkey=NULL;
 
   check = flagmulti = flagcube = n = 0;
   minval = maxval = 0.0;
@@ -197,14 +198,19 @@ void	makeit(void)
               QFSEEK(incat[c]->file, intab->bodypos, SEEK_SET,
                        incat[c]->filename);
               QFREAD(pix, size, incat[c]->file, incat[c]->filename);
-              swapbytes(pix, tab->bytepix, size/tab->bytepix);
+              if (bswapflag)
+                swapbytes(pix, tab->bytepix, size/tab->bytepix);
               }
             }
           }
 /*---- Bitpix conversion */
-        if (prefs.process_type==PROCESS_TOBITPIX16)
-          if (tab->naxis>0)
+        if (tab->naxis>0 && prefs.process_type==PROCESS_TOBITPIX16)
+          {
+	  if (tab->bitpix!=BP_FLOAT || tab->bitpix!=BP_DOUBLE)
             reduce_bitpix(tab);
+          else
+            warning(prefs.file_name[a], " is not in floating-point format!");
+          }
 /*---- Replace keywords */
         for (k=0; k<prefs.nreplace_key; k++)
           if ((n=fitsfind(tab->headbuf, prefs.old_key[k])))
@@ -243,7 +249,9 @@ void	makeit(void)
         if (prefs.fixwfi_flag)
           fix_wfi(tab);
 /*---- Print file info */
-        print_tabinfo(tab, t);
+        if (prefs.xml_flag)
+          QCALLOC(xmlkey,xmlkeystruct,prefs.ndisplay_key);
+        print_tabinfo(tab, xmlkey, t);
 /*---- Print Checksum */
         if (prefs.checksum_type==CHECKSUM_VERIFY
 	  || prefs.checksum_type==CHECKSUM_UPDATE)
@@ -259,8 +267,12 @@ void	makeit(void)
         }
 /*-- Update the xml file */
       if (prefs.xml_flag)
-        update_xml (prefs.file_name[a], s, nout, outcat, incat[0],
-                     prefs.outfile_type? prefs.outfile_type: filetype);
+        {
+        update_xml(prefs.file_name[a], s, nout, outcat, incat[0],
+                     prefs.outfile_type? prefs.outfile_type: filetype, xmlkey);
+        free(xmlkey);
+        }
+
 /*-- Save the new file */
       save_fitsfiles(prefs.file_name[a], s, nout, outcat,
                      prefs.outfile_type? prefs.outfile_type: filetype);
@@ -291,78 +303,6 @@ void	makeit(void)
   return;
   }
 
-/******** reduce_bitpix ***************************************************
-*/
-void    *reduce_bitpix(tabstruct *tab)
-
-  {
-   catstruct        *cat;
-   int              bk, bufsize, ndim, i;
-   long int         bnpix = 1, *dim;
-   unsigned short   ashort=1;
-   double           min, max, bscale, bzero;
-   float            *pix;
-   char             *intpix, *pixt;
-
-  bswapflag = *((char *)&ashort);
-
-  min = BIG;
-  max = -BIG;
-  cat = tab->cat;
-  QCALLOC(dim, long int, tab->naxis);
-  fseek(cat->file, tab->bodypos, SEEK_SET);
-  ndim = tab->naxis;
-  for (i=0; i<ndim; i++)
-    {
-    dim[i] = tab->naxisn[i];
-    bnpix *= dim[i];
-    }
-
-  bufsize = bnpix / dim[ndim-1];
-  QMALLOC(pix, float, bufsize);
-
-  for (bk = 0; bk < dim[ndim-1] ; bk++)
-    {
-    read_body(tab, pix, bufsize);
-    for (i=0; i<bufsize ; i++)
-      {
-      if (pix[i] > max)
-        max = pix[i];
-      if (pix[i] < min)
-        min = pix[i];
-      }
-    }
-
-  free(pix);
- 
-  tab->bitpix = BP_SHORT;
-  tab->bytepix = tab->bitpix / 8;
-  bscale = (max - min) / 65535;
-  bzero = max - (bscale*32767);
-  tab->bscale = bscale;
-  tab->bzero = bzero;
-  tab->tabsize = bnpix * tab->bytepix;
-  tab->bodybuf = malloc(tab->tabsize);
-  intpix = tab->bodybuf;
-
-  bufsize *= tab->bytepix;
-
-  QMALLOC(pixt, char, bufsize);
-  
-  for (bk=0; bk<dim[ndim-1]*tab->bytepix ; bk++)
-    {
-    QFSEEK(cat->file, tab->bodypos+bk*bufsize, SEEK_SET, cat->filename);
-    QFREAD(pixt, bufsize, cat->file, cat->filename); 
-    swapbytes(pixt, tab->bytepix, bufsize);
-    /* for (i=0; i<bufsize ; i++, intpix++) */
-      *intpix = (int)(((double)pixt[i]-bzero) / bscale);
-    }
-  free(pixt);
-  free(dim);
-  
-  return(0);
-  }
-
 /****** print_tabinfo ********************************************************
 PROTO	void print_fileinfo(tabstruct *tab, int no)
 PURPOSE	Print info about a FITS file
@@ -373,7 +313,7 @@ NOTES	-.
 AUTHOR	E. Bertin (IAP)
 VERSION	11/06/2001
  ***/
-void	print_tabinfo(tabstruct *tab, int no)
+void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
 
   {
    h_type		htype;
@@ -405,6 +345,8 @@ void	print_tabinfo(tabstruct *tab, int no)
     {
     if ((n=fitsfind(tab->headbuf, prefs.display_key[i]))>0)
       {
+      if (prefs.xml_flag)
+        sprintf(xmlkey[i].display_key,keyword);
       fitspick(tab->headbuf+n*80, keyword, gstr, &htype, &ttype, str);
 /*---- Display formatting is a modified version of fitswrite() */
       switch(htype)
@@ -412,18 +354,28 @@ void	print_tabinfo(tabstruct *tab, int no)
         case H_INT:
           printf(" %12d", (ttype==T_SHORT)?
 					*(short *)gstr: *(int *)gstr);
+          if (prefs.xml_flag)
+            sprintf(xmlkey[i].display_value,"%12d", (ttype==T_SHORT)?
+					*(short *)gstr: *(int *)gstr);
           break;
         case H_FLOAT:
         case H_EXPO:
           printf(" %12g", (ttype==T_DOUBLE)?
 					*(double *)gstr: *(float *)gstr);
+          if (prefs.xml_flag)
+            sprintf(xmlkey[i].display_value,"%12g", (ttype==T_DOUBLE)?
+					*(double *)gstr: *(float *)gstr);
           break;
         case H_BOOL:
           printf(" %c", *(int *)gstr? '0':'1');
+          if (prefs.xml_flag)
+            sprintf(xmlkey[i].display_value,"%c", *(int *)gstr? '0':'1');
           break;
         case H_STRING:
         case H_STRINGS:
           printf(" \"%.70s\"", gstr);
+          if (prefs.xml_flag)
+            sprintf(xmlkey[i].display_value,"\"%.70s\"", gstr);
           break;
         case H_COMMENT:
         case H_HCOMMENT:
@@ -434,9 +386,16 @@ void	print_tabinfo(tabstruct *tab, int no)
         }
       }
     else
+      {
       printf(" xxx");
+      if (prefs.xml_flag)
+        sprintf(xmlkey[i].display_value,"xxx");
+      }
     }
   printf("\n");
+
+  for (i = 0; i<prefs.ndisplay_key; i++)
+   printf("%s \n",xmlkey[i].display_key);
 
   return;
   }

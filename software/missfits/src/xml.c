@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	31/05/2007
+*	Last modify:	03/07/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -51,18 +51,14 @@ VERSION	27/04/2007
  ***/
 int	init_xml(int nxml)
   {
-    int ndisplay;
 
   QCALLOC(miss_xml, xmlstruct, nxml);
-
-  ndisplay = prefs.ndisplay_key;
 
   nxmlmax = nxml;
   nxml = 0;
 
   return EXIT_SUCCESS;
   }
-
 
 /****** end_xml ************************************************************
 PROTO	void end_xml(void)
@@ -75,15 +71,26 @@ VERSION	02/03/2007
  ***/
 int	end_xml(void)
   {
-  free(miss_xml);
 
+    int   i;
+
+  if (miss_xml->display_value!=NULL)
+    {
+    for (i = 0; i<prefs.ndisplay_key; i++)
+      free(miss_xml->display_value[i]);
+    free(miss_xml->display_value);
+    }
+
+  free(miss_xml);
+    
   return EXIT_SUCCESS;
   }
 
 
 /****** update_xml ***********************************************************
 PROTO	int update_xml(char *name, int t, int nfile, catstruct *cat,
-                                     catstruct *incat, filenum filetype)
+                                     catstruct *incat, filenum filetype,
+                                     xmlkeystruct *xmlkey)
 PURPOSE	Update a set of meta-data kept in memory before being written to the
         XML file
 INPUT	
@@ -93,11 +100,13 @@ AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
 VERSION	27/04/2007
  ***/
 int	update_xml(char *name, int t, int nfile,
-                   catstruct *cat, catstruct *incat, filenum filetype)
+                   catstruct *cat, catstruct *incat, filenum filetype,
+                   xmlkeystruct *xmlkey)
   {
     filenum   infiletype;
     xmlstruct *x = NULL;
     char      str[MAXCHAR];
+    int       i;
 
   if (nxml < nxmlmax)
     x = &miss_xml[nxml];
@@ -163,6 +172,13 @@ int	update_xml(char *name, int t, int nfile,
       break;
     }
 
+  QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+  for (i = 0; i<prefs.ndisplay_key; i++)
+    {
+    QMALLOC(x->display_value[i], char, MAXCHAR);
+    strcpy(x->display_value[i],xmlkey[i].display_key);
+   printf("%s,%s\n",x->display_value[i],xmlkey[i].display_key);
+    }
   return EXIT_SUCCESS;
   }
 
@@ -404,6 +420,9 @@ int	write_xml_meta(FILE *file, char *error)
         x->out_next,
         x->out_nslice,
         x->extheadflag? "T" : "F");
+    for (i=0 ; i<prefs.ndisplay_key-1; i++)
+      fprintf(file, "    <TD>%s</TD>",x->display_value[i]);
+    fprintf(file, "    <TD>%s</TD>\n",x->display_value[prefs.ndisplay_key-1]);
     fprintf(file, "    </TR>\n");
     }
   fprintf(file, "   </TABLEDATA></DATA>\n");
