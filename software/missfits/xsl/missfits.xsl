@@ -203,6 +203,9 @@
    <xsl:variable name="outext" select="count(FIELD[@name='Output_Extensions']/preceding-sibling::FIELD)+1"/>
    <xsl:variable name="outnaxis3" select="count(FIELD[@name='Output_Naxis3']/preceding-sibling::FIELD)+1"/>
    <xsl:variable name="hflag" select="count(FIELD[@name='HeadFlag']/preceding-sibling::FIELD)+1"/>
+   <xsl:for-each select="FIELD[position()>8]">
+    <xsl:variable name="key" select="count(FIELD[@name='FIELD/@name']/preceding-sibling::FIELD)+1"/>
+   </xsl:for-each>
    <p>
     <BUTTON type="button" style="background:#CCEECC; font-family: sans-serif; font-weight: bold;" onclick="showhideTable('missout')">
      Summary Table on Output Files
@@ -217,6 +220,9 @@
       <TH BGCOLOR="#FFEECC">Input Naxis3</TH>
       <TH BGCOLOR="#FFEECC">Output Naxis3</TH>
       <TH BGCOLOR="#FFEECC">External Header</TH>
+      <xsl:for-each select="FIELD[position()>8]">
+       <TH BGCOLOR="#FFEECC"><xsl:value-of select="@name"/></TH>
+      </xsl:for-each>
      </TR>
      <xsl:for-each select="DATA/TABLEDATA">
       <xsl:for-each select="TR">
@@ -252,6 +258,11 @@
           </xsl:otherwise>
          </xsl:choose>
         </td>
+        <xsl:for-each select="TD[position()>8]">
+         <td align="center" BGCOLOR="#EEEEEE">
+          <el><xsl:value-of select="TD"/></el>
+         </td>
+        </xsl:for-each>
        </tr>
       </xsl:for-each>
      </xsl:for-each>
@@ -270,74 +281,12 @@
       <TH BGCOLOR="#FFEECC">Config Parameter</TH>
       <TH BGCOLOR="#FFEECC">Value</TH>
      </TR>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>REMOVE_KEYWORD</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Remove_Keyword']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>REPLACE_KEYWORD</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Replace_Keyword']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>SLICE_KEYWORD</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Slice_Keyword']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>SLICEKEY_FORMAT</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='SliceKey_Format']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>DISPLAY_KEYWORD</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Display_Keyword']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>HEADER_SUFFIX</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Header_Suffix']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>NEXTENSIONS_MIN</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='NExtensions_Min']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>OUTFILE_TYPE</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='OutFile_Type']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>SPLIT_SUFFIX</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Split_Suffix']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>SLICE_SUFFIX</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Slice_Suffix']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>PROCESS_TYPE</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Process_Type']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>CHECKSUM_TYPE</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Checksum_Type']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>SAVE_TYPE</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Save_Type']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>NEW_SUFFIX</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='New_Suffix']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>VERBOSE_TYPE</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Verbose_Type']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>WRITE_XML</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='Write_XML']/@value"/></el></td>
-     </tr>
-     <tr BGCOLOR="#EEEEEE">
-      <td><el>NTHREADS</el></td>
-      <td><el><xsl:value-of select="PARAM[@name='NThreads']/@value"/></el></td>
-     </tr>
+     <xsl:for-each select="PARAM[position()>2]">
+      <tr BGCOLOR="#EEEEEE">
+       <td><el><xsl:value-of select="@name"/></el></td>
+       <td><el><xsl:value-of select="@value"/></el></td>
+      </tr>
+     </xsl:for-each>
     </TABLE>
    </p>
    <p>
