@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    06/12/2006
+*       Last modify:    06/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -34,7 +34,7 @@
 
 /****** load_fitsfiles *******************************************************
 PROTO	catstruct **load_fitsfiles(char *name, int *ncat, int * outcat,
-                                   filenum *filetype)
+                                   filenum *filetype, int *headflag)
 PURPOSE	Try to read a file, a directory content or a series of FITS files by
 	using or expanding the provided name.
 INPUT	File, directory, or prefix name,
@@ -48,10 +48,10 @@ OUTPUT	Returns a pointer to pointers of catalogs read or NULL if no success.
 	accordingly.
 NOTES	Global preferences are used.
 AUTHOR	E. Bertin (IAP) C. Marmo (IAP)
-VERSION	6/12/2006
+VERSION	6/08/2007
  ***/
 catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
-                                 filenum *filetype)
+                                 filenum *filetype, int *headflag)
   {
    struct stat		statbuf;
    catstruct		**incat, *cat;
@@ -148,7 +148,8 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
     else
       j = 0;
     for (; j<cat->ntab; j++, tab=tab->nexttab)
-      read_aschead(hname, j, tab);
+      if (read_aschead(hname, j, tab)==RETURN_OK)
+        *headflag = 1;
     }
 /* Or try at least to get some info on the "file" */
   else if (!stat(name, &statbuf))
@@ -191,7 +192,8 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
           else
             j = 0;
           for (; j<cat->ntab; j++, tab=tab->nexttab)
-            read_aschead(hname, j, tab);
+            if (read_aschead(hname, j, tab)==RETURN_OK)
+              *headflag = 1;
           }
 	}
       *filetype = FILE_DIR;
@@ -245,7 +247,8 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
         else
           j = 0;
         for (; j<cat->ntab; j++, tab=tab->nexttab)
-          read_aschead(hname, j, tab);
+          if (read_aschead(hname, j, tab)==RETURN_OK)
+            *headflag = 1;
         }
       }      
     if (nfile && (nfile%16))

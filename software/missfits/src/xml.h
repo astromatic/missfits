@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	03/07/2007
+*	Last modify:	06/07/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -48,9 +48,9 @@ typedef struct
 extern int	init_xml(int nfile),
                 update_xml(char *name, int t, int nfile, catstruct *cat,
                                           catstruct *incat, filenum filetype,
-                                          xmlkeystruct *xmlkey),
+                                          xmlkeystruct *xmlkey, int headflag),
                 update_dimxml(catstruct *cat, catstruct *incat, xmlstruct *x),
-                write_xml(),
+                write_xml(char *filename),
                 write_xml_header(FILE *file),
                 write_xml_meta(FILE *file, char *error),
                 write_xml_keyword(FILE *file, char *error),

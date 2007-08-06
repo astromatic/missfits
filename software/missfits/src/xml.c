@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	03/07/2007
+*	Last modify:	06/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -47,7 +47,7 @@ INPUT	Number of extensions.
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP) C. Marmo (IAP)
-VERSION	27/04/2007
+VERSION	27/07/2007
  ***/
 int	init_xml(int nxml)
   {
@@ -55,6 +55,7 @@ int	init_xml(int nxml)
   QCALLOC(miss_xml, xmlstruct, nxml);
 
   nxmlmax = nxml;
+
   nxml = 0;
 
   return EXIT_SUCCESS;
@@ -67,21 +68,22 @@ INPUT	-.
 OUTPUT	.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	02/03/2007
+VERSION	02/08/2007
  ***/
 int	end_xml(void)
   {
 
     int   i;
 
-  if (miss_xml->display_value!=NULL)
-    {
-    for (i = 0; i<prefs.ndisplay_key; i++)
-      free(miss_xml->display_value[i]);
-    free(miss_xml->display_value);
-    }
+  if (miss_xml!=NULL)
+    if (miss_xml->display_value!=NULL)
+      {
+      for (i = 0; i<prefs.ndisplay_key; i++)
+        free(miss_xml->display_value[i]);
+      free(miss_xml->display_value);
+      }
 
-  free(miss_xml);
+      free(miss_xml);
     
   return EXIT_SUCCESS;
   }
@@ -90,26 +92,33 @@ int	end_xml(void)
 /****** update_xml ***********************************************************
 PROTO	int update_xml(char *name, int t, int nfile, catstruct *cat,
                                      catstruct *incat, filenum filetype,
-                                     xmlkeystruct *xmlkey)
+                                     xmlkeystruct *xmlkey, int headflag)
 PURPOSE	Update a set of meta-data kept in memory before being written to the
         XML file
 INPUT	
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	Global preferences are used.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP) 
-VERSION	27/04/2007
+VERSION	06/08/2007
  ***/
 int	update_xml(char *name, int t, int nfile,
                    catstruct *cat, catstruct *incat, filenum filetype,
-                   xmlkeystruct *xmlkey)
+                   xmlkeystruct *xmlkey, int headflag)
   {
     filenum   infiletype;
     xmlstruct *x = NULL;
-    char      str[MAXCHAR];
-    int       i;
+    char      str[MAXCHAR],str2[MAXCHAR];
+    int       i, n;
 
   if (nxml < nxmlmax)
     x = &miss_xml[nxml];
+
+  strtok(name,".fits");
+
+  if (prefs.save_type==SAVE_NEW)
+    sprintf(str,"%s.fits",prefs.new_suffix);
+  else
+    strcpy(str,".fits");
 
   switch(filetype)
     {
@@ -117,7 +126,14 @@ int	update_xml(char *name, int t, int nfile,
       infiletype = FILE_SAME;
       sprintf(x->infiletype,"SAME");
       sprintf(x->outfiletype,"SAME");
-      sprintf(x->filename,name);
+      sprintf(x->filename,"%s%s",name,str);
+      x->extheadflag=headflag;
+      QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+      for (n = 0; n<prefs.ndisplay_key; n++)
+        {
+        QMALLOC(x->display_value[n], char, MAXCHAR);
+        strcpy(x->display_value[n],xmlkey[n].display_value);
+        }
       update_dimxml(cat, incat, x);
       break;
 
@@ -125,24 +141,53 @@ int	update_xml(char *name, int t, int nfile,
       infiletype = FILE_CUBE;
       sprintf(x->infiletype,"CUBE");
       sprintf(x->outfiletype,"SLICE");
-      sprintf(str, prefs.slice_format, t+1);
-      strtok(name,".fits");
-      sprintf(x->filename,"%s%s",name,str);
+      sprintf(str2, prefs.slice_format, t+1); 
+      strtok(str2,".fits");
+      sprintf(x->filename,"%s%s%s",name,str2,str);
+      x->extheadflag=headflag;
+      QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+      for (n = 0; n<prefs.ndisplay_key; n++)
+        {
+        QMALLOC(x->display_value[n], char, MAXCHAR);
+        strcpy(x->display_value[n],xmlkey[n].display_value);
+        }
       update_dimxml(cat, incat, x);
       break;
 
     case FILE_SPLIT:
-      infiletype = FILE_MULTI;
-      sprintf(x->infiletype,"MULTI");
-      sprintf(x->outfiletype,"SPLIT");
-      update_dimxml(cat, incat, x);
+      for (i=1 ; i<cat->ntab ; i++)
+        {
+        infiletype = FILE_MULTI;
+        sprintf(x->infiletype,"MULTI");
+        sprintf(x->outfiletype,"SPLIT");
+        sprintf(str2, prefs.split_format, i); 
+        strtok(str2,".fits");
+        sprintf(x->filename,"%s%s%s",name,str2,str);
+        x->extheadflag=headflag;
+        QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+        for (n = 0; n<prefs.ndisplay_key; n++)
+          {
+          QMALLOC(x->display_value[n], char, MAXCHAR);
+          strcpy(x->display_value[n],xmlkey[n].display_value);
+          }
+        update_dimxml(cat, incat, x);
+        if (nxml < nxmlmax)
+          x = &miss_xml[nxml];
+        }
       break;
 
     case FILE_CUBE:
       infiletype = FILE_SLICE;
       sprintf(x->infiletype,"SLICE");
       sprintf(x->outfiletype,"CUBE");
-      sprintf(x->filename,"%s.fits",name);
+      sprintf(x->filename,"%s%s",name,str);
+      x->extheadflag=headflag;
+      QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+      for (n = 0; n<prefs.ndisplay_key; n++)
+        {
+        QMALLOC(x->display_value[n], char, MAXCHAR);
+        strcpy(x->display_value[n],xmlkey[n].display_value);
+        }
       update_dimxml(cat, incat, x);
       break;
 
@@ -150,35 +195,60 @@ int	update_xml(char *name, int t, int nfile,
       infiletype = FILE_SPLIT;
       sprintf(x->infiletype,"SPLIT");
       sprintf(x->outfiletype,"MULTI");
-      sprintf(x->filename,"%s.fits",name);
+      sprintf(x->filename,"%s%s",name,str);
+      x->extheadflag=headflag;
+      QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+      for (n = 0; n<prefs.ndisplay_key; n++)
+        {
+        QMALLOC(x->display_value[n], char, MAXCHAR);
+        strcpy(x->display_value[n],xmlkey[n].display_value);
+        }
       update_dimxml(cat, incat, x);
       break;
 
     case FILE_DIR:
       if (!strcmp(prefs.slice_format,"NONE"))
         {
-        infiletype = FILE_MULTI;
-        sprintf(x->infiletype,"MULTI");
-        sprintf(x->outfiletype,"SPLIT");
+        for (i=1 ; i<cat->ntab ; i++)
+          {
+          infiletype = FILE_MULTI;
+          sprintf(x->infiletype,"MULTI");
+          sprintf(x->outfiletype,"SPLIT");
+          sprintf(str2, prefs.split_format, i); 
+          strtok(str2,".fits");
+          sprintf(x->filename,"%s/%s%s%s",name,name,str2,str);
+          x->extheadflag=headflag;
+          QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+          for (n = 0; n<prefs.ndisplay_key; n++)
+            {
+            QMALLOC(x->display_value[n], char, MAXCHAR);
+            strcpy(x->display_value[n],xmlkey[n].display_value);
+            }
+          update_dimxml(cat, incat, x);
+          if (nxml < nxmlmax)
+            x = &miss_xml[nxml];
+          }
         }
       else if (!strcmp(prefs.split_format,"NONE"))
         {
         infiletype = FILE_CUBE;
         sprintf(x->infiletype,"CUBE");
         sprintf(x->outfiletype,"SLICE");
+        sprintf(str2, prefs.slice_format, t+1); 
+        strtok(str2,".fits");
+        sprintf(x->filename,"%s/%s%s%s",name,name,str2,str);
+        x->extheadflag=headflag;
+        QCALLOC(x->display_value, char *, prefs.ndisplay_key);
+        for (n = 0; n<prefs.ndisplay_key; n++)
+          {
+          QMALLOC(x->display_value[n], char, MAXCHAR);
+          strcpy(x->display_value[n],xmlkey[n].display_value);
+          }
+        update_dimxml(cat, incat, x);
         }
-      sprintf(x->filename,"%s.fits",name);
-      update_dimxml(cat, incat, x);
       break;
     }
 
-  QCALLOC(x->display_value, char *, prefs.ndisplay_key);
-  for (i = 0; i<prefs.ndisplay_key; i++)
-    {
-    QMALLOC(x->display_value[i], char, MAXCHAR);
-    strcpy(x->display_value[i],xmlkey[i].display_key);
-   printf("%s,%s\n",x->display_value[i],xmlkey[i].display_key);
-    }
   return EXIT_SUCCESS;
   }
 
@@ -190,9 +260,14 @@ int update_dimxml(catstruct *cat, catstruct *incat, xmlstruct *x)
     int       next;
 
   next = cat->ntab;
-  if (next>1)
-    next--;
-  x->out_next = next;
+  if (prefs.outfile_type==FILE_SPLIT)
+    x->out_next = 1;    
+  else
+    {
+    if (next>1)
+      next--;
+    x->out_next = next;
+    }
 
   next = incat->ntab;
   if (next>1)
@@ -230,7 +305,7 @@ NOTES	-.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
 VERSION	27/04/2007
  ***/
-int	write_xml()
+int	write_xml(char *filename)
   {
    FILE		*file;
 
@@ -420,9 +495,10 @@ int	write_xml_meta(FILE *file, char *error)
         x->out_next,
         x->out_nslice,
         x->extheadflag? "T" : "F");
-    for (i=0 ; i<prefs.ndisplay_key-1; i++)
-      fprintf(file, "    <TD>%s</TD>",x->display_value[i]);
-    fprintf(file, "    <TD>%s</TD>\n",x->display_value[prefs.ndisplay_key-1]);
+    fprintf(file, "     <TD>%s</TD>",x->display_value[0]);
+    for (i=1 ; i<prefs.ndisplay_key-1; i++)
+      fprintf(file, "<TD>%s</TD>",x->display_value[i]);
+    fprintf(file, "<TD>%s</TD>\n",x->display_value[prefs.ndisplay_key-1]);
     fprintf(file, "    </TR>\n");
     }
   fprintf(file, "   </TABLEDATA></DATA>\n");
@@ -463,55 +539,51 @@ int	write_xml_meta(FILE *file, char *error)
         " ucd=\"obs.param;meta.file\" value=\"%s\"/>\n",
         prefs.prefs_name);
 
-
-  if (!error)
-    {
 /*-- Fits Keywords */
 
-    write_xmlconfigparam(file, "Remove_Keyword", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Replace_Keyword", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Slice_Keyword", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "SliceKey_Format", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Display_Keyword", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Header_Suffix", "",
-                "  ","%s");
+  write_xmlconfigparam(file, "Remove_Keyword", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Replace_Keyword", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Slice_Keyword", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "SliceKey_Format", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Display_Keyword", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Header_Suffix", "",
+              "  ","%s");
 
 /*-- Fits Properties */
 
-    write_xmlconfigparam(file, "NExtensions_Min", "",
-                "  ","%d");
-    write_xmlconfigparam(file, "OutFile_Type", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Split_Suffix", "",
-                "  ","%s");
-    write_xmlconfigparam(file, "Slice_Suffix", "",
-                "  ","%s");
+  write_xmlconfigparam(file, "NExtensions_Min", "",
+              "  ","%d");
+  write_xmlconfigparam(file, "OutFile_Type", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Split_Suffix", "",
+              "  ","%s");
+  write_xmlconfigparam(file, "Slice_Suffix", "",
+              "  ","%s");
 
 /*-- Fits Data */
 
-    write_xmlconfigparam(file, "Process_Type", "",
-                "meta.id;meta.code", "%s");
-    write_xmlconfigparam(file, "Checksum_Type", "",
-                "meta.id;meta.code", "%s");
+  write_xmlconfigparam(file, "Process_Type", "",
+              "meta.id;meta.code", "%s");
+  write_xmlconfigparam(file, "Checksum_Type", "",
+              "meta.id;meta.code", "%s");
 
 /*-- Output filename */
-    write_xmlconfigparam(file, "Save_Type", "",
-                "meta.id;meta.code", "%s");
-    write_xmlconfigparam(file, "New_Suffix", "",
+  write_xmlconfigparam(file, "Save_Type", "",
+              "meta.id;meta.code", "%s");
+  write_xmlconfigparam(file, "New_Suffix", "",
                 "meta.id;meta.code", "%s");
 
 /*-- Miscellaneous */
-    write_xmlconfigparam(file, "Verbose_Type", "", "meta.code","%s");
-    write_xmlconfigparam(file, "Write_XML", "", "meta.code","%s");
-    write_xmlconfigparam(file, "NThreads", "",
-                "meta.number;meta.software", "%d");
+  write_xmlconfigparam(file, "Verbose_Type", "", "meta.code","%s");
+  write_xmlconfigparam(file, "Write_XML", "", "meta.code","%s");
+  write_xmlconfigparam(file, "NThreads", "",
+              "meta.number;meta.software", "%d");
 
-    }
 
   fprintf(file, "  </RESOURCE>\n");
 

@@ -203,9 +203,6 @@
    <xsl:variable name="outext" select="count(FIELD[@name='Output_Extensions']/preceding-sibling::FIELD)+1"/>
    <xsl:variable name="outnaxis3" select="count(FIELD[@name='Output_Naxis3']/preceding-sibling::FIELD)+1"/>
    <xsl:variable name="hflag" select="count(FIELD[@name='HeadFlag']/preceding-sibling::FIELD)+1"/>
-   <xsl:for-each select="FIELD[position()>8]">
-    <xsl:variable name="key" select="count(FIELD[@name='FIELD/@name']/preceding-sibling::FIELD)+1"/>
-   </xsl:for-each>
    <p>
     <BUTTON type="button" style="background:#CCEECC; font-family: sans-serif; font-weight: bold;" onclick="showhideTable('missout')">
      Summary Table on Output Files
@@ -220,7 +217,7 @@
       <TH BGCOLOR="#FFEECC">Input Naxis3</TH>
       <TH BGCOLOR="#FFEECC">Output Naxis3</TH>
       <TH BGCOLOR="#FFEECC">External Header</TH>
-      <xsl:for-each select="FIELD[position()>8]">
+      <xsl:for-each select="FIELD[position()>$hflag]">
        <TH BGCOLOR="#FFEECC"><xsl:value-of select="@name"/></TH>
       </xsl:for-each>
      </TR>
@@ -258,9 +255,9 @@
           </xsl:otherwise>
          </xsl:choose>
         </td>
-        <xsl:for-each select="TD[position()>8]">
+        <xsl:for-each select="TD[position()>$hflag]">
          <td align="center" BGCOLOR="#EEEEEE">
-          <el><xsl:value-of select="TD"/></el>
+          <el><xsl:value-of select="self::TD"/></el>
          </td>
         </xsl:for-each>
        </tr>

@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    03/08/2007
+*       Last modify:    06/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -23,7 +23,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <time.h>
 #include <math.h>
  
 #include "define.h"
@@ -37,8 +36,6 @@
 
 void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no);
 
-time_t		thetime, thetime2;
-
 /********************************** makeit ***********************************/
 void	makeit(void)
   {
@@ -48,25 +45,21 @@ void	makeit(void)
    char	                im[MAXCHAR];
    filenum		filetype;
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
-                        ntabin, ntabout, flagmulti, flagcube, nxml;
+                        ntabin, ntabout, flagmulti, flagcube, headflag, nxml;
    char                 *pix;
    KINGSIZE_T           size;
-   struct tm		*tm;
    double               minval, maxval;
    xmlkeystruct         *xmlkey=NULL;
 
-  check = flagmulti = flagcube = n = 0;
+  check = flagmulti = flagcube = headflag = n = 0;
   minval = maxval = 0.0;
 
+/* Install the signal-catching routines for temporary file cleanup */
+#ifdef USE_THREADS
   install_cleanup(NULL);
-
-/* Processing start date and time */
-  thetime = time(NULL);
-  tm = localtime(&thetime);
-  sprintf(prefs.sdate_start,"%04d-%02d-%02d",
-        tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
-  sprintf(prefs.stime_start,"%02d:%02d:%02d",
-        tm->tm_hour, tm->tm_min, tm->tm_sec);
+#else
+  install_cleanup(NULL);
+#endif
 
   NFPRINTF(OUTPUT, "");
   QPRINTF(OUTPUT,
@@ -87,7 +80,8 @@ void	makeit(void)
 
   for (a=0; a<narg; a++)
     {
-    incat = load_fitsfiles(prefs.file_name[a], &nfile, &nout, &filetype);
+    incat = load_fitsfiles(prefs.file_name[a], &nfile, &nout,
+                                &filetype, &headflag);
     if (nfile <=0)
       {
       warning(prefs.file_name[a], " cannot be loaded/expanded, skipping...");
@@ -115,7 +109,7 @@ void	makeit(void)
           flagmulti = 1;
           outcat = new_cat(1);
           copy_tabs_blind(incat[0], outcat);
-          nxml *= nfile;
+          nxml *= (incat[0]->ntab-1);
           break;
         case FILE_CUBE:
           outcat = new_cat(1);
@@ -131,7 +125,7 @@ void	makeit(void)
           if (!strcmp(prefs.slice_format,"NONE"))
             {
             flagmulti = 1;
-            nxml *= nfile;            
+            nxml *= (incat[0]->ntab-1);            
             }
           else if (!strcmp(prefs.split_format,"NONE"))
             {
@@ -204,6 +198,7 @@ void	makeit(void)
             }
           }
 /*---- Bitpix conversion */
+/*
         if (tab->naxis>0 && prefs.process_type==PROCESS_TOBITPIX16)
           {
 	  if (tab->bitpix!=BP_FLOAT || tab->bitpix!=BP_DOUBLE)
@@ -211,6 +206,7 @@ void	makeit(void)
           else
             warning(prefs.file_name[a], " is not in floating-point format!");
           }
+*/
 /*---- Replace keywords */
         for (k=0; k<prefs.nreplace_key; k++)
           if ((n=fitsfind(tab->headbuf, prefs.old_key[k])))
@@ -265,40 +261,23 @@ void	makeit(void)
 	  || prefs.checksum_type==CHECKSUM_UPDATE)
           write_checksum(tab);
         }
-/*-- Update the xml file */
-      if (prefs.xml_flag)
-        {
-        update_xml(prefs.file_name[a], s, nout, outcat, incat[0],
-                     prefs.outfile_type? prefs.outfile_type: filetype, xmlkey);
-        free(xmlkey);
-        }
 
 /*-- Save the new file */
       save_fitsfiles(prefs.file_name[a], s, nout, outcat,
                      prefs.outfile_type? prefs.outfile_type: filetype);
+/*-- Update the xml file */
+      if (prefs.xml_flag)
+        {
+        update_xml(prefs.file_name[a], s, nout, outcat, incat[0],
+                     prefs.outfile_type? prefs.outfile_type: filetype,
+                     xmlkey, headflag);
+        free(xmlkey);
+        }
       free_cat(&outcat,1);
       }
     free_cat(incat, nfile);
     }
   cleanup_files();
-
-/* Processing end date and time */
-  thetime2 = time(NULL);
-  tm = localtime(&thetime2);
-  sprintf(prefs.sdate_end,"%04d-%02d-%02d",
-        tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
-  sprintf(prefs.stime_end,"%02d:%02d:%02d",
-        tm->tm_hour, tm->tm_min, tm->tm_sec);
-  prefs.time_diff = difftime(thetime2, thetime);
-
-/* Write XML */
-
-  if (prefs.xml_flag)
-    {
-    NFPRINTF(OUTPUT, "Writing XML file...");
-    write_xml();
-    end_xml();
-    }
 
   return;
   }
@@ -346,7 +325,7 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
     if ((n=fitsfind(tab->headbuf, prefs.display_key[i]))>0)
       {
       if (prefs.xml_flag)
-        sprintf(xmlkey[i].display_key,keyword);
+        sprintf(xmlkey[i].display_key,prefs.display_key[i]);
       fitspick(tab->headbuf+n*80, keyword, gstr, &htype, &ttype, str);
 /*---- Display formatting is a modified version of fitswrite() */
       switch(htype)
@@ -376,7 +355,7 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
           printf(" \"%.70s\"", gstr);
           if (prefs.xml_flag)
             sprintf(xmlkey[i].display_value,"\"%.70s\"", gstr);
-          break;
+         break;
         case H_COMMENT:
         case H_HCOMMENT:
           break;
@@ -393,9 +372,6 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
       }
     }
   printf("\n");
-
-  for (i = 0; i<prefs.ndisplay_key; i++)
-   printf("%s \n",xmlkey[i].display_key);
 
   return;
   }
@@ -418,6 +394,7 @@ void	write_error(char *msg1, char *msg2)
   sprintf(error, "%s%s", msg1,msg2);
   if (prefs.xml_flag)
     write_xmlerror(prefs.xml_name, error);
+
   end_xml();
 
   return;

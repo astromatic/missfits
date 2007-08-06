@@ -9,7 +9,7 @@
 *
 *	Contents:	include for file.c.
 *
-*	Last modify:	24/10/2006
+*	Last modify:	06/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -24,7 +24,7 @@
 
 /*------------------------------- functions ---------------------------------*/
 extern catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
-				filenum *filetype);
+				filenum *filetype, int *headflag);
 
 extern int		read_aschead(char *filename, int frameno,
 				tabstruct *tab);

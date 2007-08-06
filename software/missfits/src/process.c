@@ -40,9 +40,9 @@ void    *reduce_bitpix(tabstruct *tab)
 
   {
    catstruct        *cat;
-   int              bk, bktot, bufsize, npix, i;
-   long int         *dim;
-   PIXTYPE          *pix, *pixt;
+   int              /* bk, bktot, bufsize, */ npix, i;
+   /* long int         *dim; */
+   PIXTYPE          *pix /*, *pixt */;
    PIXTYPE          min, max, bscale, bzero, invbscale;
 
 

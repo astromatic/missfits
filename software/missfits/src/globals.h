@@ -5,11 +5,11 @@
 *
 *	Part of:	MissFITS
 *
-*	Author:		E.BERTIN (IAP)
+*	Author:		E.BERTIN (IAP) C. MARMO
 *
 *	Contents:	Global declarations.
 *
-*	Last modify:	07/05/2001
+*	Last modify:	06/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -20,4 +20,5 @@
 char		gstr[MAXCHAR];
 
 /*------------------------------- functions ---------------------------------*/
-extern	void	makeit(void);
+extern	void	makeit(void),
+                write_error(char *msg1, char *msg2);
