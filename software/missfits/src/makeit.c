@@ -109,7 +109,10 @@ void	makeit(void)
           flagmulti = 1;
           outcat = new_cat(1);
           copy_tabs_blind(incat[0], outcat);
-          nxml *= (incat[0]->ntab-1);
+          if (incat[0]->ntab>1)
+            nxml *= (incat[0]->ntab-1);
+          else
+            nxml *= (incat[0]->ntab); 
           break;
         case FILE_CUBE:
           outcat = new_cat(1);
@@ -354,7 +357,7 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
         case H_STRINGS:
           printf(" \"%.70s\"", gstr);
           if (prefs.xml_flag)
-            sprintf(xmlkey[i].display_value,"\"%.70s\"", gstr);
+            sprintf(xmlkey[i].display_value,"%.70s", gstr);
          break;
         case H_COMMENT:
         case H_HCOMMENT:

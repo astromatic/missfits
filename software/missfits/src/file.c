@@ -362,6 +362,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
 /*-- save the FITS files */
       for (i=0; i<ntab; i++)
         {
+        if (ntab==1)
+          i++;
         cat = new_cat(1);
         sprintf(str, prefs.split_format, i);
         sprintf(filename, "%s%s", tmpname, str);
@@ -434,9 +436,10 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
 /*---- Rename temporary file(s) */
       if (flagmulti)
         {
-        sprintf(str, prefs.split_format, i);
         for (i=0; i<ntab; i++)
           {
+          if (ntab==1)
+            i++;
           sprintf(str, prefs.split_format, i);
           sprintf(str2, "%s%s", tmpname, str);
           sprintf(str3, "%s/%s%s", dirname, tailname, str);
@@ -471,6 +474,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         {
         for (i=0; i<ntab; i++)
           {
+          if (ntab==1)
+            i++;
           sprintf(str, prefs.split_format, i);
           sprintf(str2, "%s%s", tmpname, str);
           sprintf(str3, "%s/%s%s", dirname, tailname, str);
@@ -524,6 +529,8 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         {
         for (i=0; i<ntab; i++)
           {
+          if (ntab==1)
+            i++;
           sprintf(str, prefs.split_format, i);
           sprintf(str2, "%s%s", tmpname, str);
           if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))

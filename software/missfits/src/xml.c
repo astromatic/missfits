@@ -105,28 +105,44 @@ int	update_xml(char *name, int t, int nfile,
                    catstruct *cat, catstruct *incat, filenum filetype,
                    xmlkeystruct *xmlkey, int headflag)
   {
-    filenum   infiletype;
     xmlstruct *x = NULL;
-    char      str[MAXCHAR],str2[MAXCHAR];
-    int       i, n;
+    char      *pstr, str[MAXCHAR], str2[MAXCHAR], str3[MAXCHAR],
+              tmpname[MAXCHAR], dirname[MAXCHAR];
+    int       i, n, next;
 
+  pstr =NULL ;
   if (nxml < nxmlmax)
     x = &miss_xml[nxml];
-
-  strtok(name,".fits");
-
-  if (prefs.save_type==SAVE_NEW)
-    sprintf(str,"%s.fits",prefs.new_suffix);
   else
-    strcpy(str,".fits");
+    {
+    nxmlmax++;
+    QREALLOC(miss_xml, xmlstruct, nxmlmax);
+    }
+
+
+/* Get the output directory and directory-independent names */
+  strcpy(dirname, name);
+  if (!(pstr = strrchr(dirname, '/')))
+    {
+    *dirname = '.';
+    pstr = dirname+1;
+    strcpy(str3,name);
+    }
+  else
+    strcpy(str3,pstr+1);
+  *pstr = '\0';
+  if ((pstr=strrchr(str3, '.')) && !cistrcmp(pstr, ".fit",1))
+    *pstr = '\0';
 
   switch(filetype)
     {
     case FILE_SAME:
-      infiletype = FILE_SAME;
       sprintf(x->infiletype,"SAME");
       sprintf(x->outfiletype,"SAME");
-      sprintf(x->filename,"%s%s",name,str);
+      if (prefs.save_type==SAVE_NEW)
+        sprintf(x->filename,"%s%s%s",str3,prefs.new_suffix,FITS_SUFFIX);
+      else
+        sprintf(x->filename,"%s%s",str3,FITS_SUFFIX);
       x->extheadflag=headflag;
       QCALLOC(x->display_value, char *, prefs.ndisplay_key);
       for (n = 0; n<prefs.ndisplay_key; n++)
@@ -138,12 +154,28 @@ int	update_xml(char *name, int t, int nfile,
       break;
 
     case FILE_SLICE:
-      infiletype = FILE_CUBE;
       sprintf(x->infiletype,"CUBE");
       sprintf(x->outfiletype,"SLICE");
-      sprintf(str2, prefs.slice_format, t+1); 
-      strtok(str2,".fits");
-      sprintf(x->filename,"%s%s%s",name,str2,str);
+      sprintf(str2, prefs.slice_format, t+1);
+      sprintf(tmpname,"%s%s",str3,str2);
+      if (prefs.save_type==SAVE_NEW)
+        {
+        strcpy(dirname, tmpname);
+        if (!(pstr = strrchr(dirname, '/')))
+          {
+          *dirname = '.';
+          pstr = dirname+1;
+          strcpy(str,tmpname);
+          }
+        else
+          strcpy(str,pstr+1);
+        *pstr = '\0';
+        if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
+          *pstr = '\0';             
+        sprintf(x->filename,"%s%s%s",str,prefs.new_suffix,FITS_SUFFIX);
+        }
+      else
+        sprintf(x->filename,tmpname);
       x->extheadflag=headflag;
       QCALLOC(x->display_value, char *, prefs.ndisplay_key);
       for (n = 0; n<prefs.ndisplay_key; n++)
@@ -155,14 +187,34 @@ int	update_xml(char *name, int t, int nfile,
       break;
 
     case FILE_SPLIT:
-      for (i=1 ; i<cat->ntab ; i++)
+      if (cat->ntab==1)
+        next = (cat->ntab)+1;
+      else
+        next = cat->ntab;
+      for (i=1 ; i<next ; i++)
         {
-        infiletype = FILE_MULTI;
         sprintf(x->infiletype,"MULTI");
         sprintf(x->outfiletype,"SPLIT");
         sprintf(str2, prefs.split_format, i); 
-        strtok(str2,".fits");
-        sprintf(x->filename,"%s%s%s",name,str2,str);
+        sprintf(tmpname,"%s%s",str3,str2);
+        if (prefs.save_type==SAVE_NEW)
+          {
+          strcpy(dirname, tmpname);
+          if (!(pstr = strrchr(dirname, '/')))
+            {
+            *dirname = '.';
+            pstr = dirname+1;
+            strcpy(str,tmpname);
+            }
+          else
+            strcpy(str,pstr+1);
+          *pstr = '\0';
+          if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
+            *pstr = '\0';          
+          sprintf(x->filename,"%s%s%s",str,prefs.new_suffix,FITS_SUFFIX);
+          }
+        else
+          sprintf(x->filename,tmpname);
         x->extheadflag=headflag;
         QCALLOC(x->display_value, char *, prefs.ndisplay_key);
         for (n = 0; n<prefs.ndisplay_key; n++)
@@ -173,14 +225,21 @@ int	update_xml(char *name, int t, int nfile,
         update_dimxml(cat, incat, x);
         if (nxml < nxmlmax)
           x = &miss_xml[nxml];
+        else
+          {
+          nxmlmax++;
+          QREALLOC(miss_xml, xmlstruct, nxmlmax);
+          }
         }
       break;
 
     case FILE_CUBE:
-      infiletype = FILE_SLICE;
       sprintf(x->infiletype,"SLICE");
       sprintf(x->outfiletype,"CUBE");
-      sprintf(x->filename,"%s%s",name,str);
+      if (prefs.save_type==SAVE_NEW)
+        sprintf(x->filename,"%s%s%s",name,prefs.new_suffix,FITS_SUFFIX);
+      else
+        sprintf(x->filename,"%s%s",name,FITS_SUFFIX);
       x->extheadflag=headflag;
       QCALLOC(x->display_value, char *, prefs.ndisplay_key);
       for (n = 0; n<prefs.ndisplay_key; n++)
@@ -192,10 +251,12 @@ int	update_xml(char *name, int t, int nfile,
       break;
 
     case FILE_MULTI:
-      infiletype = FILE_SPLIT;
       sprintf(x->infiletype,"SPLIT");
       sprintf(x->outfiletype,"MULTI");
-      sprintf(x->filename,"%s%s",name,str);
+      if (prefs.save_type==SAVE_NEW)
+        sprintf(x->filename,"%s%s%s",name,prefs.new_suffix,FITS_SUFFIX);
+      else
+        sprintf(x->filename,"%s%s",name,FITS_SUFFIX);
       x->extheadflag=headflag;
       QCALLOC(x->display_value, char *, prefs.ndisplay_key);
       for (n = 0; n<prefs.ndisplay_key; n++)
@@ -211,12 +272,28 @@ int	update_xml(char *name, int t, int nfile,
         {
         for (i=1 ; i<cat->ntab ; i++)
           {
-          infiletype = FILE_MULTI;
           sprintf(x->infiletype,"MULTI");
           sprintf(x->outfiletype,"SPLIT");
           sprintf(str2, prefs.split_format, i); 
-          strtok(str2,".fits");
-          sprintf(x->filename,"%s/%s%s%s",name,name,str2,str);
+          sprintf(tmpname,"%s%s",str3,str2);
+          if (prefs.save_type==SAVE_NEW)
+            {
+            strcpy(dirname, tmpname);
+            if (!(pstr = strrchr(dirname, '/')))
+              {
+              *dirname = '.';
+              pstr = dirname+1;
+              strcpy(str,tmpname);
+              }
+            else
+              strcpy(str,pstr+1);
+            *pstr = '\0';
+            if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
+              *pstr = '\0';             
+            sprintf(x->filename,"%s%s%s",str,prefs.new_suffix,FITS_SUFFIX);
+            }
+          else
+            sprintf(x->filename,tmpname);
           x->extheadflag=headflag;
           QCALLOC(x->display_value, char *, prefs.ndisplay_key);
           for (n = 0; n<prefs.ndisplay_key; n++)
@@ -227,16 +304,37 @@ int	update_xml(char *name, int t, int nfile,
           update_dimxml(cat, incat, x);
           if (nxml < nxmlmax)
             x = &miss_xml[nxml];
+          else
+            {
+            nxmlmax++;
+            QREALLOC(miss_xml, xmlstruct, nxmlmax);
+            }
           }
         }
       else if (!strcmp(prefs.split_format,"NONE"))
         {
-        infiletype = FILE_CUBE;
         sprintf(x->infiletype,"CUBE");
         sprintf(x->outfiletype,"SLICE");
         sprintf(str2, prefs.slice_format, t+1); 
-        strtok(str2,".fits");
-        sprintf(x->filename,"%s/%s%s%s",name,name,str2,str);
+        sprintf(tmpname,"%s%s",str3,str2);
+        if (prefs.save_type==SAVE_NEW)
+          {
+          strcpy(dirname, tmpname);
+          if (!(pstr = strrchr(dirname, '/')))
+            {
+            *dirname = '.';
+            pstr = dirname+1;
+            strcpy(str,tmpname);
+            }
+          else
+            strcpy(str,pstr+1);
+          *pstr = '\0';
+          if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
+            *pstr = '\0';             
+          sprintf(x->filename,"%s%s%s",str,prefs.new_suffix,FITS_SUFFIX);
+          }
+        else
+          sprintf(x->filename,tmpname);
         x->extheadflag=headflag;
         QCALLOC(x->display_value, char *, prefs.ndisplay_key);
         for (n = 0; n<prefs.ndisplay_key; n++)
