@@ -9,7 +9,7 @@
 *
 *	Contents:	Functions to handle the configuration file.
 *
-*	Last modify:	23/10/2006
+*	Last modify:	07/07/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -372,6 +372,30 @@ int	cistrcmp(char *cs, char *ct, int mode)
   return 0;
   }
 
+/********************************* fitsroot *********************************/
+/* Get the output directory and directory-independent names */
+
+char    *fitsroot(char *str)
+
+  {
+  char dirname[MAXCHAR], str2[MAXCHAR], *pstr;
+
+  strcpy(dirname, str);
+  if (!(pstr = strrchr(dirname, '/')))
+    {
+    *dirname = '.';
+    pstr = dirname+1;
+    strcpy(str2,str);
+    }
+  else
+    strcpy(str2,pstr+1);
+  *pstr = '\0';
+  if ((pstr=strrchr(str2, '.')) && !cistrcmp(pstr, ".fit",1))
+    *pstr = '\0';
+
+  strcpy(str,str2);
+  return(str);
+  }
 
 /********************************* useprefs *********************************/
 /*

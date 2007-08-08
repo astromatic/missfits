@@ -231,7 +231,7 @@ extern void	add_cleanupfilename(char *filename),
 extern char	*tdisptoprintf(char *tdisp, char *str),
 		*printftotdisp(char *cprintf, char *str),
 		*fitsnfind(char *fitsbuf, char *str, int nblock),
-		**tabs_list(catstruct *cat, int *n),
+                **tabs_list(catstruct *cat, int *n),
 		**keys_list(tabstruct *tab, int *n),
 		*warning_history(void);
 

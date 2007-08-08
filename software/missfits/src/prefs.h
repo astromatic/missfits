@@ -9,7 +9,7 @@
 *
 *	Contents:	Include for prefs.c.
 *
-*	Last modify:	31/05/2007
+*	Last modify:	07/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -82,6 +82,7 @@ extern void	dumpprefs(int state),
 		readprefs(char *filename,char **argkey,char **argval,int narg),
 		useprefs(void),
                 endprefs(void);
+extern char     *fitsroot(char *str);
 
 #endif
 

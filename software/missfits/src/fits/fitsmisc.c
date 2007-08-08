@@ -232,5 +232,3 @@ int	findnkey(char *str, char *key, int size, int nkey)
 
   return RETURN_ERROR;
   }
-
-
