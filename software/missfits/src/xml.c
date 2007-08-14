@@ -572,7 +572,7 @@ int	write_xml_meta(FILE *file, char *error)
         " ucd=\"obs.param\" value=\"%s",
         prefs.command_line[0]);
   for (n=1; n<prefs.ncommand_line; n++)
-    fprintf(file, " %s", prefs.command_line[n]);
+    fprintf(file, " %s.fits", prefs.command_line[n]);
   fprintf(file, "\"/>\n");
   fprintf(file,
         "   <PARAM name=\"Prefs_Name\" datatype=\"char\" arraysize=\"*\""

@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    06/08/2007
+*       Last modify:    14/08/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -345,7 +345,7 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
           printf(" %12g", (ttype==T_DOUBLE)?
 					*(double *)gstr: *(float *)gstr);
           if (prefs.xml_flag)
-            sprintf(xmlkey[i].display_value,"%12g", (ttype==T_DOUBLE)?
+            sprintf(xmlkey[i].display_value,"%30lf", (ttype==T_DOUBLE)?
 					*(double *)gstr: *(float *)gstr);
           break;
         case H_BOOL:
