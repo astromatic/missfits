@@ -221,7 +221,7 @@ void	makeit(void)
             {
             sprintf(im,prefs.slicekey_format,s+1);
             sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
-            if ((n=fitsfind(tab->headbuf, prefs.oldslice_key[k])))
+            if ((n=fitsfind(tab->headbuf, prefs.oldslice_key[k]))!=RETURN_ERROR)
               strncpy(tab->headbuf+n*80, prefs.newslice_key[k],8);
             }
           else if (prefs.outfile_type == FILE_CUBE)

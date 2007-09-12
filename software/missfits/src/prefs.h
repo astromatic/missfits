@@ -41,13 +41,13 @@ typedef struct
   int		nremove_key;		    /* nb of params */
   char		*(replace_key[MAXKEYWORD]); /* Keyword translations */
   int		nreplace_key;		    /* nb of params */
-  char		old_key[MAXKEYWORD][8];	    /* Keywords to be replaced */
+  char		old_key[8][MAXKEYWORD];	    /* Keywords to be replaced */
   filenum	outfile_type;		    /* Grouping/splitting options */
-  char		new_key[MAXKEYWORD][8];	    /* Replacing keywords */
+  char		new_key[8][MAXKEYWORD];	    /* Replacing keywords */
   char		*(slice_key[MAXKEYWORD]);   /* Keyword translations */
   int		nslice_key;                 /* nb of params */
-  char		oldslice_key[MAXKEYWORD][8];/* Keywords to be sliced */
-  char		newslice_key[MAXKEYWORD][8];/* Sliced keyword */
+  char		oldslice_key[8][MAXKEYWORD];  /* Keywords to be sliced */
+  char		newslice_key[8][MAXKEYWORD];  /* Sliced keyword */
   char		slicekey_format[MAXCHAR];   /* Suffix format for splitted key */
   enum {SAVE_NONE,SAVE_NEW,SAVE_BACKUP,SAVE_REPLACE}
 		save_type;		    /* Save option */

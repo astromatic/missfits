@@ -406,7 +406,7 @@ void	useprefs(void)
   {
    unsigned short	ashort=1;
    char			*pstr, *tstr;
-   int			i;
+   int			i, p;
 #ifdef USE_THREADS
    int			nproc;
 #endif
@@ -476,9 +476,16 @@ void	useprefs(void)
   for (i=0; i<prefs.nslice_key; i++)
     {
     memset(prefs.oldslice_key[i], ' ', 8);
-    memset(prefs.newslice_key[i], ' ', 8); 
-    strncpy(prefs.newslice_key[i], prefs.slice_key[i],strlen(prefs.slice_key[i]));
+    memset(prefs.newslice_key[i], ' ', 8);
+    QCALLOC(tstr, char, 8);
+    strncpy(tstr,prefs.slice_key[i],8);
+    for (pstr = tstr, p=0; p<8; p++, pstr++)
+      if (!*pstr)
+        *pstr = ' ';
+    strncpy(prefs.newslice_key[i],tstr,strlen(tstr)+1);
+    free(tstr);
     }
+
 
 /* Remove possible trailing "/" in filenames */
   for (i=0; i<prefs.nfile; i++)
