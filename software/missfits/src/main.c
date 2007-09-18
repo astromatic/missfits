@@ -169,7 +169,6 @@ int	main(int argc, char *argv[])
   prefs.nfile = nim;
   readprefs(prefs.prefs_name, argkey, argval, narg);
   useprefs();
- printf("prima \"%s\"\n",prefs.newslice_key[0]);
 
   free(argkey);
   free(argval);

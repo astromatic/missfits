@@ -51,7 +51,7 @@ void	makeit(void)
    double               minval, maxval;
    xmlkeystruct         *xmlkey=NULL;
 
-  check = flagmulti = flagcube = headflag = n = 0;
+  check = flagmulti = flagcube = n = 0;
   minval = maxval = 0.0;
 
 /* Install the signal-catching routines for temporary file cleanup */
@@ -80,6 +80,7 @@ void	makeit(void)
 
   for (a=0; a<narg; a++)
     {
+    headflag = 0;
     incat = load_fitsfiles(prefs.file_name[a], &nfile, &nout,
                                 &filetype, &headflag);
     if (nfile <=0)
