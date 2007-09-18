@@ -22872,8 +22872,9 @@ fi
 
 
 
-for ac_func in atexit memcpy memmove memset mkdir munmap strstr pow sqrt \
-strchr strcspn strpbrk strrchr strspn strtol
+
+for ac_func in atexit getenv memcpy memmove memset mkdir munmap strstr pow \
+sqrt strchr strcspn strpbrk strrchr strspn strtol
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5

@@ -84,8 +84,8 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([atexit memcpy memmove memset mkdir munmap strstr pow sqrt \
-strchr strcspn strpbrk strrchr strspn strtol])
+AC_CHECK_FUNCS([atexit getenv memcpy memmove memset mkdir munmap strstr pow \
+sqrt strchr strcspn strpbrk strrchr strspn strtol])
 
 # Check support for large files
 AC_SYS_LARGEFILE
