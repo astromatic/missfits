@@ -237,7 +237,7 @@ void	makeit(void)
                             !=RETURN_ERROR) &&
 		       fitsfind(tab->headbuf, prefs.oldslice_key[k])
                                ==RETURN_ERROR)
-                  strncpy(tab->headbuf+n*80, prefs.oldslice_key[k],8);
+                  strncpy(tab->headbuf+n*80, prefs.oldslice_key[k],strlen(prefs.oldslice_key[k]));
                 }
               }
             }
