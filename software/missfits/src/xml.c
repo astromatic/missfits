@@ -76,15 +76,15 @@ int	end_xml(void)
     int   i;
 
   if (miss_xml!=NULL)
+    {
     if (miss_xml->display_value!=NULL)
       {
       for (i = 0; i<prefs.ndisplay_key; i++)
         free(miss_xml->display_value[i]);
       free(miss_xml->display_value);
       }
-
-      free(miss_xml);
-    
+    free(miss_xml);
+    }
   return EXIT_SUCCESS;
   }
 
@@ -116,10 +116,10 @@ int	update_xml(char *name, int t, int nfile,
     {
     nxmlmax++;
     QREALLOC(miss_xml, xmlstruct, nxmlmax);
+    x = &miss_xml[nxml];
     }
 
   fitsroot(name);
-  printf("%s",name);
   switch(filetype)
     {
     case FILE_SAME:
@@ -193,6 +193,7 @@ int	update_xml(char *name, int t, int nfile,
           {
           nxmlmax++;
           QREALLOC(miss_xml, xmlstruct, nxmlmax);
+          x = &miss_xml[nxml];
           }
         }
       break;
@@ -261,6 +262,7 @@ int	update_xml(char *name, int t, int nfile,
             {
             nxmlmax++;
             QREALLOC(miss_xml, xmlstruct, nxmlmax);
+            x = &miss_xml[nxml];
             }
           }
         }

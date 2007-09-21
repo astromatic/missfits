@@ -9,7 +9,7 @@
 *
 *	Contents:	Functions to handle the configuration file.
 *
-*	Last modify:	07/07/2007
+*	Last modify:	21/09/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -477,12 +477,12 @@ void	useprefs(void)
     {
     memset(prefs.oldslice_key[i], ' ', 8);
     memset(prefs.newslice_key[i], ' ', 8);
-    QCALLOC(tstr, char, 8);
+    QCALLOC(tstr, char, 9);
     strncpy(tstr,prefs.slice_key[i],8);
     for (pstr = tstr, p=0; p<8; p++, pstr++)
       if (!*pstr)
         *pstr = ' ';
-    strncpy(prefs.newslice_key[i],tstr,strlen(tstr)+1);
+    sprintf(prefs.newslice_key[i],"%8s",tstr);
     free(tstr);
     }
 
