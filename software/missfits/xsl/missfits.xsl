@@ -4,6 +4,7 @@
         <!ENTITY deg "&#176;">
         <!ENTITY amin "&#180;">
         <!ENTITY asec "&#168;">
+        <!ENTITY copy "&#169;">
         ]>
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -25,6 +26,7 @@
     <script src="http://terapix.iap.fr/cplt/xsl/sorttable.js"/>
 
     <style type="text/css">
+     @import url(http://terapix.iap.fr/terapix.css);
      p.sansserif {font-family: sans-serif}
      body {background-color: white}
      mono {font-family: monospace}
@@ -66,19 +68,19 @@
        <TD ALIGN="LEFT">
         <TABLE BORDER="0">
          <TR>
-          <TD ALIGN="CENTER">
-           <IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixLogo.png" ALT="Terapix"/>
+          <TD ALIGN="CENTER" BORDER="NONE">
+           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixLogo.png" ALT="Terapix" title="Terapix"/></a>
           </TD>
-          <TD ALIGN="CENTER">
-           <IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixTitle.png" ALT="Logo"/>
+          <TD ALIGN="CENTER" BORDER="NONE">
+           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixTitle.png" ALT="Logo" title="Terapix"/></a>
           </TD>
-          <TD ALIGN="CENTER">
+          <TD ALIGN="CENTER" width="2000">
            <FONT color="#669933">
             <B> Processing summary</B>
            </FONT>
           </TD>
           <TD ALIGN="CENTER">
-           <IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixPicture.gif" ALT="Terapix banner"/>
+           <IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixPicture.gif" title="Star Formation Region IC 1396, &copy; 2002 CFHT" alt="Star Formation Region IC 1396, &copy; 2002 CFHT"/>
           </TD>
          </TR>
         </TABLE>
@@ -205,7 +207,7 @@
    <xsl:variable name="hflag" select="count(FIELD[@name='HeadFlag']/preceding-sibling::FIELD)+1"/>
    <p>
     <BUTTON type="button" style="background:#CCEECC; font-family: sans-serif; font-weight: bold;" onclick="showhideTable('missout')">
-     Summary Table on Output Files
+     Summary Table on <xsl:value-of select="PARAM[@name='NImages']/@value"/> Output Files
     </BUTTON>
     <TABLE class="sortable" id="missout" BORDER="2" style="display: none">
      <TR>
