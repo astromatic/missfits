@@ -26,14 +26,15 @@
     <script src="http://terapix.iap.fr/cplt/xsl/sorttable.js"/>
 
     <style type="text/css">
-     @import url(http://terapix.iap.fr/terapix.css);
+     <!-- @import url(http://terapix.iap.fr/terapix.css); -->
      p.sansserif {font-family: sans-serif}
      body {background-color: white}
      mono {font-family: monospace}
      elen {font-family: monospace; font-size: 100%; font-weight: bold; color: green }
      elep {font-family: monospace; font-size: 100%; font-weight: bold; color: red }
      el {font-family: monospace; font-size: 100%; color: black}
-     a {text-decoration: none}
+     a {text-decoration : none}
+
      table.sortable a.sortheader
       {
       background-color:#FFEECC;
@@ -68,11 +69,11 @@
        <TD ALIGN="LEFT">
         <TABLE BORDER="0">
          <TR>
-          <TD ALIGN="CENTER" BORDER="NONE">
-           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixLogo.png" ALT="Terapix" title="Terapix"/></a>
+          <TD ALIGN="CENTER">
+           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixLogo.png" ALT="Terapix" title="Terapix" border="0"/></a>
           </TD>
-          <TD ALIGN="CENTER" BORDER="NONE">
-           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixTitle.png" ALT="Logo" title="Terapix"/></a>
+          <TD ALIGN="CENTER">
+           <a href="http://terapix.iap.fr"><IMG SRC="http://terapix.iap.fr/cplt/xsl/terapixTitle.png" ALT="Logo" title="Terapix" border="0"/></a>
           </TD>
           <TD ALIGN="CENTER" width="2000">
            <FONT color="#669933">

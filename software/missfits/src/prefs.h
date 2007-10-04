@@ -24,7 +24,7 @@ typedef  enum {FILE_SAME,FILE_MULTI,FILE_SPLIT,FILE_SLICE,FILE_CUBE,FILE_DIR}
 /*------------------------------- preferences -------------------------------*/
 typedef struct
   {
-  char		**command_line;	            /* Command line */
+  char		command_line[MAXCHAR];      /* Command line */
   int		ncommand_line;	            /* nb of params */
   char		prefs_name[MAXCHAR];   	    /* prefs filename*/
   char		*(file_name[MAXFILE]);	    /* Filename(s) of input images */
