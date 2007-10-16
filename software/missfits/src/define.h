@@ -43,7 +43,7 @@
 #define		BIG		1e+30		/* a huge number */
 #define		OUTPUT		stdout		/* where all msgs are sent */
 #define		MAXCHAR		512		/* max. number of characters */
-#define		MAXFILE		8192		/* max. number of files */
+#define		MAXFILE		32768  		/* max. number of files */
 #define		MAXTAB		1024		/* max. number of tabs/file */
 #define		MAXKEYWORD	1024		/* max. number of keywords */
 
