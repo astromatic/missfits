@@ -301,9 +301,9 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
   {
    h_type		htype;
    t_type		ttype;
-   char			keyword[10], str[100],
-			*filename,*rfilename;
-   int			i,n;
+   char			keyword[10], str[100],tmpkey[8],
+			*filename,*rfilename,*tstr,*pstr;
+   int			i,n,p;
 
 /* A short, "relative" version of the filename */
   if (tab->cat)
@@ -326,7 +326,15 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
 
   for (i=0; i<prefs.ndisplay_key; i++)
     {
-    if ((n=fitsfind(tab->headbuf, prefs.display_key[i]))>0)
+    QCALLOC(tstr, char, 9);
+    strncpy(tstr,prefs.display_key[i],8);
+    for (pstr = tstr, p=0; p<8; p++, pstr++)
+      if (!*pstr)
+        *pstr = ' ';
+    sprintf(tmpkey,"%8s",tstr);
+    free(tstr);
+    
+    if ((n=fitsfind(tab->headbuf, tmpkey))>0)
       {
       if (prefs.xml_flag)
         sprintf(xmlkey[i].display_key,prefs.display_key[i]);
