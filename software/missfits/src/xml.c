@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	07/08/2007
+*	Last modify:	06/12/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -405,7 +405,7 @@ INPUT	Pointer to the output file (or stream),
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
-VERSION	27/04/2007
+VERSION	06/12/2007
  ***/
 int	write_xml_meta(FILE *file, char *error)
   {
@@ -572,9 +572,9 @@ int	write_xml_meta(FILE *file, char *error)
   fprintf(file,
         "   <PARAM name=\"Command_Line\" datatype=\"char\" arraysize=\"*\""
         " ucd=\"obs.param\" value=\"%s",
-        prefs.command_line);
-  /*  for (n=1; n<prefs.ncommand_line; n++)
-      fprintf(file, " %s", prefs.command_line[n]); */
+        prefs.command_line[0]);
+  for (n=1; n<prefs.ncommand_line; n++)
+    fprintf(file, " %s", prefs.command_line[n]);
   fprintf(file, "\"/>\n");
   fprintf(file,
         "   <PARAM name=\"Prefs_Name\" datatype=\"char\" arraysize=\"*\""

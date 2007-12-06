@@ -9,7 +9,7 @@
 *
 *	Contents:	Parsing of the command line.
 *
-*	Last modify:	11/07/2006
+*	Last modify:	06/12/2007
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -46,7 +46,7 @@ int	main(int argc, char *argv[])
   {
    FILE         *fp;
    char 	liststr[MAXCHAR];
-   char		**argkey, **argval, **command_line, *str, *listname, *listbuf, *pstr;
+   char		**argkey, **argval, *str, *listname, *listbuf;
    int		a, bufpos, bufsize, l, narg, nim, opt, opt2;
    struct tm	*tm;
 
@@ -71,14 +71,8 @@ int	main(int argc, char *argv[])
         tm->tm_hour, tm->tm_min, tm->tm_sec);
 
 /*default parameters */
-  command_line = argv;
+  prefs.command_line = argv;
   prefs.ncommand_line = argc;
-  sprintf(prefs.command_line,"%s ", command_line[0]);
-  for (a=1; a<prefs.ncommand_line; a++)
-    {
-    pstr = prefs.command_line+strlen(prefs.command_line);
-    sprintf(pstr, "%s ",command_line[a]);
-    }
   strcpy(prefs.prefs_name, "default.missfits");
   prefs.nfile = 1;
   prefs.file_name[0] = "image";
