@@ -1,5 +1,5 @@
 /*
-                                 fitswcs.c
+ 				fitswcs.c
 
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *
@@ -9,7 +9,7 @@
 *
 *	Contents:       Read and write WCS header info.
 *
-*	Last modify:	26/09/2006
+*	Last modify:	04/01/2008
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -42,7 +42,7 @@ PURPOSE	Copy a WCS (World Coordinate System) structure.
 INPUT	WCS structure to be copied.
 OUTPUT	pointer to a copy of the input structure.
 NOTES	Actually, only FITS parameters are copied. Lower-level structures
-        such as those created by the WCS or TNX libraries are generated.
+	such as those created by the WCS or TNX libraries are generated.
 AUTHOR	E. Bertin (IAP)
 VERSION	31/08/2002
  ***/
@@ -82,22 +82,22 @@ wcsstruct	*copy_wcs(wcsstruct *wcsin)
 
 /******* create_wcs ***********************************************************
 PROTO	wcsstruct *create_wcs(char **ctype, double *crval, double *crpix,
-                        double *cdelt, int *naxisn, int naxis)
+			double *cdelt, int *naxisn, int naxis)
 PURPOSE	Generate a simple WCS (World Coordinate System) structure.
 INPUT	Pointer to an array of char strings with WCS projection on each axis,
-        pointer to an array of center coordinates (double),
-        pointer to an array of device coordinates (double),
-        pointer to an array of pixel scales (double),
-        pointer to an array of image dimensions (int),
-        number of dimensions.
+	pointer to an array of center coordinates (double),
+	pointer to an array of device coordinates (double),
+	pointer to an array of pixel scales (double),
+	pointer to an array of image dimensions (int),
+	number of dimensions.
 OUTPUT	pointer to a WCS structure.
 NOTES	If a pointer is set to null, the corresponding variables are set to
-        default values.
+	default values.
 AUTHOR	E. Bertin (IAP)
 VERSION	09/08/2006
  ***/
 wcsstruct	*create_wcs(char **ctype, double *crval, double *crpix,
-                        double *cdelt, int *naxisn, int naxis)
+			double *cdelt, int *naxisn, int naxis)
 
   {
    wcsstruct	*wcs;
@@ -149,7 +149,7 @@ INPUT	WCS structure.
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	26/09/2006
+VERSION	17/05/2007
  ***/
 void	init_wcs(wcsstruct *wcs)
 
@@ -232,8 +232,8 @@ void	init_wcs(wcsstruct *wcs)
     n = 0;
     for (l=100; l--;)
       {
-      wcs->prj->p[l] = wcs->projp[l+lng*100];
-      wcs->prj->p[l+100] = wcs->projp[l+lat*100];
+      wcs->prj->p[l] = wcs->projp[l+lat*100];	/* lat comes first for ... */
+      wcs->prj->p[l+100] = wcs->projp[l+lng*100];/* ... compatibility reasons */
       if (!n && (wcs->prj->p[l] || wcs->prj->p[l+100]))
         n = l+1;
       }
@@ -263,7 +263,7 @@ void	init_wcscelsys(wcsstruct *wcs)
 
   {
   double	*mat,
-                a0,d0,ap,dp,ap2,y;
+		a0,d0,ap,dp,ap2,y;
   int		s,lng,lat;
 
   lng = wcs->wcsprm->lng;
@@ -276,7 +276,7 @@ void	init_wcscelsys(wcsstruct *wcs)
     }
 /* Find the celestial system */
   for (s=0; *celsysname[s][0] && strncmp(wcs->ctype[lng], celsysname[s][0], 4);
-        s++);
+	s++);
 /* Is it a known, non-equatorial system? If not, exit! */
   if (!s || !*celsysname[s][0])
     {
@@ -315,25 +315,25 @@ INPUT	tab structure.
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	17/07/2006
+VERSION	02/01/2008
  ***/
 wcsstruct	*read_wcs(tabstruct *tab)
 
   {
 #define	FITSREADF(buf, k, val, def) \
-                {if (fitsread(buf,k, &val, H_FLOAT,T_DOUBLE) != RETURN_OK) \
-                   val = def; \
-                }
+		{if (fitsread(buf,k, &val, H_FLOAT,T_DOUBLE) != RETURN_OK) \
+		   val = def; \
+		}
 
 #define	FITSREADI(buf, k, val, def) \
-                {if (fitsread(buf,k, &val, H_INT,T_LONG) != RETURN_OK) \
-                   val = def; \
-                }
+		{if (fitsread(buf,k, &val, H_INT,T_LONG) != RETURN_OK) \
+		   val = def; \
+		}
 
 #define	FITSREADS(buf, k, str, def) \
-                {if (fitsread(buf,k,str, H_STRING,T_STRING) != RETURN_OK) \
-                   strcpy(str, (def)); \
-                }
+		{if (fitsread(buf,k,str, H_STRING,T_STRING) != RETURN_OK) \
+		   strcpy(str, (def)); \
+		}
    char		str[MAXCHARS];
    char		wstr1[TNX_MAXCHARS], wstr2[TNX_MAXCHARS];
 
@@ -341,7 +341,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
    double	drota;
    int		j, l, naxis;
    char		name[16],
-                *buf, *filename, *ptr;
+		*buf, *filename, *ptr;
 
   buf = tab->headbuf;
   filename = (tab->cat? tab->cat->filename : strcpy(name, "internal header"));
@@ -349,6 +349,13 @@ wcsstruct	*read_wcs(tabstruct *tab)
   FITSREADS(buf, "OBJECT  ", str, "Unnamed");
 
   QCALLOC(wcs, wcsstruct, 1);
+  if (tab->naxis > NAXIS)
+    {
+    warning("Maximum number of dimensions supported by this version of the ",
+	"software exceeded\n");
+    tab->naxis = 2;
+    }
+
   wcs->naxis = naxis = tab->naxis;
   QCALLOC(wcs->projp, double, naxis*100);
 
@@ -373,7 +380,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
     FITSREADF(buf, str, wcs->csyer[l], 0.0);
     if (fabs(wcs->cdelt[l]) < 1e-30)
       error(EXIT_FAILURE, "*Error*: CDELT parameters out of range in ",
-        filename);
+	filename);
     }
 
   if (fitsfind(buf, "CD?_????")!=RETURN_ERROR)
@@ -410,7 +417,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
 
 /* Test if the WCS is recognized and a celestial pair is found */
   if (!wcsset(wcs->naxis,(const char(*)[9])wcs->ctype, wcs->wcsprm)
-        && wcs->wcsprm->flag<999)
+	&& wcs->wcsprm->flag<999)
     {
      char	*pstr;
      double	date;
@@ -448,8 +455,8 @@ wcsstruct	*read_wcs(tabstruct *tab)
         biss = (dpar[0]%4)?0:1;
 /*------ Convert date to MJD */
         date = -678956 + (365*dpar[0]+dpar[0]/4) - biss
-                        + ((dpar[1]>2?((int)((dpar[1]+1)*30.6)-63+biss)
-                :((dpar[1]-1)*(63+biss))/2) + dpar[2]);
+			+ ((dpar[1]>2?((int)((dpar[1]+1)*30.6)-63+biss)
+		:((dpar[1]-1)*(63+biss))/2) + dpar[2]);
         wcs->obsdate = 2000.0 - (MJD2000 - date)/365.25;
         }
       else
@@ -460,7 +467,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
     FITSREADF(buf, "EPOCH", wcs->epoch, 2000.0);
     FITSREADF(buf, "EQUINOX", wcs->equinox, wcs->epoch);
     FITSREADS(buf, "RADECSYS", str,
-        wcs->equinox >= 2000.0? "ICRS" : (wcs->equinox<1984.0? "FK4" : "FK5"));
+	wcs->equinox >= 2000.0? "ICRS" : (wcs->equinox<1984.0? "FK4" : "FK5"));
     if (!strcmp(str, "ICRS"))
       wcs->radecsys = RDSYS_ICRS;
     else if (!strcmp(str, "FK5"))
@@ -474,7 +481,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
         }
       wcs->radecsys = RDSYS_FK4;
       warning("FK4 precession formulae not yet implemented:\n",
-                "            Astrometry may be slightly inaccurate");
+		"            Astrometry may be slightly inaccurate");
       }
     else if (!strcmp(str, "FK4-NO-E"))
       {
@@ -485,18 +492,18 @@ wcsstruct	*read_wcs(tabstruct *tab)
         }
       wcs->radecsys = RDSYS_FK4_NO_E;
       warning("FK4 precession formulae not yet implemented:\n",
-                "            Astrometry may be slightly inaccurate");
+		"            Astrometry may be slightly inaccurate");
       }
     else if (!strcmp(str, "GAPPT"))
       {
       wcs->radecsys = RDSYS_GAPPT;
       warning("GAPPT reference frame not yet implemented:\n",
-                "            Astrometry may be slightly inaccurate");
+		"            Astrometry may be slightly inaccurate");
       }
     else
       {
       warning("Using ICRS instead of unknown astrometric reference frame: ",
-                str);
+		str);
       wcs->radecsys = RDSYS_ICRS;
       }
 
@@ -510,41 +517,41 @@ wcsstruct	*read_wcs(tabstruct *tab)
         pstr = wstr1;
         sprintf(str, "WAT1_001");
         for (j=2; fitsread(buf,str,pstr,H_STRINGS,T_STRING)==RETURN_OK; j++)
-          {
+	  {
           sprintf(str, "WAT1_%03d", j);
           pstr += strlen(pstr);
-          }
+	  }
         pstr = wstr2;
         sprintf(str, "WAT2_001");
         for (j=2; fitsread(buf,str,pstr,H_STRINGS,T_STRING)==RETURN_OK; j++)
-          {
+	  {
           sprintf(str, "WAT2_%03d", j);
           pstr += strlen(pstr);
-          }
+	  }
 /*------ LONGPOLE defaulted to 180 deg if not found */
         if ((pstr = strstr(wstr1, "longpole"))
-                || (pstr = strstr(wstr2, "longpole")))
+		|| (pstr = strstr(wstr2, "longpole")))
           pstr = strpbrk(pstr, "1234567890-+.");
         wcs->longpole = pstr? atof(pstr) : 999.0;
         wcs->latpole = 999.0;
 /*------ RO defaulted to 180/PI if not found */
         if ((pstr = strstr(wstr1, "ro"))
-                || (pstr = strstr(wstr2, "ro")))
+		|| (pstr = strstr(wstr2, "ro")))
           pstr = strpbrk(pstr, "1234567890-+.");
         wcs->r0 = pstr? atof(pstr) : 0.0;
 /*------ Read the remaining TNX parameters */
         if ((pstr = strstr(wstr1, "lngcor"))
-                || (pstr = strstr(wstr2, "lngcor")))
+		|| (pstr = strstr(wstr2, "lngcor")))
           wcs->tnx_lngcor = read_tnxaxis(pstr);
         if (!wcs->tnx_lngcor)
           error(EXIT_FAILURE, "*Error*: incorrect TNX parameters in ",
-                        filename);
+			filename);
         if ((pstr = strstr(wstr1, "latcor"))
-                || (pstr = strstr(wstr2, "latcor")))
+		|| (pstr = strstr(wstr2, "latcor")))
           wcs->tnx_latcor = read_tnxaxis(pstr);
         if (!wcs->tnx_latcor)
           error(EXIT_FAILURE, "*Error*: incorrect TNX parameters in ",
-                        filename);
+			filename);
         }
       }
     else
@@ -571,6 +578,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
 
 /* Initialize other WCS structures */
   init_wcs(wcs);
+
 /* Find the range of coordinates */
   range_wcs(wcs);
 /* Invert projection corrections */
@@ -588,7 +596,7 @@ wcsstruct	*read_wcs(tabstruct *tab)
 PROTO	void write_wcs(tabstruct *tab, wcsstruct *wcs)
 PURPOSE	Write WCS (World Coordinate System) info in the FITS header.
 INPUT	tab structure,
-        WCS structure.
+	WCS structure.
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
@@ -721,9 +729,9 @@ int	wcs_supproj(char *name)
 
   {
    char	projcode[26][5] =
-        {"AZP", "TAN", "SIN", "STG", "ARC", "ZPN", "ZEA", "AIR", "CYP", "CAR",
-        "MER", "CEA", "COP", "COD", "COE", "COO", "BON", "PCO", "GLS", "PAR",
-        "AIT", "MOL", "CSC", "QSC", "TSC", "NONE"};
+	{"AZP", "TAN", "SIN", "STG", "ARC", "ZPN", "ZEA", "AIR", "CYP", "CAR",
+	"MER", "CEA", "COP", "COD", "COE", "COO", "BON", "PCO", "GLS", "PAR",
+	"AIT", "MOL", "CSC", "QSC", "TSC", "NONE"};
    int	i;
 
   for (i=0; i<26; i++)
@@ -749,10 +757,10 @@ void	invert_wcs(wcsstruct *wcs)
    polystruct		*poly;
    double		pixin[NAXIS],raw[NAXIS],rawmin[NAXIS];
    double		*outpos,*outpost, *lngpos,*lngpost,
-                        *latpos,*latpost,
-                        lngstep,latstep, rawsize, epsilon;
+			*latpos,*latpost,
+			lngstep,latstep, rawsize, epsilon;
    int			group[] = {1,1};
-                                /* Don't ask, this is needed by poly_init()! */
+				/* Don't ask, this is needed by poly_init()! */
    int		i,j,lng,lat,deg, tnxflag, maxflag;
 
 /* Check first that inversion is not straightforward */
@@ -761,7 +769,7 @@ void	invert_wcs(wcsstruct *wcs)
   if (!strcmp(wcs->wcsprm->pcode, "TNX"))
     tnxflag = 1;
   else if (!strcmp(wcs->wcsprm->pcode, "TAN")
-                && (wcs->projp[1+lng*100] || wcs->projp[1+lat*100]))
+		&& (wcs->projp[1+lng*100] || wcs->projp[1+lat*100]))
     tnxflag = 0;
   else
     return;
@@ -786,15 +794,15 @@ void	invert_wcs(wcsstruct *wcs)
       {
       if (linrev(raw, wcs->lin, pixin))
         error(EXIT_FAILURE, "*Error*: incorrect linear conversion in ",
-                wcs->wcsprm->pcode);
+		wcs->wcsprm->pcode);
       *(lngpost++) = pixin[lng];
       *(latpost++) = pixin[lat];
       if (tnxflag)
         {
         *(outpost++) = pixin[lng]
-                        +raw_to_tnxaxis(wcs->tnx_lngcor,pixin[lng],pixin[lat]);
+			+raw_to_tnxaxis(wcs->tnx_lngcor,pixin[lng],pixin[lat]);
         *(outpost++) = pixin[lat]
-                        +raw_to_tnxaxis(wcs->tnx_latcor,pixin[lng],pixin[lat]);
+			+raw_to_tnxaxis(wcs->tnx_latcor,pixin[lng],pixin[lat]);
         }
       else
         {
@@ -810,10 +818,10 @@ void	invert_wcs(wcsstruct *wcs)
   pixin[lng] += ARCSEC/DEG;
   linfwd(pixin, wcs->lin, raw);
   rawsize = sqrt((raw[lng]-rawmin[lng])*(raw[lng]-rawmin[lng])
-                +(raw[lat]-rawmin[lat])*(raw[lat]-rawmin[lat]))*DEG/ARCSEC;
+		+(raw[lat]-rawmin[lat])*(raw[lat]-rawmin[lat]))*DEG/ARCSEC;
   if (!rawsize)
     error(EXIT_FAILURE, "*Error*: incorrect linear conversion in ",
-                wcs->wcsprm->pcode);
+		wcs->wcsprm->pcode);
   epsilon = WCS_INVACCURACY/rawsize;
 /* Find the lowest degree polynom */
   poly = NULL;  /* to avoid gcc -Wall warnings */
@@ -845,10 +853,10 @@ void	invert_wcs(wcsstruct *wcs)
   pixin[lat] += ARCSEC/DEG;
   linfwd(pixin, wcs->lin, raw);
   rawsize = sqrt((raw[lng]-rawmin[lng])*(raw[lng]-rawmin[lng])
-                +(raw[lat]-rawmin[lat])*(raw[lat]-rawmin[lat]))*DEG/ARCSEC;
+		+(raw[lat]-rawmin[lat])*(raw[lat]-rawmin[lat]))*DEG/ARCSEC;
   if (!rawsize)
     error(EXIT_FAILURE, "*Error*: incorrect linear conversion in ",
-                wcs->wcsprm->pcode);
+		wcs->wcsprm->pcode);
   epsilon = WCS_INVACCURACY/rawsize;
 /* Find the lowest degree polynom */
   maxflag = 1;
@@ -885,7 +893,7 @@ void	invert_wcs(wcsstruct *wcs)
 /******* range_wcs ***********************************************************
 PROTO	void range_wcs(wcsstruct *wcs)
 PURPOSE	Find roughly the range of WCS coordinates on all axes,
-        and typical pixel scales.
+	and typical pixel scales.
 INPUT	WCS structure.
 OUTPUT	-.
 NOTES	.
@@ -896,9 +904,9 @@ void	range_wcs(wcsstruct *wcs)
 
   {
    double		step[NAXIS], raw[NAXIS], rawmin[NAXIS],
-                        world[NAXIS], world2[NAXIS];
+			world[NAXIS], world2[NAXIS];
    double		*worldmin, *worldmax, *scale, *worldc,
-                        rad, radmax, lc;
+			rad, radmax, lc;
    int			linecount[NAXIS];
    int			i,j, naxis, npoints, lng,lat;
 
@@ -1016,7 +1024,7 @@ void	range_wcs(wcsstruct *wcs)
 PROTO	void frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout)
 PURPOSE	Find the x and y limits of an input frame in an output image.
 INPUT	WCS structure of the input frame,
-        WCS structure of the output frame.
+	WCS structure of the output frame.
 OUTPUT	-.
 NOTES	.
 AUTHOR	E. Bertin (IAP)
@@ -1029,7 +1037,7 @@ void	frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout)
    int			linecount[NAXIS];
    double		worldc;
    int			*min, *max,
-                        i,j, naxis, npoints, out, swapflag;
+			i,j, naxis, npoints, out, swapflag;
 
   naxis = wcsin->naxis;
 
@@ -1047,7 +1055,7 @@ void	frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout)
 
 /* Check if lng and lat are swapped between in and out wcs (vicious idea!) */
   swapflag = (((wcsin->lng != wcsout->lng) || (wcsin->lat != wcsout->lat))
-        && (wcsin->lng != wcsin->lat) && (wcsout->lng != wcsout->lat));
+	&& (wcsin->lng != wcsin->lat) && (wcsout->lng != wcsout->lat));
 
   for (j=npoints; j--;)
     {
@@ -1071,7 +1079,7 @@ void	frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout)
     for (i=0; i<naxis; i++)
       {
       rawin[i] = 0.5 + 0.5*wcsin->naxisn[i]
-        *(1-cos(PI*(linecount[i]+1.0)/(WCS_NRANGEPOINTS-1)));
+	*(1-cos(PI*(linecount[i]+1.0)/(WCS_NRANGEPOINTS-1)));
       if (++linecount[i]<WCS_NRANGEPOINTS)
         break;
       else
@@ -1099,8 +1107,8 @@ void	frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout)
 PROTO	int reaxe_wcs(wcsstruct *wcs, int lng, int lat)
 PURPOSE	Reformulate a wcs structure to match lng and lat axis indices
 INPUT	WCS structure,
-        longitude index,
-        latitude index.
+	longitude index,
+	latitude index.
 OUTPUT	RETURN_OK if successful, RETURN_ERROR otherwise.
 NOTES	.
 AUTHOR	E. Bertin (IAP)
@@ -1159,27 +1167,96 @@ int	reaxe_wcs(wcsstruct *wcs, int lng, int lat)
   }
 
 
+/******* celsys_to_eq *********************************************************
+PROTO	int celsys_to_eq(wcsstruct *wcs, double *wcspos)
+PURPOSE	Convert arbitrary celestial coordinates to equatorial.
+INPUT	WCS structure,
+	Coordinate vector.
+OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
+NOTES	-.
+AUTHOR	E. Bertin (IAP)
+VERSION	08/02/2007
+ ***/
+int	celsys_to_eq(wcsstruct *wcs, double *wcspos)
+
+  {
+   double	*mat,
+		a2,d2,sd2,cd2cp,sd,x,y;
+   int		lng, lat;
+
+  mat = wcs->celsysmat;
+  a2 = wcspos[lng = wcs->wcsprm->lng]*DEG - mat[1];
+  d2 = wcspos[lat = wcs->wcsprm->lat]*DEG;
+/* A bit of spherical trigonometry... */
+/* Compute the latitude... */
+  sd2 = sin(d2);
+  cd2cp = cos(d2)*mat[2];
+  sd = sd2*mat[3]-cd2cp*cos(a2);
+/* ...and the longitude */
+  y = cd2cp*sin(a2);
+  x = sd2 - sd*mat[3];
+  wcspos[lng] = fmod((atan2(y,x) + mat[0])/DEG+360.0, 360.0);
+  wcspos[lat] = asin(sd)/DEG;
+
+  return RETURN_OK;
+  }
+
+
+/******* eq_to_celsys *********************************************************
+PROTO	int eq_to_celsys(wcsstruct *wcs, double *wcspos)
+PURPOSE	Convert equatorial to arbitrary celestial coordinates.
+INPUT	WCS structure,
+	Coordinate vector.
+OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
+NOTES	-.
+AUTHOR	E. Bertin (IAP)
+VERSION	08/02/2007
+ ***/
+int	eq_to_celsys(wcsstruct *wcs, double *wcspos)
+
+  {
+   double	*mat,
+		a,d,sd2,cdcp,sd,x,y;
+   int		lng, lat;
+
+  mat = wcs->celsysmat;
+  a = wcspos[lng = wcs->wcsprm->lng]*DEG - mat[0];
+  d = wcspos[lat = wcs->wcsprm->lat]*DEG;
+/* A bit of spherical trigonometry... */
+/* Compute the latitude... */
+  sd = sin(d);
+  cdcp = cos(d)*mat[2];
+  sd2 = sd*mat[3]+cdcp*cos(a);
+/* ...and the longitude */
+  y = cdcp*sin(a);
+  x = sd2*mat[3]-sd;
+  wcspos[lng] = fmod((atan2(y,x) + mat[1])/DEG+360.0, 360.0);
+  wcspos[lat] = asin(sd2)/DEG;
+
+  return RETURN_OK;
+  }
+
+
 /******* raw_to_wcs ***********************************************************
 PROTO	int raw_to_wcs(wcsstruct *, double *, double *)
 PURPOSE	Convert raw (pixel) coordinates to WCS (World Coordinate System).
 INPUT	WCS structure,
-        Pointer to the array of input coordinates,
-        Pointer to the array of output coordinates.
+	Pointer to the array of input coordinates,
+	Pointer to the array of output coordinates.
 OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	31/08/2002
+VERSION	08/02/2007
  ***/
 int	raw_to_wcs(wcsstruct *wcs, double *pixpos, double *wcspos)
 
   {
-   double	*mat,
-                imgcrd[NAXIS],
-                phi,theta, a2,d2,sd2,cd2cp,sd,x,y;
-   int		i,lng,lat;
+   double	imgcrd[NAXIS],
+		phi,theta;
+   int		i;
 
   if (wcsrev((const char(*)[9])wcs->ctype, wcs->wcsprm, pixpos,
-        wcs->lin,imgcrd, wcs->prj, &phi, &theta, wcs->crval, wcs->cel, wcspos))
+	wcs->lin,imgcrd, wcs->prj, &phi, &theta, wcs->crval, wcs->cel, wcspos))
     {
     for (i=0; i<wcs->naxis; i++)
       wcspos[i] = WCS_NOCOORD;
@@ -1188,21 +1265,7 @@ int	raw_to_wcs(wcsstruct *wcs, double *pixpos, double *wcspos)
 
 /* If needed, convert from a different coordinate system to equatorial */
   if (wcs->celsysconvflag)
-    {
-    mat = wcs->celsysmat;
-    a2 = wcspos[lng = wcs->wcsprm->lng]*DEG - mat[1];
-    d2 = wcspos[lat = wcs->wcsprm->lat]*DEG;
-/*-- A bit of spherical trigonometry... */
-/*-- Compute the latitude... */
-    sd2 = sin(d2);
-    cd2cp = cos(d2)*mat[2];
-    sd = sd2*mat[3]-cd2cp*cos(a2);
-/*-- ...and the longitude */
-    y = cd2cp*sin(a2);
-    x = sd2 - sd*mat[3];
-    wcspos[lng] = fmod((atan2(y,x) + mat[0])/DEG+360.0, 360.0);
-    wcspos[lat] = asin(sd)/DEG;
-    }
+    celsys_to_eq(wcs, wcspos);
 
   return RETURN_OK;
   }
@@ -1212,41 +1275,26 @@ int	raw_to_wcs(wcsstruct *wcs, double *pixpos, double *wcspos)
 PROTO	int wcs_to_raw(wcsstruct *, double *, double *)
 PURPOSE	Convert WCS (World Coordinate System) coords to raw (pixel) coords.
 INPUT	WCS structure,
-        Pointer to the array of input coordinates,
-        Pointer to the array of output coordinates.
+	Pointer to the array of input coordinates,
+	Pointer to the array of output coordinates.
 OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	31/08/2002
+VERSION	08/02/2007
  ***/
 int	wcs_to_raw(wcsstruct *wcs, double *wcspos, double *pixpos)
 
   {
-   double	*mat,
-                imgcrd[NAXIS],
-                phi,theta, a,d,sd,cdcp,sd2,x,y;
-   int		i,lng,lat;
+   double	imgcrd[NAXIS],
+		phi,theta;
+   int		i;
 
 /* If needed, convert to a coordinate system different from equatorial */
   if (wcs->celsysconvflag)
-    {
-    mat = wcs->celsysmat;
-    a = wcspos[lng = wcs->wcsprm->lng]*DEG - mat[0];
-    d = wcspos[lat = wcs->wcsprm->lat]*DEG;
-/*-- A bit of spherical trigonometry... */
-/*-- Compute the latitude... */
-    sd = sin(d);
-    cdcp = cos(d)*mat[2];
-    sd2 = sd*mat[3]+cdcp*cos(a);
-/*-- ...and the longitude */
-    y = cdcp*sin(a);
-    x = sd2*mat[3]-sd;
-    wcspos[lng] = fmod((atan2(y,x) + mat[1])/DEG+360.0, 360.0);
-    wcspos[lat] = asin(sd2)/DEG;
-    }
+    eq_to_celsys(wcs, wcspos);
 
   if (wcsfwd((const char(*)[9])wcs->ctype,wcs->wcsprm,wcspos,
-        wcs->crval, wcs->cel,&phi,&theta,wcs->prj, imgcrd,wcs->lin,pixpos))
+	wcs->crval, wcs->cel,&phi,&theta,wcs->prj, imgcrd,wcs->lin,pixpos))
     {
     for (i=0; i<wcs->naxis; i++)
       pixpos[i] = WCS_NOCOORD;
@@ -1260,10 +1308,10 @@ int	wcs_to_raw(wcsstruct *wcs, double *wcspos, double *pixpos)
 /******* red_to_raw **********************************************************
 PROTO	int red_to_raw(wcsstruct *, double *, double *)
 PURPOSE	Convert reduced (World Coordinate System) coords to raw (pixel)
-        coords.
+	coords.
 INPUT	WCS structure,
-        Pointer to the array of input (reduced) coordinates,
-        Pointer to the array of output (pixel) coordinates.
+	Pointer to the array of input (reduced) coordinates,
+	Pointer to the array of output (pixel) coordinates.
 OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
@@ -1329,8 +1377,8 @@ int	red_to_raw(wcsstruct *wcs, double *redpos, double *pixpos)
 PROTO	int raw_to_red(wcsstruct *, double *, double *)
 PURPOSE	Convert raw (pixel) coordinates to reduced WCS coordinates.
 INPUT	WCS structure,
-        Pointer to the array of input (pixel) coordinates,
-        Pointer to the array of output (reduced) coordinates.
+	Pointer to the array of input (pixel) coordinates,
+	Pointer to the array of output (reduced) coordinates.
 OUTPUT	RETURN_OK if mapping successful, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
@@ -1397,8 +1445,8 @@ int	raw_to_red(wcsstruct *wcs, double *pixpos, double *redpos)
 PROTO	double wcs_dist(wcsstruct *wcs, double *wcspos1, double *wcspos2)
 PURPOSE	Compute the angular distance between 2 points on the sky.
 INPUT	WCS structure,
-        Pointer to the first array of world coordinates,
-        Pointer to the second array of world coordinates.
+	Pointer to the first array of world coordinates,
+	Pointer to the second array of world coordinates.
 OUTPUT	Angular distance (in degrees) between points.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
@@ -1416,8 +1464,8 @@ double	wcs_dist(wcsstruct *wcs, double *wcspos1, double *wcspos2)
     {
 /*-- We are operating in angular coordinates */
     d = sin(wcspos1[lat]*DEG)*sin(wcspos2[lat]*DEG)
-        + cos(wcspos1[lat]*DEG)*cos(wcspos2[lat]*DEG)
-                *cos((wcspos1[lng]-wcspos2[lng])*DEG);
+	+ cos(wcspos1[lat]*DEG)*cos(wcspos2[lat]*DEG)
+		*cos((wcspos1[lng]-wcspos2[lng])*DEG);
     return d>-1.0? (d<1.0 ? acos(d)/DEG : 0.0) : 180.0;
     }
   else
@@ -1437,11 +1485,11 @@ double	wcs_dist(wcsstruct *wcs, double *wcspos1, double *wcspos2)
 PROTO	double wcs_scale(wcsstruct *wcs, double *pixpos)
 PURPOSE	Compute the sky area equivalent to a local pixel.
 INPUT	WCS structure,
-        Pointer to the array of local raw coordinates,
+	Pointer to the array of local raw coordinates,
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	20/02/2005
+VERSION	03/01/2008
  ***/
 double	wcs_scale(wcsstruct *wcs, double *pixpos)
 
@@ -1450,10 +1498,16 @@ double	wcs_scale(wcsstruct *wcs, double *pixpos)
    double	dpos1,dpos2;
    int		lng, lat;
 
-  lng = wcs->lng;
-  lat = wcs->lat;
   if (raw_to_wcs(wcs, pixpos, wcspos))
     return 0.0;
+
+  lng = wcs->lng;
+  lat = wcs->lat;
+  if (lng == lat)
+    {
+    lng = 0;
+    lat = 1;
+    }
 
 /* Compute pixel scale */
   pixpos2[lng] = pixpos[lng] + 1.0;
@@ -1465,18 +1519,81 @@ double	wcs_scale(wcsstruct *wcs, double *pixpos)
   if (raw_to_wcs(wcs, pixpos2, wcspos2))
     return 0.0;
   dpos1 = wcspos1[lng]-wcspos[lng];
-  if (dpos1>180.0)
-    dpos1 -= 360.0;
-  else if (dpos1<-180.0)
-    dpos1 += 360.0;
   dpos2 = wcspos2[lng]-wcspos[lng];
-  if (dpos2>180.0)
-    dpos2 -= 360.0;
-  else if (dpos2<-180.0)
-    dpos2 += 360.0;
-  return fabs((dpos1*(wcspos2[lat]-wcspos[lat])
-                -(wcspos1[lat]-wcspos[lat])*dpos2)
-                *cos(wcspos[lat]*DEG));
+  if (wcs->lng!=wcs->lat)
+    {
+    if (dpos1>180.0)
+      dpos1 -= 360.0;
+    else if (dpos1<-180.0)
+      dpos1 += 360.0;
+    if (dpos2>180.0)
+      dpos2 -= 360.0;
+    else if (dpos2<-180.0)
+      dpos2 += 360.0;
+    return fabs((dpos1*(wcspos2[lat]-wcspos[lat])
+		-(wcspos1[lat]-wcspos[lat])*dpos2)*cos(wcspos[lat]*DEG));
+    }
+  else
+    return fabs((dpos1*(wcspos2[lat]-wcspos[lat])
+		-(wcspos1[lat]-wcspos[lat])*dpos2));
+  }
+
+
+/****** wcs jacobian *********************************************************
+PROTO	double wcs_jacobian(wcsstruct *wcs, double *pixpos, double *jacob)
+PURPOSE	Compute the local Jacobian matrice of the astrometric deprojection.
+INPUT	WCS structure,
+	Pointer to the array of local raw coordinates,
+	Pointer to the jacobian array (output).
+OUTPUT	Determinant over spatial coordinates (=pixel area), or -1.0 if mapping
+	was unsuccesful.
+NOTES   Memory must have been allocated (naxis*naxis*sizeof(double)) for the
+        Jacobian array.
+AUTHOR	E. Bertin (IAP)
+VERSION	11/10/2007
+ ***/
+double	wcs_jacobian(wcsstruct *wcs, double *pixpos, double *jacob)
+  {
+   double	pixpos0[NAXIS], wcspos0[NAXIS], wcspos[NAXIS],
+		dpos;
+   int		i,j, lng,lat,naxis;
+
+  lng = wcs->lng;
+  lat = wcs->lat;
+  naxis = wcs->naxis;
+  for (i=0; i<naxis; i++)
+    pixpos0[i] = pixpos[i];
+  if (raw_to_wcs(wcs, pixpos0, wcspos0) == RETURN_ERROR)
+    return -1.0;
+  for (i=0; i<naxis; i++)
+    {
+    pixpos0[i] += 1.0;
+    if (raw_to_wcs(wcs, pixpos0, wcspos) == RETURN_ERROR)
+      return -1.0;
+    pixpos0[i] -= 1.0;
+    for (j=0; j<naxis; j++)
+      {
+      dpos = wcspos[j]-wcspos0[j];
+      if (lng!=lat && j==lng)
+        {
+        if (dpos>180.0)
+          dpos -= 360.0;
+        else if (dpos<-180.0)
+          dpos += 360.0;
+        dpos *= cos(wcspos0[lat]*DEG);
+        }
+      jacob[j*naxis+i] = dpos;
+      }
+    }
+
+  if (lng==lat)
+    {
+    lng = 0;
+    lat = 1;
+    }
+
+  return fabs(jacob[lng+naxis*lng]*jacob[lat+naxis*lat]
+		- jacob[lat+naxis*lng]*jacob[lng+naxis*lat]);
   }
 
 
@@ -1505,7 +1622,7 @@ int	wcs_chirality(wcsstruct *wcs)
     }
 
   a = wcs->cd[lng*naxis+lng]*wcs->cd[lat*naxis+lat]
-        - wcs->cd[lng*naxis+lat]*wcs->cd[lat*naxis+lng];
+	- wcs->cd[lng*naxis+lat]*wcs->cd[lat*naxis+lng];
   return a>TINY? 1 : (a<-TINY? -1 : 0);
   }
 
@@ -1514,19 +1631,19 @@ int	wcs_chirality(wcsstruct *wcs)
 PROTO	void precess_wcs(wcsstruct *wcs, double yearin, double yearout)
 PURPOSE	Precess the content of a WCS structure according to the equinox.
 INPUT	WCS structure,
-        Input year,
-        Output year.
+	Input year,
+	Output year.
 OUTPUT	-.
 NOTES	Epoch for coordinates should be J2000 (FK5 system).
 AUTHOR	E. Bertin (IAP)
-VERSION	26/01/2005
+VERSION	04/01/2008
  ***/
 void	precess_wcs(wcsstruct *wcs, double yearin, double yearout)
 
   {
    double	crval[NAXIS],a[NAXIS*NAXIS],b[NAXIS*NAXIS],
-                *c,*at,
-                val, cas, sas, angle, dalpha;
+		*c,*at,
+		val, cas, sas, angle, dalpha;
    int		i,j,k, lng,lat, naxis;
 
   lng = wcs->lng;
@@ -1536,26 +1653,26 @@ void	precess_wcs(wcsstruct *wcs, double yearin, double yearout)
   naxis = wcs->naxis;
 /* Precess to year out */
   precess(yearin, wcs->crval[lng], wcs->crval[lat], yearout,
-        &crval[lng], &crval[lat]);
+	&crval[lng], &crval[lat]);
 
   dalpha = (crval[lng] - wcs->crval[lng])*DEG;
 
 /* Compute difference angle with the north axis between start and end */
   angle = (dalpha!=0.0 && (crval[lat] - wcs->crval[lat])*DEG != 0.0) ?
-        180.0 - (atan2(sin(dalpha),
-        cos(crval[lat]*DEG)*tan(wcs->crval[lat]*DEG)
-        - sin(crval[lat]*DEG)*cos(dalpha))
-        + atan2(sin(dalpha),
-        cos(wcs->crval[lat]*DEG)*tan(crval[lat]*DEG)
-        - sin(wcs->crval[lat]*DEG)*cos(dalpha)))/DEG
-        : 0.0;
+	180.0 - (atan2(sin(dalpha),
+	cos(crval[lat]*DEG)*tan(wcs->crval[lat]*DEG)
+	- sin(crval[lat]*DEG)*cos(dalpha))
+	+ atan2(sin(dalpha),
+	cos(wcs->crval[lat]*DEG)*tan(crval[lat]*DEG)
+	- sin(wcs->crval[lat]*DEG)*cos(dalpha)))/DEG
+	: 0.0;
 
-/* A = B*C */
+/* A = C*B */
   c = wcs->cd;
 /* The B matrix is made of 2 numbers */
 
   cas = cos(angle*DEG);
-  sas = sin(angle*DEG);
+  sas = sin(-angle*DEG);
   for (i=0; i<naxis; i++)
     b[i+i*naxis] = 1.0;
   b[lng+lng*naxis] = cas;
@@ -1568,7 +1685,7 @@ void	precess_wcs(wcsstruct *wcs, double yearin, double yearout)
       {
       val = 0.0;
       for (k=0; k<naxis; k++)
-        val += b[k+j*naxis]*c[i+k*naxis];
+        val += c[k+j*naxis]*b[i+k*naxis];
       *(at++) = val;
       }
 
@@ -1599,11 +1716,11 @@ Bureau des Longitudes 1992). Epoch for coordinates should be J2000
 (FK5 system).
 */
 void	precess(double yearin, double alphain, double deltain,
-                double yearout, double *alphaout, double *deltaout)
+		double yearout, double *alphaout, double *deltaout)
 
   {
    double	dzeta,theta,z, t1,t1t1, t2,t2t2,t2t2t2,
-                cddsadz, cddcadz, cdd, sdd, adz, cdin,sdin,ct,st,caindz;
+		cddsadz, cddcadz, cdd, sdd, adz, cdin,sdin,ct,st,caindz;
 
   alphain *= DEG;
   deltain *= DEG;
@@ -1613,14 +1730,14 @@ void	precess(double yearin, double alphain, double deltain,
   t1t1 = t1*t1;
   t2t2t2 = (t2t2 = t2*t2)*t2;
   theta = (97171.735e-06 - 413.691e-06*t1 - 1.052e-06 * t1t1) * t2
-        + (-206.846e-06 - 1.052e-06*t1) * t2t2 - 202.812e-06 * t2t2t2;
+	+ (-206.846e-06 - 1.052e-06*t1) * t2t2 - 202.812e-06 * t2t2t2;
   dzeta = (111808.609e-06 + 677.071e-06*t1 - 0.674e-06 * t1t1) * t2
-        + (146.356e-06 - 1.673e-06*t1) * t2t2 + 87.257e-06 * t2t2t2;
+	+ (146.356e-06 - 1.673e-06*t1) * t2t2 + 87.257e-06 * t2t2t2;
   z = (111808.609e-06 +677.071e-06*t1 - 0.674e-06 * t1t1) * t2
-        + (530.716e-06 + 0.320e-06*t1) * t2t2 + 88.251e-06 * t2t2t2;
+	+ (530.716e-06 + 0.320e-06*t1) * t2t2 + 88.251e-06 * t2t2t2;
   cddsadz = (cdin=cos(deltain)) * sin(alphain+dzeta);
   cddcadz = -(sdin=sin(deltain))*(st=sin(theta))
-        +cdin*(ct=cos(theta))*(caindz=cos(alphain+dzeta));
+	+cdin*(ct=cos(theta))*(caindz=cos(alphain+dzeta));
   sdd = sdin*ct + cdin*st*caindz;
   cdd = cos(*deltaout = asin(sdd));
   adz = asin(cddsadz/cdd);
@@ -1636,6 +1753,80 @@ void	precess(double yearin, double alphain, double deltain,
   }
 
 
+/********************************* b2j ***********************************/
+/*
+conver equatorial coordinates from equinox and epoch B1950 to equinox and
+epoch J2000 for extragalactic sources (from Aoki et al. 1983).
+*/
+void	b2j(double yearobs, double alphain, double deltain,
+		double *alphaout, double *deltaout)
+  {
+   int		i,j;
+   double	a[3] = {-1.62557e-6, -0.31919e-6, -0.13843e-6},
+		ap[3] = {1.245e-3, -1.580e-3, -0.659e-3},
+		m[6][6] = {
+  { 0.9999256782,     -0.0111820611,     -0.0048579477,
+    0.00000242395018, -0.00000002710663, -0.00000001177656},
+  { 0.0111820610,      0.9999374784,     -0.0000271765,
+    0.00000002710663,  0.00000242397878, -0.00000000006587},
+  { 0.0048579479,     -0.0000271474,      0.9999881997,
+    0.00000001177656, -0.00000000006582,  0.00000242410173},
+  {-0.000551,        -0.238565,           0.435739,
+    0.99994704,	     -0.01118251,        -0.00485767},
+  { 0.238514,        -0.002662,          -0.008541,
+    0.01118251,	      0.99995883,        -0.00002718},
+  {-0.435623,         0.012254,           0.002117,
+    0.00485767,      -0.00002714,         1.00000956}},
+ 		a1[3], r[3], ro[3], r1[3], r2[3], v1[3], v[3];
+   double		cai, sai, cdi, sdi, dotp, rmod, alpha, delta,
+			t1 = (yearobs - 1950.0)/100.0;
+
+  alphain *= PI/180.0;
+  deltain *= PI/180.0;
+  cai = cos(alphain);
+  sai = sin(alphain);
+  cdi = cos(deltain);
+  sdi = sin(deltain);
+  ro[0] = cdi*cai;
+  ro[1] = cdi*sai;
+  ro[2] = sdi;
+  dotp = 0.0;
+  for (i=0; i<3; i++)
+    {
+    a1[i] = a[i]+ap[i]*ARCSEC*t1;
+    dotp += a1[i]*ro[i];
+    }
+  for (i=0; i<3; i++)
+    {
+    r1[i] = ro[i] - a1[i] + dotp*ro[i];
+    r[i] = v[i] = v1[i] = 0.0;
+    }
+  for (j=0; j<6; j++)
+    for (i=0; i<6; i++)
+      {
+      if (j<3)
+        r[j] += m[j][i]*(i<3?r1[i]:v1[i-3]);
+      else
+         v[j-3] += m[j][i]*(i<3?r1[i]:v1[i-3]);
+      }
+  rmod = 0.0;
+  for (i=0; i<3; i++)
+    {
+    r2[i] = r[i]+v[i]*ARCSEC*(t1-0.5);
+    rmod += r2[i]*r2[i];
+    }
+  rmod = sqrt(rmod);
+  delta = asin(r2[2]/rmod);
+  alpha = acos(r2[0]/cos(delta)/rmod);
+  if (r2[1]<0)
+    alpha = 2*PI - alpha;
+  *alphaout = alpha*180.0/PI;
+  *deltaout = delta*180.0/PI;
+
+  return;			
+  }
+
+
 /*********************************** j2b *************************************/
 /*
 conver equatorial coordinates from equinox and epoch J2000 to equinox and
@@ -1643,7 +1834,7 @@ epoch B1950 for extragalactic sources (from Aoki et al. 1983, after
 inversion of their matrix and some custom arrangements).
 */
 void    j2b(double yearobs, double alphain, double deltain,
-        double *alphaout, double *deltaout)
+	double *alphaout, double *deltaout)
   {
    int			i,j;
    double		a[3] = {-1.62557e-6, -0.31919e-6, -0.13843e-6},
@@ -1661,7 +1852,7 @@ void    j2b(double yearobs, double alphain, double deltain,
    -0.01118145417187502,   0.9999161290795875,   -2.717034576263522e-05},
   { 0.4357269351676567,   -0.008536768476441086,  0.002113420799663768,
    -0.004858518477064975, -2.715994547222661e-05, 0.9999668385070383}},
-                        a1[3], r[3], ro[3], r1[3], r2[3], v1[3], v[3];
+			a1[3], r[3], ro[3], r1[3], r2[3], v1[3], v[3];
    double		cai, sai, cdi, sdi, dotp, rmod, alpha, delta, t1;
 
 /* Convert Julian years from J2000.0 to tropic centuries from B1950.0 */
@@ -1796,3 +1987,6 @@ double  sextodegde(char *dms)
 
   return val;
   }
+
+
+

@@ -1,5 +1,5 @@
 /*
-                                 fitswcs.h
+ 				fitswcs.h
 
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *
@@ -9,7 +9,7 @@
 *
 *	Contents:	Include file for fitswcs.c
 *
-*	Last modify:	26/09/2006
+*	Last modify:	02/01/2008
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -41,7 +41,7 @@
 /*-------------------------------- typedefs ---------------------------------*/
 
 typedef  enum {CELSYS_NATIVE, CELSYS_PIXEL, CELSYS_EQUATORIAL, CELSYS_GALACTIC,
-        CELSYS_ECLIPTIC, CELSYS_SUPERGALACTIC}	celsysenum;
+	CELSYS_ECLIPTIC, CELSYS_SUPERGALACTIC}	celsysenum;
 
 /*------------------------------- structures --------------------------------*/
 
@@ -78,7 +78,7 @@ typedef struct wcs
   double	equinox;		/* Equinox of observations */
   double	epoch;			/* Epoch of observations (deprec.) */
   enum {RDSYS_ICRS, RDSYS_FK5, RDSYS_FK4, RDSYS_FK4_NO_E, RDSYS_GAPPT}
-                radecsys;		/* FITS RADECSYS reference frame */
+		radecsys;		/* FITS RADECSYS reference frame */
   celsysenum	celsys;			/* Celestial coordinate system */
   double	celsysmat[4];		/* Equ. <=> Cel. system parameters */
   int		celsysconvflag;		/* Equ. <=> Cel. conversion needed? */
@@ -95,45 +95,50 @@ typedef struct wcs
 /*------------------------------- functions ---------------------------------*/
 
 extern wcsstruct	*create_wcs(char **ctype, double *crval, double *crpix,
-                                double *cdelt, int *naxisn, int naxis),
-                        *copy_wcs(wcsstruct *wcsin),
-                        *read_wcs(tabstruct *tab);
+				double *cdelt, int *naxisn, int naxis),
+			*copy_wcs(wcsstruct *wcsin),
+			*read_wcs(tabstruct *tab);
 
 extern double		sextodegal(char *hms),
-                        sextodegde(char *dms),
-                        wcs_dist(wcsstruct *wcs,
-                                double *wcspos1, double *wcspos2),
-                        wcs_scale(wcsstruct *wcs, double *pixpos);
+			sextodegde(char *dms),
+			wcs_dist(wcsstruct *wcs,
+				double *wcspos1, double *wcspos2),
+			wcs_jacobian(wcsstruct *wcs, double *pixpos,
+				double *jacob),
+			wcs_scale(wcsstruct *wcs, double *pixpos);
 
-extern int		raw_to_red(wcsstruct *wcs,
-                                double *pixpos, double *redpos),
-                        raw_to_wcs(wcsstruct *wcs,
-                                double *pixpos, double *wcspos),
-                        reaxe_wcs(wcsstruct *wcs, int lng, int lat),
-                        red_to_raw(wcsstruct *wcs,
-                                double *redpos, double *pixpos),
-                        wcs_chirality(wcsstruct *wcs),
-                        wcs_supproj(char *name),
-                        wcs_to_raw(wcsstruct *wcs,
-                                double *wcspos, double *pixpos);
+extern int		celsys_to_eq(wcsstruct *wcs, double *wcspos),
+			eq_to_celsys(wcsstruct *wcs, double *wcspos),
+			raw_to_red(wcsstruct *wcs,
+				double *pixpos, double *redpos),
+			raw_to_wcs(wcsstruct *wcs,
+				double *pixpos, double *wcspos),
+			reaxe_wcs(wcsstruct *wcs, int lng, int lat),
+			red_to_raw(wcsstruct *wcs,
+				double *redpos, double *pixpos),
+			wcs_chirality(wcsstruct *wcs),
+			wcs_supproj(char *name),
+			wcs_to_raw(wcsstruct *wcs,
+				double *wcspos, double *pixpos);
 
 extern char		*degtosexal(double alpha, char *str),
-                        *degtosexde(double delta, char *str);
+			*degtosexde(double delta, char *str);
 
-extern void		end_wcs(wcsstruct *wcs),
-                        init_wcs(wcsstruct *wcs),
-                        init_wcscelsys(wcsstruct *wcs),
-                        invert_wcs(wcsstruct *wcs),
-                        frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout),
-                        j2b(double yearobs, double alphain, double deltain,
-                                double *alphaout, double *deltaout),
-                        precess(double yearin, double alphain, double deltain,
-                                double yearout,
-                                double *alphaout, double *deltaout),
-                        precess_wcs(wcsstruct *wcs, double yearin,
-                                double yearout),
-                        range_wcs(wcsstruct *wcs),
-                        write_wcs(tabstruct *tab, wcsstruct *wcs);
+extern void		b2j(double yearobs, double alphain, double deltain,
+				double *alphaout, double *deltaout),
+			end_wcs(wcsstruct *wcs),
+			init_wcs(wcsstruct *wcs),
+			init_wcscelsys(wcsstruct *wcs),
+			invert_wcs(wcsstruct *wcs),
+			frame_wcs(wcsstruct *wcsin, wcsstruct *wcsout),
+			j2b(double yearobs, double alphain, double deltain,
+				double *alphaout, double *deltaout),
+			precess(double yearin, double alphain, double deltain,
+				double yearout,
+				double *alphaout, double *deltaout),
+			precess_wcs(wcsstruct *wcs, double yearin,
+				double yearout),
+			range_wcs(wcsstruct *wcs),
+			write_wcs(tabstruct *tab, wcsstruct *wcs);
 
 #endif
-
