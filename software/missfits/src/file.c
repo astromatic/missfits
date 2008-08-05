@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    04/08/2008
+*       Last modify:    05/08/2008
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -48,7 +48,7 @@ OUTPUT	Returns a pointer to pointers of catalogs read or NULL if no success.
 	accordingly.
 NOTES	Global preferences are used.
 AUTHOR	E. Bertin (IAP) C. Marmo (IAP)
-VERSION	04/08/2008
+VERSION	05/08/2008
  ***/
 catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
                                  filenum *filetype, int *headflag)
@@ -59,7 +59,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
    char 		str[MAXCHAR];
    char			hname[MAXCHAR],
 			*pstr, *prefix;
-   int			i, j, nfile, nout, nout1;
+   int			i, j, nfile, nout, nout1, ntab;
 
   nout = nout1 = 0;
 
@@ -143,11 +143,11 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
     if (cat->ntab>1)
       {
       tab = tab->nexttab;
-      j=1;
+      ntab= cat->ntab-1;
       }
     else
-      j = 0;
-    for (; j<cat->ntab; j++, tab=tab->nexttab)
+      ntab = 1;
+    for (j=0; j<ntab; j++, tab=tab->nexttab)
       if (read_aschead(hname, j, tab)==RETURN_OK)
         *headflag = 1;
     }
@@ -242,11 +242,11 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
         if (cat->ntab>1)
           {
           tab = tab->nexttab;
-          j=1;
+          ntab= cat->ntab-1;
           }
         else
-          j = 0;
-        for (; j<cat->ntab; j++, tab=tab->nexttab)
+          ntab = 1;
+        for (j=0; j<ntab; j++, tab=tab->nexttab)
           if (read_aschead(hname, j, tab)==RETURN_OK)
             *headflag = 1;
         }
