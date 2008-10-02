@@ -8,10 +8,10 @@ Version: %{version}
 Release: %{release}
 Source0: ftp://ftp.iap.fr/pub/from_users/marmo/%{name}/%{name}-%{version}.tar.gz
 URL: http://terapix.iap.fr/soft/%{name}
-License: LGPL
+License: GPLv3+
 Group: Sciences/Astronomy
 BuildRoot: %{_tmppath}/%{name}-buildroot
-Prefix: %{_prefix}
+BuildRequires: pkgconfig
 
 %description
 MissFITS is a program that performs basic maintenance and packaging tasks on
@@ -21,27 +21,27 @@ FITS files.
 %setup -q
 
 %build
-if test "$TPXFLAGS"; then
-./configure --enable-static --prefix=$RPM_BUILD_ROOT/usr/local/ --mandir=$RPM_BUILD_ROOT/usr/local/man/ --with-xsl_url=file:///usr/local/share/@PACKAGE_NAME@/missfits.xsl 
-make CC="$TPXCC" CFLAGS="$TPXFLAGS" LDFLAGS="$TPXLDFLAGS" LIBS="$TPXLIBS"
+if test "$USE_ICC"; then
+%configure --enable-icc
 else
-./configure --prefix=$RPM_BUILD_ROOT/usr/local/ --mandir=$RPM_BUILD_ROOT/usr/local/man/ --with-xsl_url=file:///usr/local/share/@PACKAGE_NAME@/missfits.xsl
-make
+%configure
 fi
+make %{?_smp_mflags}
 
 %install
-make install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-/usr/local/bin/missfits
-/usr/local/man/man1/missfits.1
-/usr/local/man/manx/missfits.x
-/usr/local/share/@PACKAGE_NAME@
-%doc AUTHORS ChangeLog COPYING HISTORY INSTALL README THANKS doc/missfits.pdf
+%doc AUTHORS BUGS ChangeLog COPYING HISTORY INSTALL README THANKS doc/missfits.pdf
+%{_bindir}/@PACKAGE_NAME@
+%{_mandir}/man1/@PACKAGE_NAME@.1*
+%{_mandir}/manx/@PACKAGE_NAME@.x*
+%{_datadir}/@PACKAGE_NAME@
 
 %changelog
 * @DATE2@ @PACKAGER@ <@PACKAGE_BUGREPORT@>
@@ -51,3 +51,4 @@ rm -rf $RPM_BUILD_ROOT
 - First RPM build
 
 # end of file
+
