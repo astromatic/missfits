@@ -1,5 +1,5 @@
 # Main Makefile for Missfits
-# Copyright (C) 2006-2008 Emmanuel Bertin, Chiara Marmo.
+# Copyright (C) 2006-2009 Emmanuel Bertin & Chiara Marmo IAP/CNRS/UPMC
 AUTOMAKE_OPTIONS	= foreign no-dependencies
 SUBDIRS			= man src 
 dist_pkgdata_DATA	= xsl/missfits.xsl
@@ -19,35 +19,3 @@ rpm-icc:	dist
 	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
 	USE_ICC="1" rpmbuild -ba --clean --nodeps $(PACKAGE_NAME).spec
 
-rpm-opteron:	dist
-	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	TPXCC="gcc" TPXFLAGS="-O3 -funroll-loops -fomit-frame-pointer -Wall \
-		-march=opteron" TPXLDFLAGS="-static -shared-libgcc" \
-		TPXLIBS="-lm" rpmbuild -ba --target=x86_64 --clean \
-		$(PACKAGE_NAME).spec
-	                                                            
-
-rpm-athlon:	dist
-	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	TPXCC="gcc" TPXFLAGS="-O3 -funroll-loops -fomit-frame-pointer -Wall \
-		-m32 -march=i686 -msse -mfpmath=sse -mtune=athlon" \
-		TPXLDFLAGS="-static -shared-libgcc" TPXLIBS="-lm" \
-		rpmbuild -ba --target=i686 --clean $(PACKAGE_NAME).spec
-
-
-rpm-opteron-icc:	dist
-	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	TPXCC="icc" TPXFLAGS="-O3 -g -axWPT -ip -unroll" \
-		TPXLDFLAGS="-static -shared-libgcc -static-intel" \
-		TPXLIBS="-lm" rpmbuild -ba \
-		--target=x86_64 --clean $(PACKAGE_NAME).spec
-
-rpm-athlon-icc:	dist
-	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
-	TPXCC="icc32" TPXFLAGS="-O3 -g -axKWNPTO -ip -unroll" \
-		TPXLDFLAGS="-static -shared-libgcc -static-intel" \
-		TPXLIBS="-lm" rpmbuild \
-		-ba --target=i686 --clean $(PACKAGE_NAME).spec
-
-icc:
-	$(MAKE) CC="icc" CFLAGS="-O3 -g -axWP -ip -unroll" LIBS="-lm"
