@@ -229,7 +229,8 @@
    <xsl:variable name="hflag" select="count(FIELD[@name='HeadFlag']/preceding-sibling::FIELD)+1"/>
    <p>
     <BUTTON type="button" title="click to expand" onclick="showhideTable('missout')">
-     Summary Table on <xsl:value-of select="PARAM[@name='NImages']/@value"/> Output Files
+     Summary Table on <xsl:value-of select="PARAM[@name='NImages']/@value"/>
+     Output File<xsl:if test="PARAM[@name='NImages']/@value &gt; 1">s</xsl:if>
      &darr;
     </BUTTON>
     <TABLE class="sortable" id="missout" style="display: none">
