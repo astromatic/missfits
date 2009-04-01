@@ -215,9 +215,6 @@
     An Error occured!!! </xsl:if>
    <xsl:value-of select="PARAM[@name='Error_Msg']/@value"/></b>
   </p>
-  <p>
-  <sans-serif><i>click to expand or hide tables</i></sans-serif>
-  </p>
  </xsl:template>
 
 <!-- ********************* XSL template for OutFields ******************** -->
