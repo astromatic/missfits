@@ -9,7 +9,7 @@
 *
 *	Contents:	global definitions.
 *
-*	Last modify:	03/08/2007
+*	Last modify:	01/04/2009
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -25,8 +25,8 @@
 #define         BANNER          "MissFITS"
 #define		MYVERSION	VERSION
 #define         COPYRIGHT       "Chiara MARMO <marmo@iap.fr> & Emmanuel BERTIN <bertin@iap.fr>"
-#define         INSTITUTE       "TERAPIX team at IAP  http://terapix.iap.fr"
-#define         WEBSITE         "http://terapix.iap.fr/soft/missfits"
+#define         INSTITUTE       "IAP  http://www.iap.fr"
+#define         WEBSITE         "http://astromatic.iap.fr/software/missfits"
 
 /*----------------------------- Physical constants --------------------------*/
 
