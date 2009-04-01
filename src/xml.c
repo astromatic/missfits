@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	06/12/2007
+*	Last modify:	01/04/2009
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -405,7 +405,7 @@ INPUT	Pointer to the output file (or stream),
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
-VERSION	06/12/2007
+VERSION	01/04/2009
  ***/
 int	write_xml_meta(FILE *file, char *error)
   {
@@ -537,10 +537,8 @@ int	write_xml_meta(FILE *file, char *error)
         x->out_next,
         x->out_nslice,
         x->extheadflag? "T" : "F");
-    fprintf(file, "     <TD>%s</TD>",x->display_value[0]);
-    for (i=1 ; i<prefs.ndisplay_key-1; i++)
+    for (i=0 ; i<prefs.ndisplay_key; i++)
       fprintf(file, "<TD>%s</TD>",x->display_value[i]);
-    fprintf(file, "<TD>%s</TD>\n",x->display_value[prefs.ndisplay_key-1]);
     fprintf(file, "    </TR>\n");
     }
   fprintf(file, "   </TABLEDATA></DATA>\n");
