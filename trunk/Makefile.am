@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS	= foreign no-dependencies
 SUBDIRS			= man src 
 dist_pkgdata_DATA	= xsl/missfits.xsl
-EXTRA_DIST		= AUTHORS BUGS COPYING HISTORY INSTALL README THANKS \
+EXTRA_DIST		= AUTHORS BUGS COPYRIGHT HISTORY INSTALL README THANKS \
 			  TODO ChangeLog acx_prog_cc_optim.m4 doc \
 			  acx_urbi_resolve_dir.m4
 RPM_ROOTDIR 		= `rpmbuild --nobuild -E %_topdir`
