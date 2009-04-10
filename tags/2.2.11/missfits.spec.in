@@ -1,0 +1,55 @@
+%define name @PACKAGE_NAME@
+%define version @PACKAGE_VERSION@
+%define release 1
+%undefine _missing_build_ids_terminate_build
+
+Summary: manipulate FITS files
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Source0: ftp://ftp.iap.fr/pub/from_users/marmo/%{name}/%{name}-%{version}.tar.gz
+URL: http://astromatic.iap.fr/software/%{name}
+License: CeCILL
+Group: Sciences/Astronomy
+BuildRoot: %{_tmppath}/%{name}-buildroot
+BuildRequires: pkgconfig
+
+%description
+MissFITS is a program that performs basic maintenance and packaging tasks on
+FITS files.
+
+%prep
+%setup -q
+
+%build
+if test "$USE_ICC"; then
+%configure --enable-icc
+else
+%configure
+fi
+make %{?_smp_mflags}
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%doc AUTHORS BUGS ChangeLog COPYRIGHT HISTORY INSTALL README THANKS doc/missfits.pdf
+%{_bindir}/@PACKAGE_NAME@
+%{_mandir}/man1/@PACKAGE_NAME@.1*
+%{_mandir}/manx/@PACKAGE_NAME@.x*
+%{_datadir}/@PACKAGE_NAME@
+
+%changelog
+* @DATE2@ @PACKAGER@ <@PACKAGE_BUGREPORT@>
+- Automatic RPM rebuild
+
+* Thu Nov 9 2006 Chiara Marmo <marmo@iap.fr>
+- First RPM build
+
+# end of file
+
