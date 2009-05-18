@@ -250,7 +250,11 @@ int	fitspick(char *fitsline, char *keyword, void *ptr, h_type *htype,
     }
   else
     {
-    for (i=j; i<80 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
+    //for (i=j; i<80 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
+/* Chiara modified this line 18/05/2009 */
+    for (i=j; i<79 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
+/* end of correction*/
+
 /*-- Handle floats*/
     if (fitsline[i]==(char)'.') 
       {
