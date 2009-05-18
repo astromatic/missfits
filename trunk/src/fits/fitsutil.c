@@ -5,11 +5,11 @@
 *
 *	Part of:	The LDAC Tools
 *
-*	Author:		E.BERTIN, DeNIS/LDAC
+*	Author:		E.BERTIN (IAP)
 *
 *	Contents:	functions for handling FITS keywords.
 *
-*	Last modify:	12/06/2007
+*	Last modify:	18/05/2009
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -181,7 +181,7 @@ OUTPUT	RETURN_OK if something was found, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP),
         E.R. Deul - Handling of NaN
-VERSION	04/06/2007
+VERSION	18/05/2009
  ***/
 int	fitspick(char *fitsline, char *keyword, void *ptr, h_type *htype,
 		t_type *ttype, char *comment)
@@ -250,25 +250,22 @@ int	fitspick(char *fitsline, char *keyword, void *ptr, h_type *htype,
     }
   else
     {
-    //for (i=j; i<80 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
-/* Chiara modified this line 18/05/2009 */
-    for (i=j; i<79 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
-/* end of correction*/
+    for (i=j; i<80 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
 
 /*-- Handle floats*/
-    if (fitsline[i]==(char)'.') 
-      {
-      fixexponent(fitsline);
-      *((double *)ptr) = atof(fitsline+j);
-      *htype = H_EXPO;
-      *ttype = T_DOUBLE;
-      }
-    else
+    if (i==80 || fitsline[i]!=(char)'.') 
 /*---- Handle ints*/
       {
       *((int *)ptr) = atoi(fitsline+j);
       *htype = H_INT;
       *ttype = T_LONG;
+      }
+    else
+      {
+      fixexponent(fitsline);
+      *((double *)ptr) = atof(fitsline+j);
+      *htype = H_EXPO;
+      *ttype = T_DOUBLE;
       }
     }
 
