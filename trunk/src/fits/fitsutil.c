@@ -5,11 +5,11 @@
 *
 *	Part of:	The LDAC Tools
 *
-*	Author:		E.BERTIN (IAP)
+*	Author:		E.BERTIN, DeNIS/LDAC
 *
 *	Contents:	functions for handling FITS keywords.
 *
-*	Last modify:	18/05/2009
+*	Last modify:	22/05/2009
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -251,7 +251,6 @@ int	fitspick(char *fitsline, char *keyword, void *ptr, h_type *htype,
   else
     {
     for (i=j; i<80 && fitsline[i]!=(char)'/' && fitsline[i]!=(char)'.'; i++);
-
 /*-- Handle floats*/
     if (i==80 || fitsline[i]!=(char)'.') 
 /*---- Handle ints*/
@@ -570,22 +569,26 @@ int	fitswrite(char *fitsbuf, char *keyword, void *ptr, h_type htype,
 
 /****** fixexponent ***********************************************************
 PROTO	void fixexponent(char *s)
-PURPOSE	Replaces the FORTRAN 'D' exponent sign to 'E' in a FITS line.
+PURPOSE	Replaces the FORTRAN 'D' exponent sign to 'E' in a FITS line, and filter
+	out non-numerical characters
 INPUT	FITS line
 OUTPUT	-.
 NOTES	-.
-AUTHOR	E. Bertin (IAP & Leiden observatory)
-VERSION	25/04/97
+AUTHOR	E. Bertin (IAP)
+VERSION	22/05/2009
  ***/
 void	fixexponent(char *s)
 
   {
-   int	i;
+   int	c,i;
 
   s += 9;
-  for (i=71; ((int)*s) && (int)*s != '/' && i--; s++)
-    if ((int)*s == 'D' || (int)*s == 'd')
+  for (i=71; (c=(int)*s) && c != '/' && i--; s++)
+    if (c == 'D' || c == 'd')
       *s = (char)'E';
+    else if ((c<'0' || c>'9') && c != '+' && c != '-'
+		&& c != 'e' && c != 'E' && c != '.')
+      *s = ' ';
 
   return;
   }
