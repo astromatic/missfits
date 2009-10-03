@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	01/04/2009
+*	Last modify:	03/10/2009
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -405,7 +405,7 @@ INPUT	Pointer to the output file (or stream),
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
-VERSION	01/04/2009
+VERSION	03/10/2009
  ***/
 int	write_xml_meta(FILE *file, char *error)
   {
@@ -449,7 +449,7 @@ int	write_xml_meta(FILE *file, char *error)
         WEBSITE);
   fprintf(file, "  <PARAM name=\"Soft_Auth\" datatype=\"char\" arraysize=\"*\""
         " ucd=\"meta.bib.author;meta.software\" value=\"%s\"/>\n",
-        "Emmanuel Bertin");
+        "Chiara Marmo,Emmanuel Bertin");
   fprintf(file, "  <PARAM name=\"Soft_Ref\" datatype=\"char\" arraysize=\"*\""
         " ucd=\"meta.bib.bibcode;meta.software\" value=\"%s\"/>\n",
         "2006ASPC..351..112B");
@@ -538,7 +538,7 @@ int	write_xml_meta(FILE *file, char *error)
         x->out_nslice,
         x->extheadflag? "T" : "F");
     for (i=0 ; i<prefs.ndisplay_key; i++)
-      fprintf(file, "<TD>%s</TD>",x->display_value[i]);
+      fprintf(file, "<TD>%s</TD>\n",x->display_value[i]);
     fprintf(file, "    </TR>\n");
     }
   fprintf(file, "   </TABLEDATA></DATA>\n");
