@@ -1,0 +1,428 @@
+/*
+                                ChangeLog
+
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*
+*       Part of:        MissFITS
+*
+*       Author:         C. MARMO (U-PSud), E. BERTIN (IAP)
+*
+*       Contents:       log of changes made to the MissFITS source
+*
+*       Last modify:    29/04/2010
+*
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+
+------------------------------------------------------------------------
+r62 | bertin | 2010-04-29 16:57:05 +0200 (Thu, 29 Apr 2010) | 7 lines
+
+Fixed bug that would generate an abort trap on MacOS X.
+Fixed minor compilation warnings on MacOS X.Added a copy of the CeCILL version 2 license and updated the COPYRIGHT file.
+Added support for 64 bit binary table elements in FITS library (thanks to J.P. McFarland).
+Improved precision of the processing time estimation.
+Updated documentation.
+Pushed version number to 2.4.
+
+------------------------------------------------------------------------
+r61 | bertin | 2009-10-03 19:44:35 +0200 (Sat, 03 Oct 2009) | 3 lines
+
+Fixed cosmetic issue and author names in XML output.
+Fixed warnings while generating the configure (thanks to S.Pascual).
+
+------------------------------------------------------------------------
+r60 | bertin | 2009-09-10 19:25:30 +0200 (Thu, 10 Sep 2009) | 6 lines
+
+Added --enable-auto-flags.
+Added --enable-best-link configure option.
+Added rpm-best option in Makefile.am.
+Cleaned up configure file.
+Pushed version number to 2.3.0.
+
+------------------------------------------------------------------------
+r59 | bertin | 2009-05-22 14:29:10 +0200 (Fri, 22 May 2009) | 2 lines
+
+Added filtering of non-numerical characters for floating-point FITS keywords (thanks to D.G. Bonfield for the suggestion).
+
+------------------------------------------------------------------------
+r58 | bertin | 2009-05-18 19:33:36 +0200 (Mon, 18 May 2009) | 2 lines
+
+New fitspick() fix with 80th character scan added.
+
+------------------------------------------------------------------------
+r57 | marmo | 2009-05-18 12:29:14 +0200 (Mon, 18 May 2009) | 1 line
+
+fitspick uninitialised value(s) fixed
+------------------------------------------------------------------------
+r55 | bertin | 2009-04-09 15:14:48 +0200 (Thu, 09 Apr 2009) | 3 lines
+
+Fixed references to COPYRIGHT file.
+Pushed version number to 2.2.11.
+
+------------------------------------------------------------------------
+r54 | marmo | 2009-04-01 18:51:22 +0200 (Wed, 01 Apr 2009) | 1 line
+
+Anomaly in xml fixed
+------------------------------------------------------------------------
+r53 | bertin | 2009-04-01 18:00:11 +0200 (Wed, 01 Apr 2009) | 4 lines
+
+Fixed icc 11 compilations options on x86-64 architecture.
+Cleaned up obsolete references.
+Added favicon to XSLT filter.
+
+------------------------------------------------------------------------
+r52 | bertin | 2009-04-01 14:40:59 +0200 (Wed, 01 Apr 2009) | 2 lines
+
+Did one more change to the XSLT filter.
+
+------------------------------------------------------------------------
+r51 | bertin | 2009-04-01 14:38:08 +0200 (Wed, 01 Apr 2009) | 2 lines
+
+Removed forgotten line in XSLT filter.
+
+------------------------------------------------------------------------
+r50 | bertin | 2009-04-01 14:23:04 +0200 (Wed, 01 Apr 2009) | 7 lines
+
+Cleaned up Makefile.am RPM options.
+Fixed rpm build issue on Fedora Core 10.
+Fixed display of max thread number in configure help.
+Added CeCILL COPYRIGHT file.
+Set the license string to CeCILL in the .spec file.
+Updated XSLT filter (AstrOmatic theme).
+
+------------------------------------------------------------------------
+r49 | bertin | 2009-03-10 19:10:47 +0100 (Tue, 10 Mar 2009) | 1 line
+
+Set mime-type property of MissFITS doc to application/pdf
+------------------------------------------------------------------------
+r47 | marmo | 2008-11-19 00:45:22 +0100 (Wed, 19 Nov 2008) | 1 line
+
+change directory name
+------------------------------------------------------------------------
+r46 | bertin | 2008-10-02 12:35:58 +0200 (Thu, 02 Oct 2008) | 7 lines
+
+Updated FITS library to the latest version.
+Updated autotools scripts (thanks to Greg Daues for pointing this out).
+Updated compiler autoconfiguration script.
+Updated .spec RPM script.
+Added rpm-icc target.
+Version is now 2.2.9
+
+------------------------------------------------------------------------
+r45 | bertin | 2008-08-05 11:51:44 +0200 (Tue, 05 Aug 2008) | 2 lines
+
+Fixed new .head shift problem with MEFs.
+
+------------------------------------------------------------------------
+r44 | bertin | 2008-08-04 18:45:50 +0200 (Mon, 04 Aug 2008) | 4 lines
+
+Fixed issue with .head header inclusions.
+Updated FITS library.
+Pushed version number to 2.2.8.
+
+------------------------------------------------------------------------
+r43 | bertin | 2008-01-10 17:35:13 +0100 (Thu, 10 Jan 2008) | 2 lines
+
+Fixed error in the y^2.x^4 PV monomial (found by R.Haigron & J.Guibert).
+
+------------------------------------------------------------------------
+r42 | bertin | 2007-12-06 12:01:37 +0100 (Thu, 06 Dec 2007) | 2 lines
+
+Reverted to old (imperfect but robust) command-line saving scheme for XML output. 
+
+------------------------------------------------------------------------
+r41 | marmo | 2007-11-14 17:27:05 +0100 (Wed, 14 Nov 2007) | 1 line
+
+documentation updated, version number pushed to 2.2.7: release version.
+------------------------------------------------------------------------
+r40 | marmo | 2007-11-14 14:11:51 +0100 (Wed, 14 Nov 2007) | 1 line
+
+bug in keyword display (and XML writing) fixed.
+------------------------------------------------------------------------
+r39 | marmo | 2007-10-16 20:45:34 +0200 (Tue, 16 Oct 2007) | 1 line
+
+maximum number of file increased to 32768.
+------------------------------------------------------------------------
+r38 | marmo | 2007-10-04 21:54:57 +0200 (Thu, 04 Oct 2007) | 1 line
+
+Improving xslt style sheet and XML output.
+------------------------------------------------------------------------
+r37 | marmo | 2007-10-04 01:49:22 +0200 (Thu, 04 Oct 2007) | 1 line
+
+working on xslt style
+------------------------------------------------------------------------
+r36 | marmo | 2007-09-21 19:29:19 +0200 (Fri, 21 Sep 2007) | 1 line
+
+.fits in command line removed in xml file.
+------------------------------------------------------------------------
+r35 | marmo | 2007-09-21 13:54:03 +0200 (Fri, 21 Sep 2007) | 1 line
+
+bad memory allocation in xml updating fixed.
+------------------------------------------------------------------------
+r34 | marmo | 2007-09-20 16:56:03 +0200 (Thu, 20 Sep 2007) | 1 line
+
+Bugs in writing keywords in building cubes fixed.
+------------------------------------------------------------------------
+r33 | marmo | 2007-09-18 17:11:18 +0200 (Tue, 18 Sep 2007) | 1 line
+
+XML diagnostics on external headers fixed; debugging print removed.
+------------------------------------------------------------------------
+r32 | marmo | 2007-09-18 16:38:34 +0200 (Tue, 18 Sep 2007) | 1 line
+
+check for getenv function added in configure.ac
+------------------------------------------------------------------------
+r31 | marmo | 2007-09-12 17:43:10 +0200 (Wed, 12 Sep 2007) | 4 lines
+
+Bug on keyword slicing fixed.
+version number pushed to 2.2.6
+
+
+------------------------------------------------------------------------
+r30 | marmo | 2007-08-14 16:19:15 +0200 (Tue, 14 Aug 2007) | 1 line
+
+Adding precision in floating number display in the XML.
+------------------------------------------------------------------------
+r29 | marmo | 2007-08-08 14:07:35 +0200 (Wed, 08 Aug 2007) | 1 line
+
+fitsroot function in prefs.c. This is the release version.
+------------------------------------------------------------------------
+r28 | marmo | 2007-08-07 20:04:27 +0200 (Tue, 07 Aug 2007) | 1 line
+
+new version of documentation added.
+------------------------------------------------------------------------
+r27 | marmo | 2007-08-07 19:48:27 +0200 (Tue, 07 Aug 2007) | 1 line
+
+valgrind test done.
+------------------------------------------------------------------------
+r26 | marmo | 2007-08-06 17:57:37 +0200 (Mon, 06 Aug 2007) | 1 line
+
+xml output and its xslt stylesheet finalised. Almost official release....
+------------------------------------------------------------------------
+r25 | marmo | 2007-08-05 15:22:44 +0200 (Sun, 05 Aug 2007) | 1 line
+
+compacting Config file displaying in xslt style-sheet. Working on keyword displaying. 
+------------------------------------------------------------------------
+r24 | marmo | 2007-08-03 21:20:03 +0200 (Fri, 03 Aug 2007) | 1 line
+
+adding conversion routine...
+------------------------------------------------------------------------
+r23 | marmo | 2007-08-03 21:19:08 +0200 (Fri, 03 Aug 2007) | 1 line
+
+working on xml output and bitpix conversion...
+------------------------------------------------------------------------
+r22 | marmo | 2007-08-02 21:10:51 +0200 (Thu, 02 Aug 2007) | 4 lines
+
+Working on conversion in BITPIX 16.
+PROCESS_TYPE TOBITPIX16 added.
+Version pushed to 2.2.5.
+
+------------------------------------------------------------------------
+r21 | marmo | 2007-08-01 19:29:00 +0200 (Wed, 01 Aug 2007) | 1 line
+
+working on xml output.
+------------------------------------------------------------------------
+r20 | bertin | 2007-07-17 13:51:15 +0200 (Tue, 17 Jul 2007) | 2 lines
+
+Updated the FITS library to the latest version.
+
+------------------------------------------------------------------------
+r19 | marmo | 2007-07-03 20:25:08 +0200 (Tue, 03 Jul 2007) | 1 line
+
+deleting debugging comments ... :(
+------------------------------------------------------------------------
+r18 | marmo | 2007-07-03 17:57:58 +0200 (Tue, 03 Jul 2007) | 1 line
+
+writing keywords in building cubes fixed.
+------------------------------------------------------------------------
+r17 | marmo | 2007-07-03 14:52:05 +0200 (Tue, 03 Jul 2007) | 1 line
+
+bug in SAVE_TYPE BACKUP and REPLACE when OUTFILE_TYPE is SAME, fixed. 
+------------------------------------------------------------------------
+r16 | marmo | 2007-06-20 16:53:58 +0200 (Wed, 20 Jun 2007) | 1 line
+
+fits library updated
+------------------------------------------------------------------------
+r15 | marmo | 2007-06-20 14:56:07 +0200 (Wed, 20 Jun 2007) | 1 line
+
+fitsverify error fixed in ext_head() (fitshead.c): EXTEND keyword is not allowed in extension header.
+------------------------------------------------------------------------
+r14 | marmo | 2007-06-19 20:13:40 +0200 (Tue, 19 Jun 2007) | 1 line
+
+version number pushed to 2.2.4; rpm building generalised; Akim Demaille macro for solving the datarootdir issue added (in the svn and in the distribution).
+------------------------------------------------------------------------
+r13 | marmo | 2007-06-14 12:11:40 +0200 (Thu, 14 Jun 2007) | 1 line
+
+Error visualization added in the xslt
+------------------------------------------------------------------------
+r12 | marmo | 2007-06-13 13:25:21 +0200 (Wed, 13 Jun 2007) | 1 line
+
+fitsadd PCOUNT and GCOUNT generalised to NAXIS=n
+------------------------------------------------------------------------
+r11 | marmo | 2007-06-12 20:41:58 +0200 (Tue, 12 Jun 2007) | 1 line
+
+Added specific position for PCOUNT and GCOUNT keywords (in fitsadd()); ext_head() had been modified to avoid fitsverify errors. Number version pushed to 2.2.3
+------------------------------------------------------------------------
+r10 | marmo | 2007-06-11 20:36:57 +0200 (Mon, 11 Jun 2007) | 1 line
+
+no more fitsverify errors! removekeywordfrom_head() added in FITS library (by Emmanuel) and replaced in the code.
+------------------------------------------------------------------------
+r9 | marmo | 2007-06-05 19:17:02 +0200 (Tue, 05 Jun 2007) | 1 line
+
+fitsutil.c updated to the last version.
+------------------------------------------------------------------------
+r8 | marmo | 2007-05-31 19:56:46 +0200 (Thu, 31 May 2007) | 1 line
+
+Makefile and configure updated: version number pushed to 2.2.2
+------------------------------------------------------------------------
+r7 | marmo | 2007-05-31 19:44:52 +0200 (Thu, 31 May 2007) | 1 line
+
+First version of xml and xsl file added. write_xmlconfigparam() modified to write in right way P_STRING and P_STRINGLIST configuration parameters.
+------------------------------------------------------------------------
+r6 | marmo | 2007-05-25 18:01:01 +0200 (Fri, 25 May 2007) | 1 line
+
+Image list input allowed. Fitsverify incompatibility in splitted extensions fixed: prim_head() in fitshead.c deletes PCOUNT and GCOUNT keywords.
+------------------------------------------------------------------------
+r5 | marmo | 2007-05-07 19:49:15 +0200 (Mon, 07 May 2007) | 1 line
+
+configure.ac updated , computing time added, preflist updated; nuber version pushed to 2.2.1 .
+------------------------------------------------------------------------
+r4 | marmo | 2007-02-23 16:49:01 +0100 (Fri, 23 Feb 2007) | 125 lines
+
+------------------------------------------------------------------------
+r483 | marmo | 2007-02-23 16:43:21 +0100 (Fri, 23 Feb 2007) | 1 line
+
+Hoping that the last version is inside!
+------------------------------------------------------------------------
+r482 | marmo | 2007-02-23 16:37:17 +0100 (Fri, 23 Feb 2007) | 1 line
+
+documentation at the right place
+------------------------------------------------------------------------
+r480 | marmo | 2007-02-19 14:36:17 +0100 (Mon, 19 Feb 2007) | 1 line
+
+bug report adressed to Forum
+------------------------------------------------------------------------
+r479 | marmo | 2007-02-19 14:28:58 +0100 (Mon, 19 Feb 2007) | 1 line
+
+fixed another typo in README :(
+------------------------------------------------------------------------
+r478 | marmo | 2007-02-19 14:23:00 +0100 (Mon, 19 Feb 2007) | 1 line
+
+fixed typo in README
+------------------------------------------------------------------------
+r477 | marmo | 2007-02-19 13:57:25 +0100 (Mon, 19 Feb 2007) | 1 line
+
+right conversion for pdf man file
+------------------------------------------------------------------------
+r475 | marmo | 2007-02-16 18:24:20 +0100 (Fri, 16 Feb 2007) | 1 line
+
+final version of the pdf documentation
+------------------------------------------------------------------------
+r448 | marmo | 2007-01-17 20:36:28 +0100 (Wed, 17 Jan 2007) | 1 line
+
+changing pile with pack in help about data-cubes
+------------------------------------------------------------------------
+r398 | marmo | 2006-12-07 16:39:15 +0100 (Thu, 07 Dec 2006) | 1 line
+
+Copyright, help, bug report informations updated
+------------------------------------------------------------------------
+r396 | marmo | 2006-12-06 18:09:04 +0100 (Wed, 06 Dec 2006) | 1 line
+
+pdf documentation added to the distribution; bugs detected by valgrind fixed, warnings in compilation fixed
+------------------------------------------------------------------------
+r393 | marmo | 2006-12-05 18:22:18 +0100 (Tue, 05 Dec 2006) | 1 line
+
+All FILE_TYPE and SAVE_TYPE combinations tested. read_aschead updated. inverse keyword slicing added. I hope this will be the almost final version.
+------------------------------------------------------------------------
+r391 | marmo | 2006-12-04 20:00:56 +0100 (Mon, 04 Dec 2006) | 1 line
+
+still working on saving FILE_DIR file type
+------------------------------------------------------------------------
+r390 | marmo | 2006-12-01 19:18:40 +0100 (Fri, 01 Dec 2006) | 1 line
+
+wcs tools updated to latest version; all SAVE_TYPE options work with all OUTFILE_TYPE but FILE_DIR (not yet tested).
+------------------------------------------------------------------------
+r387 | marmo | 2006-11-30 21:15:35 +0100 (Thu, 30 Nov 2006) | 1 line
+
+adding CUBE and SLICE output file type to all SAVE TYPE (still missing REPLACE case).
+------------------------------------------------------------------------
+r385 | marmo | 2006-11-29 21:35:16 +0100 (Wed, 29 Nov 2006) | 1 line
+
+the option to build cubes works. version pushed to 2.2.0
+------------------------------------------------------------------------
+r382 | marmo | 2006-11-28 19:10:59 +0100 (Tue, 28 Nov 2006) | 1 line
+
+still not working but no more segfault
+------------------------------------------------------------------------
+r381 | marmo | 2006-11-27 21:03:59 +0100 (Mon, 27 Nov 2006) | 1 line
+
+working on piling cubes...  still producing a segfault; fits library updated to the last available version
+------------------------------------------------------------------------
+r375 | marmo | 2006-11-14 17:58:28 +0100 (Tue, 14 Nov 2006) | 1 line
+
+file for opteron rpm added
+------------------------------------------------------------------------
+r372 | marmo | 2006-11-10 16:06:26 +0100 (Fri, 10 Nov 2006) | 1 line
+
+sorry, I forgot missfits.spec.in
+------------------------------------------------------------------------
+r371 | marmo | 2006-11-10 16:05:03 +0100 (Fri, 10 Nov 2006) | 1 line
+
+rpm building configured
+------------------------------------------------------------------------
+r352 | marmo | 2006-11-03 12:16:34 +0100 (Fri, 03 Nov 2006) | 1 line
+
+Output file type SAME with save type NEW enabled
+------------------------------------------------------------------------
+r339 | marmo | 2006-10-24 14:43:22 +0200 (Tue, 24 Oct 2006) | 1 line
+
+committing on the correct database
+------------------------------------------------------------------------
+r305 | marmo | 2006-07-21 20:26:55 +0200 (Fri, 21 Jul 2006) | 1 line
+
+fits and wcs libraries updated; version number changed to 1.9.1
+------------------------------------------------------------------------
+r304 | marmo | 2006-07-21 20:20:35 +0200 (Fri, 21 Jul 2006) | 1 line
+
+test2
+------------------------------------------------------------------------
+r303 | marmo | 2006-07-21 20:10:28 +0200 (Fri, 21 Jul 2006) | 1 line
+
+test
+------------------------------------------------------------------------
+r296 | baillard | 2006-07-19 15:27:57 +0200 (Wed, 19 Jul 2006) | 2 lines
+
+Change name
+
+------------------------------------------------------------------------
+r294 | baillard | 2006-07-19 15:06:54 +0200 (Wed, 19 Jul 2006) | 2 lines
+
+Change name
+
+------------------------------------------------------------------------
+r282 | marmo | 2006-07-11 18:36:12 +0200 (Tue, 11 Jul 2006) | 1 line
+
+REMOVE_KEYWORD and REPLACE_KEYWORD options enabled
+------------------------------------------------------------------------
+r281 | marmo | 2006-07-11 12:23:11 +0200 (Tue, 11 Jul 2006) | 1 line
+
+-dd and -v options added
+------------------------------------------------------------------------
+r279 | marmo | 2006-07-10 18:16:02 +0200 (Mon, 10 Jul 2006) | 1 line
+
+reference version for missfits
+
+-------------------------------- old ChangeLog --------------------------------
+Who     When            Where(mostly)   What
+
+CM         05/2007      xml.c()         Added xml output
+
+CM         11/2006      makeit()        Added pile datacubes
+                        file.c()
+
+CM         10/2006      makeit()        Added unpile datacubes
+                        file.c()
+
+EB      26/11/2002      makeit()        Added support for removal of FITS
+                                        keywords.
+                        preflist.h      Updated dump format.
+	
