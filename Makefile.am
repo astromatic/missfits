@@ -1,11 +1,11 @@
 # Main Makefile for Missfits
-# Copyright (C) 2006-2009 Emmanuel Bertin & Chiara Marmo IAP/CNRS/UPMC
+# Copyright (C) 2006-2010 Emmanuel Bertin & Chiara Marmo IAP/CNRS/UPMC/U-PSUD
 AUTOMAKE_OPTIONS	= foreign no-dependencies
 SUBDIRS			= man src 
 dist_pkgdata_DATA	= xsl/missfits.xsl
-EXTRA_DIST		= AUTHORS BUGS COPYRIGHT HISTORY INSTALL README THANKS \
-			  TODO ChangeLog acx_prog_cc_optim.m4 doc \
-			  acx_urbi_resolve_dir.m4
+EXTRA_DIST		= AUTHORS BUGS COPYRIGHT HISTORY INSTALL LICENSE \
+			  README THANKS TODO ChangeLog \
+			  acx_prog_cc_optim.m4 doc acx_urbi_resolve_dir.m4
 RPM_ROOTDIR 		= `rpmbuild --nobuild -E %_topdir`
 RPM_SRCDIR		= $(RPM_ROOTDIR)/SOURCES
 dist-hook:

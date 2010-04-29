@@ -9,7 +9,7 @@
 *
 *	Contents:	XML logging.
 *
-*	Last modify:	03/10/2009
+*	Last modify:	29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -99,7 +99,7 @@ INPUT
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	Global preferences are used.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP) 
-VERSION	07/08/2007
+VERSION	29/04/2010
  ***/
 int	update_xml(char *name, int t, int nfile,
                    catstruct *cat, catstruct *incat, filenum filetype,
@@ -142,7 +142,7 @@ int	update_xml(char *name, int t, int nfile,
     case FILE_SLICE:
       sprintf(x->infiletype,"CUBE");
       sprintf(x->outfiletype,"SLICE");
-      sprintf(str2, prefs.slice_format, t+1);
+      sprintf(str2, prefs.slice_format, t+prefs.slice_start);
       sprintf(tmpname,"%s%s",name,str2);
       if (prefs.save_type==SAVE_NEW)
         {
@@ -150,7 +150,7 @@ int	update_xml(char *name, int t, int nfile,
         sprintf(x->filename,"%s%s%s",tmpname,prefs.new_suffix,FITS_SUFFIX);
         }
       else
-        sprintf(x->filename,tmpname);
+        strcpy(x->filename,tmpname);
       x->extheadflag=headflag;
       QCALLOC(x->display_value, char *, prefs.ndisplay_key);
       for (n = 0; n<prefs.ndisplay_key; n++)
@@ -170,7 +170,7 @@ int	update_xml(char *name, int t, int nfile,
         {
         sprintf(x->infiletype,"MULTI");
         sprintf(x->outfiletype,"SPLIT");
-        sprintf(str2, prefs.split_format, i); 
+        sprintf(str2, prefs.split_format, i+prefs.split_start-1); 
         sprintf(tmpname,"%s%s",name,str2);
         if (prefs.save_type==SAVE_NEW)
           {
@@ -178,7 +178,7 @@ int	update_xml(char *name, int t, int nfile,
           sprintf(x->filename,"%s%s%s",tmpname,prefs.new_suffix,FITS_SUFFIX);
           }
         else
-          sprintf(x->filename,tmpname);
+          strcpy(x->filename,tmpname);
         x->extheadflag=headflag;
         QCALLOC(x->display_value, char *, prefs.ndisplay_key);
         for (n = 0; n<prefs.ndisplay_key; n++)
@@ -239,7 +239,7 @@ int	update_xml(char *name, int t, int nfile,
           {
           sprintf(x->infiletype,"MULTI");
           sprintf(x->outfiletype,"SPLIT");
-          sprintf(str2, prefs.split_format, i); 
+          sprintf(str2, prefs.split_format, i+prefs.split_start-1); 
           sprintf(tmpname,"%s%s",name,str2);
           if (prefs.save_type==SAVE_NEW)
             {
@@ -247,7 +247,7 @@ int	update_xml(char *name, int t, int nfile,
             sprintf(x->filename,"%s%s%s",tmpname,prefs.new_suffix,FITS_SUFFIX);
             }
           else
-            sprintf(x->filename,tmpname);
+            strcpy(x->filename,tmpname);
           x->extheadflag=headflag;
           QCALLOC(x->display_value, char *, prefs.ndisplay_key);
           for (n = 0; n<prefs.ndisplay_key; n++)
@@ -270,7 +270,7 @@ int	update_xml(char *name, int t, int nfile,
         {
         sprintf(x->infiletype,"CUBE");
         sprintf(x->outfiletype,"SLICE");
-        sprintf(str2, prefs.slice_format, t+1); 
+        sprintf(str2, prefs.slice_format, t+prefs.slice_start); 
         sprintf(tmpname,"%s%s",name,str2);
         if (prefs.save_type==SAVE_NEW)
           {
@@ -278,7 +278,7 @@ int	update_xml(char *name, int t, int nfile,
           sprintf(x->filename,"%s%s%s",tmpname,prefs.new_suffix,FITS_SUFFIX);
           }
         else
-          sprintf(x->filename,tmpname);
+          strcpy(x->filename,tmpname);
         x->extheadflag=headflag;
         QCALLOC(x->display_value, char *, prefs.ndisplay_key);
         for (n = 0; n<prefs.ndisplay_key; n++)
@@ -405,7 +405,7 @@ INPUT	Pointer to the output file (or stream),
 OUTPUT	RETURN_OK if everything went fine, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	C. Marmo (IAP) E. Bertin (IAP)
-VERSION	03/10/2009
+VERSION	29/04/2010
  ***/
 int	write_xml_meta(FILE *file, char *error)
   {
@@ -602,8 +602,12 @@ int	write_xml_meta(FILE *file, char *error)
               "  ","%s");
   write_xmlconfigparam(file, "Split_Suffix", "",
               "  ","%s");
+  write_xmlconfigparam(file, "Split_Start", "",
+              "  ","%d");
   write_xmlconfigparam(file, "Slice_Suffix", "",
               "  ","%s");
+  write_xmlconfigparam(file, "Slice_Start", "",
+              "  ","%d");
 
 /*-- Fits Data */
 
@@ -681,7 +685,7 @@ INPUT	Output stream (file) pointer,
 OUTPUT	RETURN_OK if the keyword exists, RETURN_ERROR otherwise.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	06/10/2006
+VERSION	29/04/2010
  ***/
 int	write_xmlconfigparam(FILE *file, char *name, char *unit,
                  char *ucd, char *format)
@@ -793,7 +797,7 @@ int	write_xmlconfigparam(FILE *file, char *name, char *unit,
                 name, ucd, value);
         for (j=1; j<n; j++)
           {
-          sprintf(value, ((char **)key[i].ptr)[j]);
+          strcpy(value, ((char **)key[i].ptr)[j]);
           fprintf(file, ",%s", value);
           }
         fprintf(file, "\"/>\n");
@@ -804,7 +808,7 @@ int	write_xmlconfigparam(FILE *file, char *name, char *unit,
                 name, ucd);
       break;
     case P_KEY:
-      sprintf(value, key[i].keylist[*((int *)key[i].ptr)]);
+      strcpy(value, key[i].keylist[*((int *)key[i].ptr)]);
       fprintf(file, "   <PARAM name=\"%s\" datatype=\"char\" arraysize=\"*\""
         " ucd=\"%s\" value=\"%s\"/>\n",
         name, ucd, value);
@@ -813,13 +817,13 @@ int	write_xmlconfigparam(FILE *file, char *name, char *unit,
       n = *(key[i].nlistptr);
       if (n)
         {
-        sprintf(value, key[i].keylist[((int *)key[i].ptr)[0]]);
+        strcpy(value, key[i].keylist[((int *)key[i].ptr)[0]]);
         fprintf(file, "   <PARAM name=\"%s\" datatype=\"char\""
                 " arraysize=\"*\" ucd=\"%s\" value=\"%s",
                 name, ucd, value);
         for (j=1; j<n; j++)
           {
-          sprintf(value, key[i].keylist[((int *)key[i].ptr)[j]]);
+          strcpy(value, key[i].keylist[((int *)key[i].ptr)[j]]);
           fprintf(file, ",%s", value);
           }
         fprintf(file, "\"/>\n");

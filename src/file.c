@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    05/08/2008
+*       Last modify:    29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -48,7 +48,7 @@ OUTPUT	Returns a pointer to pointers of catalogs read or NULL if no success.
 	accordingly.
 NOTES	Global preferences are used.
 AUTHOR	E. Bertin (IAP) C. Marmo (IAP)
-VERSION	05/08/2008
+VERSION	29/04/2010
  ***/
 catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
                                  filenum *filetype, int *headflag)
@@ -166,9 +166,9 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
       for (i=1; i<100; i++)
         {
         if (prefs.outfile_type == FILE_CUBE)
-          sprintf(str, prefs.slice_format, i);
+          sprintf(str, prefs.slice_format, i+prefs.slice_start-1);
         if (prefs.outfile_type == FILE_MULTI)
-          sprintf(str, prefs.split_format, i);
+          sprintf(str, prefs.split_format, i+prefs.split_start-1);
         sprintf(gstr, "%s/%s%s", name, prefix, str);
         if ((cat=read_cat(gstr)))
 	  {
@@ -217,12 +217,12 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
       {
       if (prefs.outfile_type==FILE_CUBE)
         {
-        sprintf(str, prefs.slice_format, i);
+        sprintf(str, prefs.slice_format, i+prefs.slice_start-1);
         *filetype = FILE_SLICE;
         }
       if (prefs.outfile_type==FILE_MULTI)
         {
-        sprintf(str, prefs.split_format, i);
+        sprintf(str, prefs.split_format, i+prefs.split_start-1);
         *filetype = FILE_SPLIT;
         }
       sprintf(gstr, "%s%s", name, str);
@@ -339,7 +339,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         for (i=0; i<ntab; i++)
           {
           cat = new_cat(1);
-          sprintf(str, prefs.split_format, i);
+          sprintf(str, prefs.split_format, i+prefs.split_start-1);
           sprintf(filename, "%s%s", tmpname, str);
           copy_tab_fromptr(tab, cat, 0);
           add_cleanupfilename(filename); 
@@ -350,7 +350,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           }
       if (flagcube)
         {
-        sprintf(str, prefs.slice_format,t+1);
+        sprintf(str, prefs.slice_format,t+prefs.slice_start);
         sprintf(filename, "%s%s", tmpname, str);
         save_cat(outcat, filename);
         }
@@ -365,7 +365,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         if (ntab==1)
           i++;
         cat = new_cat(1);
-        sprintf(str, prefs.split_format, i);
+        sprintf(str, prefs.split_format, i+prefs.split_start-1);
         sprintf(filename, "%s%s", tmpname, str);
 	copy_tab_fromptr(tab, cat, 0);
         add_cleanupfilename(filename);
@@ -378,7 +378,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
 
     case FILE_SLICE:
       flagcube = 1;
-      sprintf(str, prefs.slice_format,t+1);
+      sprintf(str, prefs.slice_format,t+prefs.slice_start);
       sprintf(filename, "%s%s", tmpname,str);
       save_cat(outcat, filename);
       break;
@@ -427,7 +427,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         tab = tab->nexttab;
         for (i=1; i<tab->naxisn[2]+1; i++)
           {
-          sprintf(str, prefs.slice_format, i);
+          sprintf(str, prefs.slice_format, i+prefs.slice_start-1);
           strtok(tab->cat->filename,"/");
           sprintf(str3, "%s/%s%s", tab->cat->filename, tailname, str);
           remove(str3);
@@ -440,7 +440,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           {
           if (ntab==1)
             i++;
-          sprintf(str, prefs.split_format, i);
+          sprintf(str, prefs.split_format, i+prefs.split_start-1);
           sprintf(str2, "%s%s", tmpname, str);
           sprintf(str3, "%s/%s%s", dirname, tailname, str);
           rename(str2, str3);
@@ -448,7 +448,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         }
       else if (flagcube)
         {
-        sprintf(str, prefs.slice_format, t+1);
+        sprintf(str, prefs.slice_format, t+prefs.slice_start);
         sprintf(str2, "%s%s", tmpname, str);
         sprintf(str3, "%s/%s%s", dirname, tailname, str);
         rename(str2, str3);
@@ -476,7 +476,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           {
           if (ntab==1)
             i++;
-          sprintf(str, prefs.split_format, i);
+          sprintf(str, prefs.split_format, i+prefs.split_start-1);
           sprintf(str2, "%s%s", tmpname, str);
           sprintf(str3, "%s/%s%s", dirname, tailname, str);
 /*-------- Check if a backup of a previous file is needed */
@@ -490,7 +490,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         }
       else if (flagcube)
         {
-        sprintf(str, prefs.slice_format, t+1);
+        sprintf(str, prefs.slice_format, t+prefs.slice_start);
         sprintf(str2, "%s%s", tmpname, str);
         sprintf(str3, "%s/%s%s", dirname, tailname, str);
 /*-------- Check if a backup of a previous file is needed */
@@ -531,7 +531,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
           {
           if (ntab==1)
             i++;
-          sprintf(str, prefs.split_format, i);
+          sprintf(str, prefs.split_format, i+prefs.split_start-1);
           sprintf(str2, "%s%s", tmpname, str);
           if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
             *pstr = '\0';
@@ -544,7 +544,7 @@ void	save_fitsfiles(char *name, int t, int nfile, catstruct *outcat, filenum fil
         {
         if (flagcube)
           {
-          sprintf(str, prefs.slice_format, t+1);
+          sprintf(str, prefs.slice_format, t+prefs.slice_start);
           sprintf(str2, "%s%s", tmpname, str);
           if ((pstr=strrchr(str, '.')) && !cistrcmp(pstr, ".fit",1))
             *pstr = '\0';
