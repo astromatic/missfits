@@ -7,7 +7,7 @@
 *
 *       Author:         E.BERTIN (IAP)
 *
-*       Contents:       Main loop
+*       Contents:       Custom functions
 *
 *       Last modify:    29/06/2002
 *

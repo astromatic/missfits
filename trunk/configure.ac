@@ -1,12 +1,12 @@
 # configure.in for MissFITS
-# (C) E.Bertin / C. Marmo 2006-2009
+# (C) E.Bertin / C. Marmo 2006-2010
 # Process this file with autoconf to produce a configure script.
 # First, disable the annoying config.cache
 define([AC_CACHE_LOAD],)
 define([AC_CACHE_SAVE],)
 
 # This is your standard Bertin Marmo source code...
-AC_INIT(missfits, 2.3.0, [marmo@iap.fr bertin@iap.fr])
+AC_INIT(missfits, 2.4.0, [marmo@iap.fr bertin@iap.fr])
 AC_CONFIG_SRCDIR(src/makeit.c)
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CONFIG_HEADERS(config.h)

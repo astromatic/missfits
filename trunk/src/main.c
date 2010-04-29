@@ -9,7 +9,7 @@
 *
 *	Contents:	Parsing of the command line.
 *
-*	Last modify:	06/12/2007
+*	Last modify:	29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -22,7 +22,8 @@
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
-#include        <time.h>
+#include	<time.h>
+#include	<sys/time.h>
 
 #include	"define.h"
 #include	"globals.h"
@@ -36,6 +37,8 @@
 "> to dump a default configuration file: missfits -d \n" \
 "> to dump a default extended configuration file: missfits -dd \n"
 
+static double	counter_seconds(void);
+
 extern const char	notokstr[];
 
 time_t		thetime, thetime2;
@@ -47,6 +50,7 @@ int	main(int argc, char *argv[])
    FILE         *fp;
    char 	liststr[MAXCHAR];
    char		**argkey, **argval, *str, *listname, *listbuf;
+   double	dtime;
    int		a, bufpos, bufsize, l, narg, nim, opt, opt2;
    struct tm	*tm;
 
@@ -64,6 +68,7 @@ int	main(int argc, char *argv[])
 
 /* Processing start date and time */
   thetime = time(NULL);
+  dtime = counter_seconds();
   tm = localtime(&thetime);
   sprintf(prefs.sdate_start,"%04d-%02d-%02d",
         tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
@@ -182,7 +187,7 @@ int	main(int argc, char *argv[])
         tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday);
   sprintf(prefs.stime_end,"%02d:%02d:%02d",
         tm->tm_hour, tm->tm_min, tm->tm_sec);
-  prefs.time_diff = difftime(thetime2, thetime);
+  prefs.time_diff = counter_seconds() - dtime;
 
 /* Write XML */
 
@@ -196,7 +201,29 @@ int	main(int argc, char *argv[])
   endprefs();
 
   NFPRINTF(OUTPUT, "");
-  NPRINTF(OUTPUT, "> All done (in %.0f s)\n", prefs.time_diff);
+  NPRINTF(OUTPUT, "> All done (in %.1f s)\n", prefs.time_diff);
 
   exit(EXIT_SUCCESS);
   }
+
+
+/****** counter_seconds *******************************************************
+PROTO	double counter_seconds(void)
+PURPOSE	Count the number of seconds (with an arbitrary offset).
+INPUT	-.
+OUTPUT	Returns a number of seconds.
+NOTES	Results are meaningful only for tasks that take one microsec or more.
+AUTHOR	E. Bertin (IAP)
+VERSION	24/09/2009
+ ***/
+static double	counter_seconds(void)
+  {
+   struct timeval	tp;
+   struct timezone	tzp;
+   int			dummy;
+
+  dummy = gettimeofday(&tp,&tzp);
+  return (double) tp.tv_sec + (double) tp.tv_usec * 1.0e-6;
+  }
+
+

@@ -9,7 +9,7 @@
 *
 *       Contents:       Main loop
 *
-*       Last modify:    14/08/2007
+*       Last modify:    29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -220,7 +220,7 @@ void	makeit(void)
           {
           if (flagcube)
             {
-            sprintf(im,prefs.slicekey_format,s+1);
+            sprintf(im,prefs.slicekey_format,s+prefs.slice_start);
             sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
             if ((n=fitsfind(tab->headbuf, prefs.oldslice_key[k]))!=RETURN_ERROR)
               strncpy(tab->headbuf+n*80, prefs.newslice_key[k],8);
@@ -229,7 +229,7 @@ void	makeit(void)
             {
             for (c=0; c<nfile; c++)
               {
-              sprintf(im,prefs.slicekey_format,c+1);
+              sprintf(im,prefs.slicekey_format,c+prefs.slice_start);
               sprintf(prefs.oldslice_key[k], "%s%s", prefs.slice_key[k],im);
               if (tab->naxis>0)
                 {
@@ -294,14 +294,14 @@ INPUT	Pointer to the tab,
 OUTPUT	-.
 NOTES	-.
 AUTHOR	E. Bertin (IAP)
-VERSION	11/06/2001
+VERSION	29/04/2010
  ***/
 void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
 
   {
    h_type		htype;
    t_type		ttype;
-   char			keyword[10], str[100],tmpkey[8],
+   char			keyword[12], str[100],tmpkey[12],
 			*filename,*rfilename,*tstr,*pstr;
    int			i,n,p;
 
@@ -337,7 +337,7 @@ void	print_tabinfo(tabstruct *tab, xmlkeystruct *xmlkey, int no)
     if ((n=fitsfind(tab->headbuf, tmpkey))>0)
       {
       if (prefs.xml_flag)
-        sprintf(xmlkey[i].display_key,prefs.display_key[i]);
+        strcpy(xmlkey[i].display_key,prefs.display_key[i]);
       fitspick(tab->headbuf+n*80, keyword, gstr, &htype, &ttype, str);
 /*---- Display formatting is a modified version of fitswrite() */
       switch(htype)

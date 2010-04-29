@@ -9,7 +9,7 @@
 *
 *	Contents:	Keywords for the configuration file.
 *
-*	Last modify:	31/05/2007
+*	Last modify:	29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -37,6 +37,7 @@ pkeystruct key[] =
   {"HEADER_SUFFIX", P_STRING, prefs.head_suffix},
   {"NEW_SUFFIX", P_STRING, prefs.new_suffix},
   {"NEXTENSIONS_MIN", P_INT, &prefs.next_min, 0,1000000000},
+  {"NTHREADS", P_INT, &prefs.nthreads, 0, THREADS_PREFMAX},
   {"OUTFILE_TYPE", P_KEY, &prefs.outfile_type, 0,0, 0.0,0.0,
     {"SAME", "MULTI", "SPLIT", "SLICE", "CUBE", "DIR", ""}},
   {"PROCESS_TYPE", P_KEY, &prefs.process_type, 0,0, 0.0,0.0,
@@ -45,19 +46,20 @@ pkeystruct key[] =
    {""}, 0, MAXKEYWORD, &prefs.nremove_key},
   {"REPLACE_KEYWORD",  P_STRINGLIST, prefs.replace_key, 0,0, 0.0,0.0,
    {""}, 0, MAXKEYWORD, &prefs.nreplace_key},
-  {"SLICE_SUFFIX", P_STRING, prefs.slice_format},
-  {"SLICE_KEYWORD", P_STRINGLIST, prefs.slice_key, 0,0, 0.0,0.0,
-   {""}, 0, MAXKEYWORD, &prefs.nslice_key},
-  {"SLICEKEY_FORMAT", P_STRING, prefs.slicekey_format},
   {"SAVE_TYPE", P_KEY, &prefs.save_type, 0,0, 0.0,0.0,
    {"NONE","NEW","BACKUP","REPLACE",""}},
+  {"SLICEKEY_FORMAT", P_STRING, prefs.slicekey_format},
+  {"SLICE_KEYWORD", P_STRINGLIST, prefs.slice_key, 0,0, 0.0,0.0,
+   {""}, 0, MAXKEYWORD, &prefs.nslice_key},
+  {"SLICE_START", P_INT, &prefs.slice_start, 0, 100},
+  {"SLICE_SUFFIX", P_STRING, prefs.slice_format},
+  {"SPLIT_START", P_INT, &prefs.split_start, 0, 100},
   {"SPLIT_SUFFIX", P_STRING, prefs.split_format},
   {"VERBOSE_TYPE", P_KEY, &prefs.verbose_type, 0,0, 0.0,0.0,
    {"QUIET","NORMAL","FULL",""}},
+  {"WRITE_XML", P_BOOL, &prefs.xml_flag},
   {"XML_NAME", P_STRING, prefs.xml_name},
   {"XSL_URL", P_STRING, prefs.xsl_name},
-  {"WRITE_XML", P_BOOL, &prefs.xml_flag},
-  {"NTHREADS", P_INT, &prefs.nthreads, 0, THREADS_PREFMAX},
   {""}
  };
 
@@ -94,7 +96,9 @@ char *default_prefs[] =
 "                                       # \"SAME\", \"MULTI\", \"SPLIT\",",
 "                                       # \"SLICE\", \"CUBE\" or \"DIR\"",
 "SPLIT_SUFFIX           .%02d.fits      # Suffix expected for split FITS files",
+"*SPLIT_START            1               # Suffix number of the first extension",
 "SLICE_SUFFIX           .%02d.fits      # Suffix expected for sliced FITS files",
+"*SLICE_START            1               # Suffix number of the first slice",
 " ",
 "#-------------------------------- FITS data  ----------------------------------",
 " ",

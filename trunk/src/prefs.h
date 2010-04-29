@@ -9,7 +9,7 @@
 *
 *	Contents:	Include for prefs.c.
 *
-*	Last modify:	06/12/2007
+*	Last modify:	29/04/2010
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -51,9 +51,11 @@ typedef struct
   char		slicekey_format[MAXCHAR];   /* Suffix format for splitted key */
   enum {SAVE_NONE,SAVE_NEW,SAVE_BACKUP,SAVE_REPLACE}
 		save_type;		    /* Save option */
-  enum {QUIET, NORM, WARN, FULL} verbose_type;	/* display type */
+  enum {QUIET, NORM, FULL} verbose_type;	/* display type */
   char		split_format[MAXCHAR];	    /* Suffix format for splitted files */
+  int		split_start;		    /* First extension suffix number */
   char		slice_format[MAXCHAR];	    /* Suffix format for splitted files */
+  int		slice_start;		    /* First slice suffix number */
   int		fixwfi_flag;		    /* Fix WFI headers? */
   char		head_suffix[MAXCHAR];	    /* Generic suffix for FITS headers */
 /* Multithreading */
