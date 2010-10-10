@@ -27,8 +27,9 @@ The general SYNTAX is similar to that of SExtractor or SWarp:
 
 prints a default configuration file on the standard output
 
-Please report any bug or strange behaviour on the MissFITS Forum <http://terapix.iap.fr/forum/forumdisplay.php?fid=38>.
+Please report any bug or strange behaviour on the MissFITS Forum at
+http://astromatic.net/forum/
 
-                                                Chiara Marmo <marmo@iap.fr>
-						Emmanuel Bertin <bertin@iap.fr>
+				Chiara Marmo <marmo@u-psud.fr>
+				Emmanuel Bertin <bertin@iap.fr>
 

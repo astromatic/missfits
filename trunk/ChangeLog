@@ -1,18 +1,56 @@
-/*
-                                ChangeLog
+#
+#				Changelog
+#
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#
+#	This file part of:	MissFITS
+#
+#	Copyright:		(C) 2002-2010 IAP/CNRS/UPMC
+#
+#	Authors:		Emmanuel Bertin (IAP)
+#				Chiara Marmo (IAP)
+#
+#	License:		GNU General Public License
+#
+#	MissFITS is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+# 	(at your option) any later version.
+#	MissFITS is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#	You should have received a copy of the GNU General Public License
+#	along with MissFITS.  If not, see <http://www.gnu.org/licenses/>.
+#
+#	Last modified:		10/10/2010
+#
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*
-*       Part of:        MissFITS
-*
-*       Author:         C. MARMO (U-PSud), E. BERTIN (IAP)
-*
-*       Contents:       log of changes made to the MissFITS source
-*
-*       Last modify:    29/04/2010
-*
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
+------------------------------------------------------------------------
+r68 | bertin | 2010-07-20 13:17:57 +0200 (Tue, 20 Jul 2010) | 2 lines
+
+Fixed TFORM error message in fitshead.c (thanks to S.Guieu).
+
+------------------------------------------------------------------------
+r67 | bertin | 2010-07-02 13:38:58 +0200 (Fri, 02 Jul 2010) | 2 lines
+
+Removed redundant update_tab() calls.
+
+------------------------------------------------------------------------
+r66 | bertin | 2010-07-02 13:26:24 +0200 (Fri, 02 Jul 2010) | 2 lines
+
+Fixed fitspick() issue with slashes within strings (thanks to F.Schuller).
+
+------------------------------------------------------------------------
+r64 | bertin | 2010-04-29 21:58:21 +0200 (Thu, 29 Apr 2010) | 2 lines
+
+Fixed FTP address in doc.
+
+------------------------------------------------------------------------
+r63 | bertin | 2010-04-29 17:08:39 +0200 (Thu, 29 Apr 2010) | 2 lines
+
+Updated ChangeLog.
 
 ------------------------------------------------------------------------
 r62 | bertin | 2010-04-29 16:57:05 +0200 (Thu, 29 Apr 2010) | 7 lines

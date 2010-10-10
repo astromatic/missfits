@@ -1,18 +1,33 @@
- /*
- 				define.h
-
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+*				define.h
 *
-*	Part of:	MissFITS
+* Global definitions.
 *
-*	Author:		E.BERTIN (IAP) C. MARMO (IAP)
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *
-*	Contents:	global definitions.
+*	This file part of:	MissFITS
 *
-*	Last modify:	01/04/2009
+*	Copyright:		(C) 2002-2010 IAP/CNRS/UPMC
 *
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
+*	Authors:		Emmanuel Bertin (IAP)
+*				Chiara Marmo (IAP)
+*
+*	License:		GNU General Public License
+*
+*	MissFITS is free software: you can redistribute it and/or modify
+*	it under the terms of the GNU General Public License as published by
+*	the Free Software Foundation, either version 3 of the License, or
+* 	(at your option) any later version.
+*	MissFITS is distributed in the hope that it will be useful,
+*	but WITHOUT ANY WARRANTY; without even the implied warranty of
+*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*	GNU General Public License for more details.
+*	You should have received a copy of the GNU General Public License
+*	along with MissFITS. If not, see <http://www.gnu.org/licenses/>.
+*
+*	Last modified:		10/10/2010
+*
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 /* Check if we are using a configure script here */
 #ifndef HAVE_CONFIG_H
@@ -24,9 +39,14 @@
 
 #define         BANNER          "MissFITS"
 #define		MYVERSION	VERSION
-#define         COPYRIGHT       "Chiara MARMO <marmo@iap.fr> & Emmanuel BERTIN <bertin@iap.fr>"
+#define         COPYRIGHT       "2006-2010 IAP/CNRS/UPMC"
+#define		DISCLAIMER	BANNER " comes with ABSOLUTELY NO WARRANTY\n" \
+		"You may redistribute copies of " BANNER "\n" \
+		"under the terms of the GNU General Public License."
+#define		AUTHORS		"Chiara MARMO <chiara.marmo@u-psud.fr> and " \
+				"Emmanuel BERTIN <bertin@iap.fr>"
+#define		WEBSITE		"http://astromatic.net/software/missfits"
 #define         INSTITUTE       "IAP  http://www.iap.fr"
-#define         WEBSITE         "http://astromatic.iap.fr/software/missfits"
 
 /*----------------------------- Physical constants --------------------------*/
 
