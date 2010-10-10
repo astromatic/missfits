@@ -1,3 +1,6 @@
+Yannick Mellier (TERAPIX) <mellier@iap.fr>
+	Funding support
+
 Rob Seaman <seaman@noao.edu>
 	The MissFITS checksum algorithm is inspired from Rob's sum32.c
 
@@ -9,4 +12,5 @@ Erik Deul <deul@strw.leidenuniv.nl>
 
 Akim Demaille <akim@lrde.epita.fr>
         for solving the $datarootdir issue and providing the URBI_RESOLVE_DIR()
-        function.
+        function
+

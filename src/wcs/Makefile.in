@@ -31,7 +31,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src/wcs
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acx_prog_cc_optim.m4 \
 	$(top_srcdir)/acx_urbi_resolve_dir.m4 \
@@ -153,13 +153,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 # Program Makefile for the WCS library
-# Copyright (C) 2002 Emmanuel Bertin.
+# Copyright (C) 2002-2010 Emmanuel Bertin.
 noinst_LIBRARIES = libwcs_c.a
 libwcs_c_a_SOURCES = cel.c lin.c poly.c proj.c sph.c tnx.c wcs.c \
 			  wcstrig.c \
 			  cel.h lin.h poly.h proj.h sph.h tnx.h wcs.h \
 			  wcsmath.h wcstrig.h
 
+EXTRA_DIST = README
 all: all-am
 
 .SUFFIXES:
