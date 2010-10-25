@@ -1,18 +1,31 @@
- /*
- 				poly.c
-
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+*				poly.c
 *
-*	Part of:	A program using Polynomials
+* Manage polynomials.
 *
-*	Author:		E.BERTIN (IAP)
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *
-*	Contents:	Polynomial fitting
+*	This file part of:	AstrOmatic WCS library
 *
-*	Last modify:	05/10/2010
+*	Copyright:		(C) 1998-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
 *
-*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
+*	License:		GNU General Public License
+*
+*	AstrOmatic software is free software: you can redistribute it and/or
+*	modify it under the terms of the GNU General Public License as
+*	published by the Free Software Foundation, either version 3 of the
+*	License, or (at your option) any later version.
+*	AstrOmatic software is distributed in the hope that it will be useful,
+*	but WITHOUT ANY WARRANTY; without even the implied warranty of
+*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*	GNU General Public License for more details.
+*	You should have received a copy of the GNU General Public License
+*	along with AstrOmatic software.
+*	If not, see <http://www.gnu.org/licenses/>.
+*
+*	Last modified:		10/10/2010
+*
+*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 #ifdef HAVE_CONFIG_H
 #include	"config.h"
@@ -24,7 +37,9 @@
 #include	<string.h>
 
 #include	"poly.h"
-
+#ifdef HAVE_ATLAS
+#include	ATLAS_LAPACK_H
+#endif
 
 #define	QCALLOC(ptr, typ, nel) \
 		{if (!(ptr = (typ *)calloc((size_t)(nel),sizeof(typ)))) \
@@ -420,14 +435,18 @@ INPUT   Pointer to the (pseudo 2D) matrix of coefficients,
 OUTPUT  -.
 NOTES   -.
 AUTHOR  E. Bertin (IAP, Leiden observatory & ESO)
-VERSION 05/10/2010
+VERSION 10/10/2010
  ***/
 void	poly_solve(double *a, double *b, int n)
   {
    double	*vmat,*wmat;
 
+#ifdef HAVE_ATLAS
+  clapack_dposv(CblasRowMajor, CblasUpper, n, 1, a, n, b, n);
+#else
   if (cholsolve(a,b,n))
     qerror("*Error*: singular matrix found ", "while deprojecting" );
+#endif
 
   return;
   }
@@ -440,9 +459,10 @@ INPUT	Pointer to the (pseudo 2D) matrix of coefficients,
 	pointer to the 1D column vector,
  	matrix size.
 OUTPUT	-1 if the matrix is not positive-definite, 0 otherwise.
-NOTES	The matrix of coefficients must be symmetric and positive definite.
+NOTES	Based on algorithm described in Numerical Recipes, 2nd ed. (Chap 2.9).
+	The matrix of coefficients must be symmetric and positive definite.
 AUTHOR	E. Bertin (IAP)
-VERSION	05/10/2010
+VERSION	10/10/2010
  ***/
 int	cholsolve(double *a, double *b, int n)
   {

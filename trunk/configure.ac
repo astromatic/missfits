@@ -5,10 +5,8 @@
 #
 #	This file part of:	MissFITS
 #
-#	Copyright:		(C) 2006-2010 IAP/CNRS/UPMC
-#
-#	Authors:		Emmanuel Bertin (IAP)
-#				Chiara Marmo (IAP)
+#	Copyright:		(C) 2006-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+#				& Chiara Marmo -- IAP/CNRS
 #
 #	MissFITS is free software: you can redistribute it and/or modify
 #	it under the terms of the GNU General Public License as published by

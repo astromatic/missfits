@@ -7,9 +7,7 @@
 #
 #	This file part of:	AstrOmatic FITS/LDAC library
 #
-#	Copyright:		(C) 2002-2010 IAP/CNRS/UPMC
-#
-#	Author:			Emmanuel Bertin (IAP)
+#	Copyright:		(C) 2002-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
 #
 #	Last modified:		09/10/2010
 #

@@ -7,10 +7,8 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2006-2010 IAP/CNRS/UPMC
-*
-*	Authors:		Emmanuel Bertin (IAP)
-*				Chiara Marmo (IAP)
+*	Copyright:		(C) 2006-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+*				& Chiara Marmo -- IAP/CNRS
 *
 *	License:		GNU General Public License
 *
@@ -79,12 +77,12 @@ documentation)
 void    readprefs(char *filename, char **argkey, char **argval, int narg)
 
   {
-   FILE          *infile;
-   char          *cp, str[MAXCHAR], *keyword, *value, **dp;
-   int           i, ival, nkey, warn, argi, flagc, flagd, flage, flagz;
-   float         dval;
+   FILE		*infile;
+   char		*cp, str[MAXCHAR], *keyword, *value, **dp;
+   int		i, ival, nkey, warn, argi, flagc, flagd, flage, flagz;
+   double	dval;
 #ifndef	NO_ENVVAR
-   char 	value2[MAXCHAR],envname[MAXCHAR];
+   char		value2[MAXCHAR],envname[MAXCHAR];
    char		*dolpos;
 #endif
 

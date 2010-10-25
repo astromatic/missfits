@@ -7,10 +7,8 @@
 #
 #	This file part of:	MissFITS
 #
-#	Copyright:		(C) 2006-2010 IAP/CNRS/UPMC
-#
-#	Authors:		Chiara Marmo (IAP)
-#				Emmanuel Bertin (IAP)
+#	Copyright:		(C) 2006-2010 Chiara Marmo -- IAP/CNRS
+#				& Emmanuel Bertin -- IAP/CNRS/UPMC
 #
 #	License:		GNU General Public License
 #
@@ -25,14 +23,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with MissFITS.  If not, see <http://www.gnu.org/licenses/>.
 #
-#	Last modified:		10/10/2010
+#	Last modified:		11/10/2010
 #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 AUTOMAKE_OPTIONS	= foreign no-dependencies
 SUBDIRS			= man src 
 dist_pkgdata_DATA	= xsl/missfits.xsl
-EXTRA_DIST		= AUTHORS BUGS COPYRIGHT HISTORY INSTALL LICENSE \
+EXTRA_DIST		= doc AUTHORS BUGS COPYRIGHT HISTORY INSTALL LICENSE \
 			  README THANKS TODO ChangeLog \
 			  acx_prog_cc_optim.m4 doc acx_urbi_resolve_dir.m4
 RPM_ROOTDIR 		= `rpmbuild --nobuild -E %_topdir`

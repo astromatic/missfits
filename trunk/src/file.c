@@ -7,10 +7,8 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2002-2010 IAP/CNRS/UPMC
-*
-*	Authors:		Emmanuel Bertin (IAP)
-*				Chiara Marmo (IAP)
+*	Copyright:		(C) 2002-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+*				& Chiara Marmo -- IAP/CNRS
 *
 *	License:		GNU General Public License
 *

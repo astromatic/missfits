@@ -7,10 +7,7 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2002-2010 IAP/CNRS/UPMC
-*
-*	Authors:		Emmanuel Bertin (IAP)
-*				Chiara Marmo (IAP)
+*	Copyright:		(C) 2002-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
 *
 *	License:		GNU General Public License
 *
@@ -39,7 +36,7 @@
 
 #define         BANNER          "MissFITS"
 #define		MYVERSION	VERSION
-#define         COPYRIGHT       "2006-2010 IAP/CNRS/UPMC"
+#define         COPYRIGHT       "2010 IAP/CNRS/UPMC"
 #define		DISCLAIMER	BANNER " comes with ABSOLUTELY NO WARRANTY\n" \
 		"You may redistribute copies of " BANNER "\n" \
 		"under the terms of the GNU General Public License."
