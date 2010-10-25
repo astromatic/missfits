@@ -1,5 +1,7 @@
-
+#
 #				configure.ac
+#
+# Process this file with autoconf to produce a configure script.
 #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #
@@ -22,8 +24,6 @@
 #	Last modified:		10/10/2010
 #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# Process this file with autoconf to produce a configure script.
 
 # First, disable the annoying config.cache
 define([AC_CACHE_LOAD],)
