@@ -32,7 +32,7 @@ SUBDIRS			= man src
 dist_pkgdata_DATA	= xsl/missfits.xsl
 EXTRA_DIST		= doc AUTHORS BUGS COPYRIGHT HISTORY INSTALL LICENSE \
 			  README THANKS TODO ChangeLog \
-			  acx_prog_cc_optim.m4 doc acx_urbi_resolve_dir.m4
+			  acx_prog_cc_optim.m4 acx_urbi_resolve_dir.m4
 RPM_ROOTDIR 		= `rpmbuild --nobuild -E %_topdir`
 RPM_SRCDIR		= $(RPM_ROOTDIR)/SOURCES
 dist-hook:
