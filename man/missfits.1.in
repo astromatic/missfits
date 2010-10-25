@@ -36,7 +36,7 @@ FITS files:
 .RE
 - compress/decompress FITS data (*not yet available*)
 .RE
-See http://terapix.iap.fr/soft/missfits for more details.
+See http://astromatic.net/software/missfits for more details.
 .SS "Operation modes:"
 .TP
 \fB\-h\fR, \fB\-\-help\fR
