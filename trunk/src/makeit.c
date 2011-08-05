@@ -7,7 +7,7 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2006-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+*	Copyright:		(C) 2006-2011 Emmanuel Bertin -- IAP/CNRS/UPMC
 *				& Chiara Marmo -- IAP/CNRS
 *
 *	License:		GNU General Public License
@@ -23,7 +23,7 @@
 *	You should have received a copy of the GNU General Public License
 *	along with MissFITS. If not, see <http://www.gnu.org/licenses/>.
 *
-*	Last modified:		10/10/2010
+*	Last modified:		04/03/2011
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
@@ -55,7 +55,7 @@ void	makeit(void)
    catstruct		**incat,
 			*outcat;
    tabstruct		*tab, *intab;
-   char	                im[MAXCHAR];
+   char	                im[MAXCHAR], keyword[16];
    filenum		filetype;
    int			a,c,k,n,p, t, s, check, narg, nfile, nout,
                         ntabin, ntabout, flagmulti, flagcube, headflag, nxml;
@@ -181,12 +181,14 @@ void	makeit(void)
 /*---- Slicing cubes */
         if (flagcube)
           {
-          if (tab->naxis>2)
+          if (tab->naxis>1)
             {
-            tab->naxis = 2;
-            removekeywordfrom_head(tab, "NAXIS3");
-            tab->tabsize = tab->naxisn[0] * tab->naxisn[1] *
-                              tab->bytepix ;
+            sprintf(keyword, "NAXIS%d", tab->naxis);
+            removekeywordfrom_head(tab, keyword);
+            tab->naxis--;
+            tab->tabsize = tab->bytepix;
+            for (n=tab->naxis; n--;)
+              tab->tabsize *= tab->naxisn[n];
             tab->bodypos+= s * tab->tabsize; 
             }
           }
@@ -195,17 +197,20 @@ void	makeit(void)
           {
           if (tab->naxis>0)
             {
-            tab->naxis = 3;
-            tab->naxisn[2] = nfile;
-            size = tab->naxisn[0] * tab->naxisn[1] * tab->bytepix;
+            tab->naxisn[tab->naxis] = nfile;
+            size = tab->bytepix;
+            for (n=tab->naxis; n--;)
+              size *= tab->naxisn[n];
             tab->tabsize = size * nfile;
-            addkeywordto_head(tab, "NAXIS3  ", "length of data axis 3");
+            tab->naxis++;
+            sprintf(keyword, "NAXIS%d  ", tab->naxis);
+            addkeywordto_head(tab, keyword, "length of data axis");
             tab->bodybuf = malloc(size*nfile);
             pix = tab->bodybuf ;
             for (c=0; c<nfile; c++, pix += size)
               {
-              intab = incat[c]->tab->nexttab;
-              for (p=t ; --p ; intab = intab->nexttab);
+              intab = incat[c]->tab;
+              for (p=t ; p-- ; intab = intab->nexttab);
               QFSEEK(incat[c]->file, intab->bodypos, SEEK_SET,
                        incat[c]->filename);
               QFREAD(pix, size, incat[c]->file, incat[c]->filename);

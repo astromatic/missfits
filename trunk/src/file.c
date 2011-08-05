@@ -139,7 +139,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
           {
           warning(name, " extensions have different NAXIS3, skipping...");
           continue;
-          }       
+          }
         nout1 = nout;
         }
       }
