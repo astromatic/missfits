@@ -1,0 +1,16 @@
+TERAPIX project <http://terapix.iap.fr>
+	Funding support
+
+Rob Seaman <seaman@noao.edu>
+	The MissFITS checksum algorithm is inspired from Rob's sum32.c
+
+Stefan Kimeswenger <Stefan.Kimeswenger@uibk.ac.at>
+	Provide examples of complex MEF files
+
+Erik Deul <deul@strw.leidenuniv.nl>
+	Help in discovering bugs or bringing suggestions
+
+Akim Demaille <akim@lrde.epita.fr>
+        for solving the $datarootdir issue and providing the URBI_RESOLVE_DIR()
+        function
+

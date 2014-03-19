@@ -1,0 +1,71 @@
+.TH MISSFITS "1" "@DATE3@" "MissFITS @PACKAGE_VERSION@" "User Commands"
+.SH NAME
+missfits \- edit/check/maintain FITS files
+.SH SYNOPSIS
+.B missfits
+\fIinput\_file1\fR [\fIinput\_file2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits
+\fIinput\_dir1\fR [\fIinput\_dir2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits
+\fIinput\_prefix1\fR [\fIinput\_prefix2 ...\fR] [\fI-c configuration-file\fR]
+.RS
+[\fI-parameter1 value1 -parameter2 value2 ...\fR]
+.RE
+.TP
+.B missfits \fI-d\fR
+.SH DESCRIPTION
+MissFITS is a program that performs basic maintenance and packaging tasks on
+FITS files:
+.RE
+- add/edit/remove FITS header keywords
+.RE
+- split/join Multi-Extension-FITS (MEF) files
+.RE
+- unpack/pack FITS data-cubes
+.RE
+- create/check/update FITS checksums, using R. Seaman's protocol
+        ( see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+.RE
+- compress/decompress FITS data (*not yet available*)
+.RE
+See http://astromatic.net/software/missfits for more details.
+.SS "Operation modes:"
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+print this help, then exit
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+print version number, then exit
+.TP
+\fB\-d\fR, \fB\-\-dump\fR
+dump a default configuration file
+.SH MANUAL
+The full documentation for
+.B MissFITS
+is maintained as a PDF manual available at
+.B http://astromatic.net/software/missfits
+.SH "REPORTING BUGS"
+Please report bugs to the MissFITS software forum at 
+http://astromatic.net/forum.
+.SH "SEE ALSO"
+.BR
+eye(1), psfex(1), scamp(1), sex(1), sky(1), stiff(1), stuff(1), swarp (1), ww(1)
+.SH AUTHORS
+Written by Emmanuel Bertin and Chiara Marmo (Institut d'Astrophysique de Paris).
+.PP
+.SH LICENSE
+MissFITS is licensed under the terms of the General Public License (GPL),
+version 3.
+.SH COPYRIGHT
+.PP
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
