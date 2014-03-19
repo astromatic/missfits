@@ -154,9 +154,9 @@ fi
 if test "$enable_best_link" = "yes"; then
   if test "$enable_icc" = "yes"; then
     AM_LDFLAGS="-static-intel -shared-libgcc \
-	-static-libtool-libs -no-intel-extensions -avoid-version $AM_LDFLAGS"
+	--no-intel-extensions -avoid-version $AM_LDFLAGS"
   else
-    AM_LDFLAGS="-shared-libgcc -static-libtool-libs -avoid-version $AM_LDFLAGS"
+    AM_LDFLAGS="-shared-libgcc -avoid-version $AM_LDFLAGS"
   fi
 fi
 
