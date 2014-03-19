@@ -7,7 +7,7 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2006-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+*	Copyright:		(C) 2006-2013 Emmanuel Bertin -- IAP/CNRS/UPMC
 *				& Chiara Marmo -- IAP/CNRS
 *
 *	License:		GNU General Public License
@@ -23,7 +23,7 @@
 *	You should have received a copy of the GNU General Public License
 *	along with MissFITS. If not, see <http://www.gnu.org/licenses/>.
 *
-*	Last modified:		10/10/2010
+*	Last modified:		09/12/2013
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
@@ -64,9 +64,9 @@ pkeystruct key[] =
   {"SLICEKEY_FORMAT", P_STRING, prefs.slicekey_format},
   {"SLICE_KEYWORD", P_STRINGLIST, prefs.slice_key, 0,0, 0.0,0.0,
    {""}, 0, MAXKEYWORD, &prefs.nslice_key},
-  {"SLICE_START", P_INT, &prefs.slice_start, 0, 100},
+  {"SLICE_START", P_INT, &prefs.slice_start, 0, 1000000},
   {"SLICE_SUFFIX", P_STRING, prefs.slice_format},
-  {"SPLIT_START", P_INT, &prefs.split_start, 0, 100},
+  {"SPLIT_START", P_INT, &prefs.split_start, 0, 1000000},
   {"SPLIT_SUFFIX", P_STRING, prefs.split_format},
   {"VERBOSE_TYPE", P_KEY, &prefs.verbose_type, 0,0, 0.0,0.0,
    {"QUIET","NORMAL","FULL",""}},
@@ -93,7 +93,7 @@ char *default_prefs[] =
 "                                       # SLICE_KEYWORD+SLICEKEY_FORMAT",
 "                                       # with SLICE_KEYWORD for every slice",
 "                                       # or viceversa building cubes",
-"SLICEKEY_FORMAT        %02d            # format of slice referring keywords",
+"SLICEKEY_FORMAT        %03d            # format of slice referring keywords",
 "DISPLAY_KEYWORD        OBJECT          # Display the following keywords while",
 "                                       # processing the files",
 " ",
@@ -108,9 +108,9 @@ char *default_prefs[] =
 "OUTFILE_TYPE           SAME            # Basic or Multi-FITS output:",
 "                                       # \"SAME\", \"MULTI\", \"SPLIT\",",
 "                                       # \"SLICE\", \"CUBE\" or \"DIR\"",
-"SPLIT_SUFFIX           .%02d.fits      # Suffix expected for split FITS files",
+"SPLIT_SUFFIX           .%03d.fits      # Suffix expected for split FITS files",
 "*SPLIT_START            1               # Suffix number of the first extension",
-"SLICE_SUFFIX           .%02d.fits      # Suffix expected for sliced FITS files",
+"SLICE_SUFFIX           .%03d.fits      # Suffix expected for sliced FITS files",
 "*SLICE_START            1               # Suffix number of the first slice",
 " ",
 "#-------------------------------- FITS data  ----------------------------------",

@@ -7,7 +7,7 @@
 *
 *	This file part of:	MissFITS
 *
-*	Copyright:		(C) 2002-2010 Emmanuel Bertin -- IAP/CNRS/UPMC
+*	Copyright:		(C) 2002-2013 Emmanuel Bertin -- IAP/CNRS/UPMC
 *				& Chiara Marmo -- IAP/CNRS
 *
 *	License:		GNU General Public License
@@ -23,7 +23,7 @@
 *	You should have received a copy of the GNU General Public License
 *	along with MissFITS. If not, see <http://www.gnu.org/licenses/>.
 *
-*	Last modified:		10/10/2010
+*	Last modified:		09/12/2013
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
@@ -61,7 +61,7 @@ OUTPUT	Returns a pointer to pointers of catalogs read or NULL if no success.
 	accordingly.
 NOTES	Global preferences are used.
 AUTHOR	E. Bertin (IAP) C. Marmo (IAP)
-VERSION	29/04/2010
+VERSION	09/12/2013
  ***/
 catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
                                  filenum *filetype, int *headflag)
@@ -176,7 +176,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
       prefix = pstr;
       QCALLOC(incat, catstruct *, 16);
       nfile = 0;
-      for (i=1; i<100; i++)
+      for (i=1; i<1000; i++)
         {
         if (prefs.outfile_type == FILE_CUBE)
           sprintf(str, prefs.slice_format, i+prefs.slice_start-1);
@@ -226,7 +226,7 @@ catstruct	**load_fitsfiles(char *name, int *ncat, int *outcat,
     {
     QCALLOC(incat, catstruct *, 16);
     nfile = 0;
-    for (i=1; i<100; i++)
+    for (i=1; i<1000; i++)
       {
       if (prefs.outfile_type==FILE_CUBE)
         {
