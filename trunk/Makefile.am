@@ -23,7 +23,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with MissFITS.  If not, see <http://www.gnu.org/licenses/>.
 #
-#	Last modified:		11/10/2010
+#	Last modified:		28/05/2014
 #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -35,6 +35,8 @@ EXTRA_DIST		= doc AUTHORS BUGS COPYRIGHT HISTORY INSTALL LICENSE \
 			  acx_prog_cc_optim.m4 acx_urbi_resolve_dir.m4
 RPM_ROOTDIR 		= `rpmbuild --nobuild -E %_topdir`
 RPM_SRCDIR		= $(RPM_ROOTDIR)/SOURCES
+DEB_SRCDIR		= ~/DEBIAN/SOURCES
+
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
 
@@ -49,4 +51,10 @@ rpm-icc:	dist
 rpm-best:	dist
 	cp -f $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPM_SRCDIR)
 	USE_BEST="1" rpmbuild -ba --clean --nodeps $(PACKAGE_NAME).spec
+
+deb:
+	mkdir -p $(DEB_SRCDIR)
+	cp -r -f . $(DEB_SRCDIR)
+	cd $(DEB_SRCDIR) && rm -rf `find $(DEB_SRCDIR) -name .svn` && \
+	debuild -us -uc -b
 
