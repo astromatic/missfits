@@ -1,0 +1,5 @@
+missfits (2.8.0-1) UNRELEASED; urgency=low
+
+  * Initial debian release. (Closes: #XXXXXX)
+
+ -- Chiara Marmo <chiara.marmo@u-psud.fr>  Fri, 30 May 2014 22:26:04 +0200
